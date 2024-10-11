@@ -1,15 +1,19 @@
-import logo from './logo.svg';
 import './App.css';
-import Login from "./Components/login"
-import Proveedores from "./Components/gestionProveedores"
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom"
+import Login from './Components/inicioSesion/login'
+import Proveedores from './Components/gestionProveedores/proveedores';
+import Ventas from './Components/procesoVenta/ventas';
 
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <Router path="/" element={<Login/>} />
-        <Router path="proveedores" elemtent={<Proveedores/>} />
-      </AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login/>} />
+            <Route path="proveedores" element={<Proveedores/>} />
+            <Route path="Ventas" element={<Ventas/>} />
+          </Routes>
+        </Router>
     </div>
   );
 }
