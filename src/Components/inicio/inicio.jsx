@@ -5,14 +5,15 @@ const Inicio = () => {
         <div className="inicio-container">
             <nav className="navbar">
             <div className="logo">
-            <img src='src/assets/logo.png' alt="Logo" className="logo-image" />
-                </div>
+    <h1 className="logo-text">Easy-PC</h1>
+</div>
+
 
                 <div className="nav-buttons">
-                    <button className="nav-btn">P1</button>
-                    <button className="nav-btn">P2</button>
-                    <button className="nav-btn">P3</button>
-                    <button className="nav-btn">P4</button>
+                    <button className="nav-btn">Arma tu pc</button>
+                    <button className="nav-btn">Catalogo de componentes</button>
+                    <button className="nav-btn">Mas sobre nosotros</button>
+                    <button className="nav-btn">Mi cuenta</button>
                 </div>
             </nav>
             <div className="content">

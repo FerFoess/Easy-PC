@@ -1,0 +1,57 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #1a1a1a; /* Fondo oscuro */
+}
+
+.logo-image {
+    width: 100%;
+    height: auto;
+    max-width: 300px; /* Aumentado para hacer el logo más grande */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Espacia los botones uniformemente */
+    margin-top: 20px; /* Aumenta el espacio encima de los botones */
+    width: 300px; /* Mantén este ancho según lo necesites */
+}
+
+button {
+    flex: 1; /* Hace que ambos botones ocupen el mismo espacio */
+    margin: 0 15px; /* Aumentado el espacio entre los botones */
+    padding: 10px 15px;
+    background-color: #444;
+    color: #e0e0e0;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    width: 300px; /* Mantén este ancho según lo necesites */
+    color: aliceblue; /* Color de texto en el grupo de entrada */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: aliceblue; /* Color de fondo de la entrada */
+    color: black; /* Color del texto en la entrada */
+}
+
+input:focus {
+    outline: none;
+    border-color: aliceblue; /* Color al enfocar */
+}
+
+button:hover {
+    background-color: #666; /* Cambia el color al pasar el mouse */
+}

@@ -11,6 +11,19 @@ body {
   flex-direction: column;
   height: 100vh;
 }
+.logo-image {
+  width: 50%;
+  height: auto;
+  max-width: 50px; /* Ajusta según lo necesites */
+}
+
+.logo-text {
+  font-size: 30px;
+  color: #e0e0e0; /* Color claro para resaltar sobre el fondo oscuro */
+  font-weight: bold;
+  margin: 0; /* Para asegurarte de que no haya margen extra */
+}
+
 
 .navbar {
   display: flex;
@@ -38,7 +51,7 @@ body {
   padding: 10px 15px;
   cursor: pointer;
   transition: background-color 0.3s;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 .nav-btn:hover {
@@ -52,5 +65,5 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  border-top: 1px solid #444;
+  border-top: px solid #444;
 }
