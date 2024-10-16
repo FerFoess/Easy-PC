@@ -1,0 +1,81 @@
+.app {
+    background-color: #000; /* Fondo negro */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .navbar {
+    width: 100%;
+    background-color: #111;
+    padding: 10px 0;
+  }
+  
+  .logo-text {
+    color: #fff;
+    text-align: center;
+    margin: 0;
+  }
+  
+  .card-container {
+    display: flex;
+    gap: 50px;
+    margin-top: 10px;
+  }
+  
+  .card {
+    background-color: #111;
+    border-radius: 100px;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .card-image {
+    width: 500px; 
+    height: 500px; 
+    object-fit: cover;
+    background-color: #000; 
+  }
+  
+  
+  .card-text {
+    color:black;
+    font-size: 40px; 
+    margin: 0px 0;
+    text-align: center;
+  }
+  
+  .back-button {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .back-button:hover {
+    background-color: #555;
+  }
+  
+  .nav-text{
+    color: #fff;
+    flex: 5; 
+    text-align: center;
+    border: none;
+    justify-content: center;
+  }

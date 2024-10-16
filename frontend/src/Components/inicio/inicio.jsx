@@ -7,8 +7,6 @@ const Inicio = () => {
             <div className="logo">
     <h1 className="logo-text">Easy-PC</h1>
 </div>
-
-
                 <div className="nav-buttons">
                     <button className="nav-btn">Arma tu pc</button>
                     <button className="nav-btn">Catalogo de componentes</button>
