@@ -8,6 +8,7 @@ var cors = require('cors'); // Importa el middleware cors
 var indexRouter = require('./routes/index');
 var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
+var auth = require('./routes/auth')
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
+app.use('/auth', auth);
 
 
 // catch 404 and forward to error handler
