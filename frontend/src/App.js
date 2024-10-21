@@ -4,6 +4,7 @@ import Login from './Components/inicioSesion/login'
 import Proveedores from './Components/gestionProveedores/proveedores';
 import Ventas from './Components/procesoVenta/ventas';
 import Inicio from './Components/inicio/inicio';
+import Logs from './Components/gestionProveedores/logs'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="proveedores" element={<Proveedores/>} />
             <Route path="Ventas" element={<Ventas/>} />
             <Route path="inicio" element={<Inicio/>} />
+            <Route path="logs" element={<Logs/>} />
           </Routes>
         </Router>
     </div>

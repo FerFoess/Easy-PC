@@ -7,7 +7,6 @@ const productosSchema = new mongoose.Schema({
   descripcion: { type: String, required: true },
   precio_unitario: { type: Number, required: true },
   cantidad_disponible: { type: Number, required: true },
-  fecha_ingreso: { type: Date, default: Date.now },
   estado: { type: String, enum: ['disponible', 'agotado', 'inactivo'], default: 'disponible' }
 });
 

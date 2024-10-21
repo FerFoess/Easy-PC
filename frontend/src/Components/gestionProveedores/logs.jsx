@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import './css/styles.css'; // Importa los estilos CSS
+import React, { useState } from 'react';
 
 // Componente para solicitar productos
-const SolicitarProductos = ({ setHistorialPedidos }) => {
+const SolicitarProductos = ({ historialPedidos, setHistorialPedidos }) => {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [proveedores] = useState([
@@ -17,37 +16,6 @@ const SolicitarProductos = ({ setHistorialPedidos }) => {
     stock: 0
   });
 
-  // Obtener categorías desde la API
-  useEffect(() => {
-    const obtenerCategorias = async () => {
-      try {
-        const response = await fetch('http://localhost:3002/catego');
-        const data = await response.json();
-        setCategorias(data);
-      } catch (error) {
-        console.error('Error al obtener las categorías:', error);
-      }
-    };
-
-    obtenerCategorias();
-  }, []);
-
-  // Obtener productos desde la API y filtrar por estado "true"
-  useEffect(() => {
-    const obtenerProductos = async () => {
-      try {
-        const response = await fetch('http://localhost:3002/produ');
-        const data = await response.json();
-        const productosActivos = data.filter(producto => producto.estado === "true");
-        setProductos(productosActivos);
-      } catch (error) {
-        console.error('Error al obtener los productos:', error);
-      }
-    };
-
-    obtenerProductos();
-  }, []);
-
   // Manejar cambios en el formulario para solicitar un producto
   const manejarCambio = (e) => {
     setNuevoProducto({ ...nuevoProducto, [e.target.name]: e.target.value });
@@ -58,7 +26,7 @@ const SolicitarProductos = ({ setHistorialPedidos }) => {
     e.preventDefault();
     const productoSolicitado = { ...nuevoProducto, id: productos.length + 1 };
     // Actualizar el historial de pedidos
-    setHistorialPedidos(prev => [...prev, productoSolicitado]);
+    setHistorialPedidos([...historialPedidos, productoSolicitado]);
     setNuevoProducto({ nombre: '', categoria: '', proveedor: '', stock: 0 });
     
     // Mostrar confirmación del pedido
@@ -176,7 +144,7 @@ const App = () => {
       </nav>
 
       {pantallaActual === 'solicitar' && (
-        <SolicitarProductos setHistorialPedidos={setHistorialPedidos} />
+        <SolicitarProductos historialPedidos={historialPedidos} setHistorialPedidos={setHistorialPedidos} />
       )}
       {pantallaActual === 'historial' && <HistorialPedidos historialPedidos={historialPedidos} />}
     </div>

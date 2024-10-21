@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 
 // Definición del esquema para categorías
 const categoriaSchema = new mongoose.Schema({
-  nombre: { type: String, required: true, unique: true }  // Nombre de la categoría
+  nombre: { type: String, required: true, unique: true },
+  descripcion: { type: String, required: true }
 });
 
 // Exportar el modelo de Categoria
