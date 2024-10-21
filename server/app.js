@@ -8,7 +8,8 @@ var cors = require('cors'); // Importa el middleware cors
 var indexRouter = require('./routes/index');
 var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
-
+var auth = require('./routes/auth');
+const optionsRoutes = require('./routes/optionsRoutes');
 var app = express();
 
 let dotenv = require('dotenv');
@@ -16,9 +17,10 @@ dotenv.config();
 
 let mongo = require('./config/dbconfig');
 
+// Si no estás usando un motor de plantillas, elimina esta sección
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(cors()); // Usa el middleware cors una vez
 app.use(logger('dev'));
@@ -34,7 +36,8 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
-
+app.use('/auth', auth);
+app.use('/options', optionsRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,9 +50,9 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // En vez de renderizar una vista, puedes enviar un JSON de error
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ message: 'Error', error: res.locals.error });
 });
 
 module.exports = app;
