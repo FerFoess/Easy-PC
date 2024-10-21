@@ -2,11 +2,11 @@ import "./css/styles.css";
 import React from "react";
 function TipoEquipo() {
   const handleRedirect1 = () => {
-    <link rel="stylesheet" href="/Proposito" /> // Cambia este enlace al que desees
+    window.location.href = "http://localhost:3000/propocito"; // Cambia este enlace al que desees
   };
 
   const handleRedirect2 = () => {
-    window.location.href = "http://localhost:3000/propocito"; // Cambia este enlace al que desees
+    window.location.href = "http://localhost:3000/"; // Cambia este enlace al que desees
   };
 
   const handleGoBack = () => {
@@ -27,11 +27,11 @@ function TipoEquipo() {
       <div className="card-container">
         <div className="card" onClick={handleRedirect1}>
           <img src="/assets/armar.png" alt="Imagen 1" className="card-image" />
-          <h2 className="card-text">Crea tu equipo</h2>
+          <h2 className="card-text">Crear equipo</h2>
         </div>
         <div className="card" onClick={handleRedirect2}>
           <img src="/assets/armado.png" alt="Imagen 2" className="card-image" />
-          <h2 className="card-text">Elige uno listo</h2>
+          <h2 className="card-text">Elegir uno listo</h2>
         </div>
       </div>
       <button className="back-button" onClick={handleGoBack}>

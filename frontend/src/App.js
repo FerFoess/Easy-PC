@@ -5,7 +5,8 @@ import Proveedores from './Components/gestionProveedores/proveedores';
 import Ventas from './Components/procesoVenta/ventas';
 import Inicio from './Components/inicio/inicio';
 import Tipoequipo from './Components/filtrosPrevios/tipoequipo';
-import Propocito from './Components/filtrosPrevios/propocito'
+import Propocito from './Components/filtrosPrevios/propocito';
+import PropocitoSeleccion from './Components/seleccionComponentes/propocitoSeleccion';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="inicio" element={<Inicio/>} />
             <Route path="tipoequipo" element={<Tipoequipo/>} />
             <Route path="propocito" element={<Propocito/>} />
+            <Route path="propocitoSeleccion" element={<PropocitoSeleccion/>} />
             
           </Routes>
         </Router>
