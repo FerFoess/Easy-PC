@@ -8,6 +8,7 @@ var cors = require('cors'); // Importa el middleware cors
 var indexRouter = require('./routes/index');
 var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
+var ventasRouter = require('./routes/ventasRoutes')
 
 var app = express();
 
@@ -18,7 +19,7 @@ let mongo = require('./config/dbconfig');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 app.use(cors()); // Usa el middleware cors una vez
 app.use(logger('dev'));
@@ -34,7 +35,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
-
+app.use('/ventas', ventasRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
