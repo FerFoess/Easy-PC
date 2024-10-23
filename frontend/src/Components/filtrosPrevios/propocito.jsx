@@ -3,7 +3,7 @@ import React from "react";
 
 function propocito() {
   const handleRedirect1 = () => {
-    window.location.href = "https://tu-primer-sitio.com"; // Cambia este enlace al que desees
+    window.location.href = "http://localhost:3000/propocitoSeleccion";  // Cambia este enlace al que desees
   };
 
   const handleRedirect2 = () => {

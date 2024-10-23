@@ -1,10 +1,15 @@
-// models/categoriasSchema.js
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-// Definición del esquema para categorías
-const categoriaSchema = new mongoose.Schema({
-  nombre: { type: String, required: true, unique: true }  // Nombre de la categoría
+const CategoriaSchema = new Schema({
+  nombre: {
+    type: String,
+    required: true,
+  },
+  descripcion: {
+    type: String,
+    required: true,
+  }
 });
 
-// Exportar el modelo de Categoria
-module.exports = mongoose.model('Categoria', categoriaSchema);
+module.exports = mongoose.model('Categoria', CategoriaSchema);

@@ -35,7 +35,6 @@ exports.crearProducto = async (req, res) => {
       descripcion,
       precio_unitario,
       cantidad_disponible,
-      fecha_ingreso,
       estado
     });
     const productoGuardado = await nuevoProducto.save();
