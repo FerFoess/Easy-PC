@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// Esquema del Proveedor
 const ProveedorSchema = new Schema({
   proveedor: {
     type: String,
@@ -16,6 +17,7 @@ const ProveedorSchema = new Schema({
   }
 });
 
+// Esquema de Detalles
 const DetallesSchema = new Schema({
   frecuencia_base: {
     type: Number,
@@ -47,10 +49,6 @@ const DetallesSchema = new Schema({
   },
   tipo_memoria: {
     type: String,
-    required: false
-  },
-  frecuencia_base: {
-    type: Number,
     required: false
   },
   frecuencia_boost: {
@@ -99,6 +97,7 @@ const DetallesSchema = new Schema({
   }
 });
 
+// Esquema del Producto
 const ProductoSchema = new Schema({
   nombre: {
     type: String,
@@ -125,7 +124,12 @@ const ProductoSchema = new Schema({
   estado: {
     type: Boolean,
     default: true
+  },
+  categoria: {
+    type: String,  // Aquí la categoría es directamente un string
+    required: true // Si deseas que sea obligatorio
   }
 });
 
+// Exportar el modelo Producto
 module.exports = mongoose.model('Producto', ProductoSchema);
