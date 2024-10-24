@@ -11,6 +11,7 @@ var categoriasRouter = require('./routes/categoriasRoutes');
 var ventasRouter = require('./routes/ventasRoutes')
 var auth = require('./routes/auth');
 const optionsRoutes = require('./routes/optionsRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 var app = express();
 
 let dotenv = require('dotenv');
@@ -34,6 +35,8 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.use('/payments', paymentRoutes);
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
