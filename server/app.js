@@ -8,8 +8,10 @@ var cors = require('cors'); // Importa el middleware cors
 var indexRouter = require('./routes/index');
 var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
+var ventasRouter = require('./routes/ventasRoutes')
 var auth = require('./routes/auth');
 const optionsRoutes = require('./routes/optionsRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 var app = express();
 
 let dotenv = require('dotenv');
@@ -19,8 +21,8 @@ let mongo = require('./config/dbconfig');
 
 // Si no estás usando un motor de plantillas, elimina esta sección
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 app.use(cors()); // Usa el middleware cors una vez
 app.use(logger('dev'));
@@ -33,11 +35,14 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.use('/payments', paymentRoutes);
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
 app.use('/auth', auth);
 app.use('/options', optionsRoutes);
+app.use('/ventas', ventasRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
