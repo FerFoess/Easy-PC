@@ -1,36 +1,41 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom"; // Para volver a la pantalla principal
 
-const HistorialSolicitudes = ({ historialSolicitudes, volver }) => {
+const HistorialProductos = ({ historial }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="historial-solicitudes">
-      <h1>Historial de Productos Solicitados</h1>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Proveedor</th>
-            <th>Cantidad</th>
-            <th>Total Pagado</th>
-            <th>Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          {historialSolicitudes.map((solicitud, index) => (
-            <tr key={index}>
-              <td>{solicitud.producto}</td>
-              <td>{solicitud.proveedor}</td>
-              <td>{solicitud.cantidad}</td>
-              <td>${solicitud.totalPagado.toFixed(2)}</td>
-              <td>{solicitud.fecha}</td>
+    <div className="historial-contenedor">
+      <h1>Historial de Productos Confirmados</h1>
+      {historial.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Proveedor</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Total</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <button onClick={volver}>Volver</button>
+          </thead>
+          <tbody>
+            {historial.map((producto, index) => (
+              <tr key={index}>
+                <td>{producto.nombre}</td>
+                <td>{producto.proveedor}</td>
+                <td>{producto.cantidad}</td>
+                <td>${producto.precio}</td>
+                <td>${producto.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No hay productos confirmados en el historial.</p>
+      )}
+      <button onClick={() => navigate("/")}>Volver a gestión de productos</button>
     </div>
   );
 };
 
-export default HistorialSolicitudes;
+export default HistorialProductos;
