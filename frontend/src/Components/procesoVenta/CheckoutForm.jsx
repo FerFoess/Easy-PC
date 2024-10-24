@@ -5,7 +5,7 @@ import axios from 'axios';
 import './css/styles.css'; // Asegúrate de que los estilos estén bien aplicados
 
 // Cargar la clave pública de Stripe
-const stripePromise = loadStripe(''); 
+const stripePromise = loadStripe('pk_live_51QCqe5G2SwsehGOdBazqFqWUA078wznteZNbP7qCVpcbmq2elKeMz84iVRpQB3L63wDvk3vkkRCqQgS3NjHxqEvZ00xWENLFde'); 
 
 const CheckoutForm = () => {
   const stripe = useStripe();
