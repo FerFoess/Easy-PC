@@ -14,29 +14,29 @@ router.get("/", async (req, res) => {
 });
 
 // Ruta para crear un nuevo producto
-router.post("/", async (req, res) => {
+router.post('/produ', async (req, res) => {
   try {
     const nuevoProducto = new Producto(req.body);
     await nuevoProducto.save();
     res.status(201).json(nuevoProducto);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: "Error al crear un nuevo producto" });
+    console.error('Error al crear producto:', error);
+    res.status(500).send('Error del servidor');
   }
 });
 
+
 // Ruta para obtener un producto por su ID
-// En tu archivo de rutas de productos
-router.get("/todos", async (req, res) => {
+router.get('/produ', async (req, res) => {
   try {
-    const productos = await Producto.find()
-      .populate('categoria proveedor'); // Asegúrate de que 'proveedor' esté en el esquema
+    const productos = await Producto.find().populate('categoria'); // Esto poblará el campo 'categoria'
     res.json(productos);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al obtener los productos" });
+    console.error('Error al obtener productos:', error);
+    res.status(500).send('Error del servidor');
   }
 });
+
 
 // Ruta para actualizar un producto existente por su ID
 router.patch("/:id", async (req, res) => {
