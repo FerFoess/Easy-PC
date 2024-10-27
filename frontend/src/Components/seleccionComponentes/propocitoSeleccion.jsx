@@ -51,6 +51,7 @@ const PropocitoSeleccion = () => {
         </div>
       </nav>
 
+
       <div className="gray-box">
         {/* Filtros */}
         <div className="filters">

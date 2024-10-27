@@ -21,8 +21,8 @@
 }
 
 button {
-    flex: 1; /* Hace que ambos botones ocupen el mismo espacio */
-    margin: 0 15px; /* Aumentado el espacio entre los botones */
+    flex: 1; 
+    margin: 0 15px; 
     padding: 10px 15px;
     background-color: #444;
     color: #e0e0e0;
@@ -34,8 +34,8 @@ button {
 
 .input-group {
     margin-bottom: 15px;
-    width: 300px; /* Mantén este ancho según lo necesites */
-    color: aliceblue; /* Color de texto en el grupo de entrada */
+    width: 300px; 
+    color: aliceblue; 
 }
 
 input {
@@ -55,3 +55,22 @@ input:focus {
 button:hover {
     background-color: #666; /* Cambia el color al pasar el mouse */
 }
+
+.button-create {
+    display: flex; /* Usar flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    padding: 10px 20px; /* Ajusta el padding según lo desees */
+    background-color: #1e90ff; /* Cambia el color de fondo según tu diseño */
+    color: #fff; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: background-color 0.3s; /* Transición suave para cambios de fondo */
+    width: 300px;
+  }
+  
+  .button-create:hover {
+    background-color: #1c86ee; /* Color de fondo al pasar el cursor */
+  }
+  
