@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import "./css/styles.css";
 import { jwtDecode } from "jwt-decode";
 
-
-
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const handleCrearCuenta = () => {
+    window.location.href = "http://localhost:3000/crearcuenta";
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,12 +29,11 @@ const Login = () => {
       if (response.ok) {
         localStorage.setItem("token", data.token);
         const decoded = jwtDecode(data.token);
-      if(decoded.role === 'user'){
-        window.location.href = "http://localhost:3000/inicio"; 
-      }else{
-        window.location.href = "http://localhost:3000/"; 
-      }
-        
+        if (decoded.role === "user") {
+          window.location.href = "http://localhost:3000/inicio";
+        } else {
+          window.location.href = "http://localhost:3000/";
+        }
       } else {
         setError(data.message || "Error al iniciar sesión");
       }
@@ -74,6 +75,10 @@ const Login = () => {
         <div className="button-container">
           <button type="submit">Iniciar Sesión</button>
         </div>
+<br></br>
+        <button className="button-create" onClick={handleCrearCuenta}>
+          Crear cuenta
+        </button>
       </form>
     </div>
   );

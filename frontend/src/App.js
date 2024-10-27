@@ -8,6 +8,7 @@ import Propocito from './Components/filtrosPrevios/propocito';
 import Estadisticas from './Components/estadisticas/index'; 
 import PropocitoSeleccion from './Components/seleccionComponentes/propocitoSeleccion';
 import CheckoutForm from './Components/procesoVenta/CheckoutForm';
+import CrearCuenta from './Components/controlUsuarios/crearCuenta';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="estadisticas" element={<Estadisticas />} />
           <Route path="propocitoSeleccion" element={<PropocitoSeleccion/>} />
           <Route path="checkoutForm" element={<CheckoutForm/>} />
+          <Route path="crearCuenta" element={<CrearCuenta/>} />
         </Routes>
       </Router>
     </div>

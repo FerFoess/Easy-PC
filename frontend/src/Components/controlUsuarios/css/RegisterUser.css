@@ -1,0 +1,116 @@
+.app {
+  background-color: #121212;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar {
+  width: 100%;
+  background-color: #1e1e1e;
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-text {
+  color: #f5f5f5;
+  font-size: 24px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.nav-text {
+  text-align: center;
+}
+
+.gray-box {
+  width: 90%;
+  max-width: 400px; /* Máxima anchura para el formulario */
+  background-color: #2b2b2b;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.gray-box h2 {
+  color: #f5f5f5; /* Color del encabezado */
+  text-align: center;
+}
+
+.gray-box form {
+  display: flex;
+  flex-direction: column;
+}
+
+.gray-box input {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+}
+
+.gray-box input::placeholder {
+  color: #888;
+}
+
+.gray-box button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.gray-box button:hover {
+  background-color: #2563eb;
+}
+
+.cancel-button {
+  margin-bottom: 25px; /* Espaciado inferior para separarlo del título */
+  padding: 10px 20px;
+  background-color: #ff4d4d; /* Color de fondo */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #ff1a1a; /* Color al pasar el mouse */
+}
+
+.success-message {
+  margin-top: 20px;
+  text-align: center; /* Centrar el texto */
+}
+
+.success-message p {
+  font-size: 18px;
+  color: white /* Color del mensaje */
+}
+
+.success-message button {
+  margin: 0 10px; /* Espaciado entre botones */
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.success-message button:hover {
+  background-color: #2563eb; /* Color al pasar el mouse */
+}
+
