@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto'; // Necesario para los gráficos de Chart.js
-import './styles.css'; // Importar el archivo CSS para el diseño
+import './css/styles.css'; // Importar el archivo CSS para el diseño
 
 const Ventas = () => {
   const [ventas, setVentas] = useState([]);
@@ -21,7 +21,7 @@ const Ventas = () => {
       setVentas(data);
       setVentasFiltradas(data); // Inicialmente mostrar todas las ventas
       calcularTotal(data); // Calcular el total de ventas para el rango de fechas inicial
-      actualizarGrafica(data); // Inicialmente actualizar la gráfica con todas las ventas
+      actualizarGrafica(data); // Actualizar la gráfica con todas las ventas
     } catch (error) {
       console.error('Error al obtener las ventas:', error);
     }
@@ -70,7 +70,7 @@ const Ventas = () => {
     setFechaFin(e.target.value);
   };
 
-  // Nueva función para filtrar las ventas por el rango de fechas
+  // Función para filtrar las ventas por el rango de fechas
   const filtrarPorRangoFechas = () => {
     const inicio = convertirASoloFecha(fechaInicio);
     const fin = convertirASoloFecha(fechaFin);

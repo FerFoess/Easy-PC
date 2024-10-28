@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const ventasSchema = new mongoose.Schema({
   idVenta: { type: Number, required: false },
   idUsuario: { type: Number, required: false },
-  categoría: { type: String, required: false }, // String para la categoría
+  categoría: { type: String, required: false }, 
   costo: { type: Number, required: false },
   cantidad: { type: Number, required: false },
   fecha: { type: Date, default: Date.now } // Fecha de la venta, por defecto la fecha actual
