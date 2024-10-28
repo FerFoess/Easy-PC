@@ -10,6 +10,7 @@ import PropocitoSeleccion from './Components/seleccionComponentes/propocitoSelec
 import CheckoutForm from './Components/procesoVenta/CheckoutForm';
 import CrearCuenta from './Components/controlUsuarios/crearCuenta';
 import Prearmados from './Components/seleccionComponentes/prearmados';
+import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import Almacen from './Components/gestionProveedores/almacen';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="crearCuenta" element={<CrearCuenta/>} />
           <Route path="prearmados" element={<Prearmados/>} />
           <Route path="almacen" element={<Almacen/>} />
+          <Route path="libreSeleccion" element={<LibreSeleccion/>} />
         </Routes>
       </Router>
     </div>
