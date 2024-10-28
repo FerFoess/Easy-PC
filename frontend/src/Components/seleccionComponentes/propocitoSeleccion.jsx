@@ -4,20 +4,35 @@ import "./css/sty.css";
 const PropocitoSeleccion = () => {
   const [selectedPurpose, setSelectedPurpose] = useState('');
   const [options, setOptions] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState([]); // Estado para opciones seleccionadas
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const [error, setError] = useState('');
+
+  // Estados para mostrar componentes
+  const [showComponents, setShowComponents] = useState({
+    processors: false,
+    motherboards: false,
+    graphicsCards: false,
+    ram: false,
+    storage: false,
+    cooling: false,
+    case: false,
+    powerSupplies: false,
+    fans: false,
+    networkCards: false,
+    windows: false,
+  });
 
   useEffect(() => {
     const fetchOptions = async () => {
       if (selectedPurpose) {
         try {
-          const response = await fetch(`http://localhost:3002/options/purpose/${selectedPurpose}`); // Cambia esta URL por la correcta
+          const response = await fetch(`http://localhost:3002/options/purpose/${selectedPurpose}`);
           if (!response.ok) {
             throw new Error("Error en la respuesta del servidor");
           }
           const data = await response.json();
-          setOptions(data.slice(0, 8)); // Limitar a los primeros 8
-          setSelectedOptions([]); // Limpiar opciones seleccionadas al cambiar el propósito
+          setOptions(data.slice(0, 8));
+          setSelectedOptions([]);
         } catch (error) {
           console.error("Error fetching options:", error);
           setError("Error al cargar las opciones");
@@ -33,11 +48,16 @@ const PropocitoSeleccion = () => {
   };
 
   const handleOptionChange = (option) => {
-    if (selectedOptions.includes(option.id)) {
-      setSelectedOptions((prev) => prev.filter((id) => id !== option.id));
-    } else {
-      setSelectedOptions((prev) => [...prev, option.id]);
-    }
+    setSelectedOptions((prev) => 
+      prev.includes(option.id) ? prev.filter((id) => id !== option.id) : [...prev, option.id]
+    );
+  };
+
+  const toggleComponentVisibility = (component) => {
+    setShowComponents((prev) => ({
+      ...prev,
+      [component]: !prev[component],
+    }));
   };
 
   return (
@@ -51,8 +71,7 @@ const PropocitoSeleccion = () => {
         </div>
       </nav>
 
-
-      <div className="gray-box">
+      <div className="gray-boxD">
         {/* Filtros */}
         <div className="filters">
           <div className="purpose-filters">
@@ -65,26 +84,46 @@ const PropocitoSeleccion = () => {
                 {purpose}
               </button>
             ))}
+            {/* Botón de búsqueda */}
+            <button className="search-button" onClick={() => { /* Aquí debes manejar la búsqueda */ }}>
+              Buscar
+            </button>
           </div>
 
           {/* Opciones basadas en el propósito seleccionado */}
           {selectedPurpose && options.length > 0 && (
             <div className="options-container">
               {options.map((option) => (
-                <div className="option-checkbox" key={option.id}> {/* Usar option.id como key */}
+                <div className="option-checkbox" key={option.id}>
                   <input
                     type="checkbox"
-                    id={option.id} // Usar el id del option para el input
-                    checked={selectedOptions.includes(option.id)} // Manejo del estado del checkbox
+                    id={option.id}
+                    checked={selectedOptions.includes(option.id)}
                     onChange={() => handleOptionChange(option)}
                   />
-                  <label htmlFor={option.id}>{option.name}</label> {/* Mostrar el name */}
+                  <label htmlFor={option.id}>{option.name}</label>
                 </div>
               ))}
             </div>
           )}
 
-          {error && <p style={{ color: "red" }}>{error}</p>} {/* Mensaje de error */}
+          {error && <p className="error-message">{error}</p>}
+        </div>
+
+        {/* Lista de componentes */}
+        <div className="components-list">
+          {Object.keys(showComponents).map((component) => (
+            <div className="component-category" key={component} onClick={() => toggleComponentVisibility(component)}>
+              <h3>{component.charAt(0).toUpperCase() + component.slice(1)}</h3>
+              {showComponents[component] && (
+                <div className="component-items">
+                  {/* Aquí debes mapear los componentes disponibles */}
+                  <div>{component.charAt(0).toUpperCase() + component.slice(1)} 1</div>
+                  <div>{component.charAt(0).toUpperCase() + component.slice(1)} 2</div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 

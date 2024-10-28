@@ -6,7 +6,7 @@ function TipoEquipo() {
   };
 
   const handleRedirect2 = () => {
-    window.location.href = "http://localhost:3000/"; // Cambia este enlace al que desees
+    window.location.href = "http://localhost:3000/prearmados"; // Cambia este enlace al que desees
   };
 
   const handleGoBack = () => {
