@@ -21,94 +21,92 @@
   font-weight: bold;
 }
 
-.subtitle {
-  color: #999;
-  font-size: 16px;
-  margin-top: 5px;
-  text-align: center;
-}
-
-.gray-box {
-  width: 90%;
+.gray-boxD {
+  width: 100%; /* Ocupa el 100% del ancho */
+  max-width: 1000px; /* Limita el ancho máximo */
   background-color: #2b2b2b;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   margin-top: 20px;
-  padding: 20px;
+  padding: 30px; /* Espacio interno */
   border-radius: 12px;
-}
-
-.filters {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: flex-start; /* Alinear contenido a la izquierda */
 }
 
 .purpose-filters {
   display: flex;
   gap: 15px;
-  justify-content: center;
+  justify-content: space-between; /* Ajusta el espacio entre los filtros y el botón de búsqueda */
 }
 
-.purpose-button {
-  background-color: #444;
-  color: #ddd;
-  padding: 10px 20px;
-  border-radius: 20px;
+.search-button {
+  background-color: #1e90ff;
+  color: #fff;
+  padding: 10px 15px;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.purpose-button:hover {
-  background-color: #666;
-  transform: translateY(-3px);
+.search-button:hover {
+  background-color: #1c7ac0;
+  transform: scale(1.05);
 }
 
-.purpose-button.active {
-  background-color: #1e90ff;
-  color: #fff;
-}
-
-.options {
-  background-color: #1e1e1e;
-  padding: 15px;
+.component-category {
+  margin-top: 20px;
+  padding: 15px; /* Espacio interno para las categorías */
   border-radius: 8px;
-  color: #ddd;
+  background-color: #333;
+  color: #fff;
+  transition: background-color 0.3s;
+  width: 100%; /* Ocupa el ancho completo */
+  box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
-.options h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
+.component-category:hover {
+  background-color: #444;
 }
 
-.option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 5px;
-}
-
-.option input[type="checkbox"] {
-  accent-color: #1e90fd;
-  transform: scale(1.2);
-}
-.options-container {
-  display: flex;
-  flex-wrap: wrap; /* Permite que las opciones se muevan a la siguiente fila */ /* Fondo negro para la sección de opciones */
-  padding: 10px; /* Espaciado interno */
-  border-radius: 8px; /* Esquinas redondeadas */
+.component-items {
+  padding-left: 20px; /* Espacio interno para los elementos */
+  border-left: 2px solid #1e90ff; /* Línea a la izquierda para separar visualmente */
+  margin-top: 10px; /* Espacio superior entre la categoría y los ítems */
 }
 
 .option-checkbox {
   display: flex;
   align-items: center;
-  margin-right: 50px; /* Espaciado entre opciones */
-  margin-bottom: 10px; /* Espaciado entre filas */
-  color: #fff; /* Texto blanco para las opciones */
+  margin: 5px 0; /* Espaciado entre las opciones */
 }
 
 .option-checkbox input[type="checkbox"] {
   accent-color: #1e90ff; /* Color del checkbox */
-  margin-right: 0px; /* Espaciado entre el checkbox y el texto */
+  margin-right: 10px; /* Espaciado entre el checkbox y el texto */
 }
 
+.option-checkbox label {
+  color: #ddd; /* Color del texto de las opciones */
+  font-size: 16px;
+}
+
+.error-message {
+  color: red; /* Color del mensaje de error */
+}
+
+.back-button {
+  margin-top: 20px; /* Espaciado superior para el botón de regresar */
+  padding: 10px 20px;
+  background-color: #1e90ff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #1c7ac0;
+}
