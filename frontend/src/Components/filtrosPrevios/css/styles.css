@@ -1,81 +1,83 @@
+/* General layout */
 .app {
-    background-color: #000; /* Fondo negro */
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .navbar {
-    width: 100%;
-    background-color: #111;
-    padding: 10px 0;
-  }
-  
-  .logo-text {
-    color: #fff;
-    text-align: center;
-    margin: 0;
-  }
-  
-  .card-container {
-    display: flex;
-    gap: 50px;
-    margin-top: 10px;
-  }
-  
-  .card {
-    background-color: #111;
-    border-radius: 100px;
-    overflow: hidden;
-    cursor: pointer;
-    text-align: center;
-    transition: transform 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .card:hover {
-    transform: scale(1.05);
-  }
-  
-  .card-image {
-    width: 500px; 
-    height: 500px; 
-    object-fit: cover;
-    background-color: #000; 
-  }
-  
-  
-  .card-text {
-    color:black;
-    font-size: 40px; 
-    margin: 0px 0;
-    text-align: center;
-  }
-  
-  .back-button {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .back-button:hover {
-    background-color: #555;
-  }
-  
-  .nav-text{
-    color: #fff;
-    flex: 5; 
-    text-align: center;
-    border: none;
-    justify-content: center;
-  }
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  background-color: #27293d;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Navbar styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e1f2b;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  color: #5c6bc0;
+}
+
+.nav-text {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Card container */
+.card-container {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+/* Card styling */
+.card {
+  background-color: #3b3c50;
+  border-radius: 10px;
+  width: 250px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.card-text {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+}
+
+/* Back button styling */
+.back-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 20px;
+  color: #ffffff;
+  background-color: #5c6bc0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 2rem;
+}
+
+.back-button:hover {
+  background-color: #7986cb;
+  transform: scale(1.05);
+}

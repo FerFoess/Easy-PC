@@ -1,76 +1,94 @@
+/* Login container */
 .login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #1a1a1a; /* Fondo oscuro */
+    min-height: 100vh;
+    background-color: #27293d;
+    padding: 20px;
 }
 
+/* Logo image */
 .logo-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Borde redondeado */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Form and input styling */
+form {
     width: 100%;
-    height: auto;
-    max-width: 300px; /* Aumentado para hacer el logo más grande */
-}
-
-.button-container {
-    display: flex;
-    justify-content: space-between; /* Espacia los botones uniformemente */
-    margin-top: 20px; /* Aumenta el espacio encima de los botones */
-    width: 300px; /* Mantén este ancho según lo necesites */
-}
-
-button {
-    flex: 1; 
-    margin: 0 15px; 
-    padding: 10px 15px;
-    background-color: #444;
-    color: #e0e0e0;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 4px;
+    max-width: 400px;
+    background-color: #1e1f2b;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .input-group {
-    margin-bottom: 15px;
-    width: 300px; 
-    color: aliceblue; 
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #444;
-    border-radius: 4px;
-    background-color: aliceblue; /* Color de fondo de la entrada */
-    color: black; /* Color del texto en la entrada */
+.input-group label {
+    color: #dcdcdc;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
-input:focus {
+.input-group input {
+    padding: 0.8rem;
+    border: 1px solid #5c6bc0;
+    border-radius: 20px; /* Borde redondeado */
+    font-size: 1rem;
+    background-color: #27293d;
+    color: #ffffff;
+}
+
+.input-group input:focus {
     outline: none;
-    border-color: aliceblue; /* Color al enfocar */
+    border-color: #7986cb;
+    box-shadow: 0 0 8px rgba(92, 107, 192, 0.6);
 }
 
-button:hover {
-    background-color: #666; /* Cambia el color al pasar el mouse */
+/* Error message styling */
+p {
+    font-size: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
 }
 
+/* Buttons styling */
+.button-container button, .button-create {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #5c6bc0;
+    border: none;
+    border-radius: 20px; /* Borde redondeado */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 1rem;
+}
+
+.button-container button:hover, .button-create:hover {
+    background-color: #7986cb;
+    transform: scale(1.05);
+}
+
+/* Button Create Account styling */
 .button-create {
-    display: flex; /* Usar flexbox para centrar el contenido */
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-    padding: 10px 20px; /* Ajusta el padding según lo desees */
-    background-color: #1e90ff; /* Cambia el color de fondo según tu diseño */
-    color: #fff; /* Color del texto */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
-    transition: background-color 0.3s; /* Transición suave para cambios de fondo */
-    width: 300px;
-  }
-  
-  .button-create:hover {
-    background-color: #1c86ee; /* Color de fondo al pasar el cursor */
-  }
-  
+    background-color: transparent;
+    border: 2px solid #5c6bc0;
+    color: #5c6bc0;
+}
+
+.button-create:hover {
+    color: #7986cb;
+    border-color: #7986cb;
+}
