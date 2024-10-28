@@ -1,21 +1,32 @@
 
-  
-  .grafica-ganancias {
+.grafica-ganancias {
     width: 100%;
     margin-bottom: 20px;
   }
 
-
-  /* Estilos generales */
-.rectangulo-gris {
-  display: flex;
-  padding-left: 10px;
-  padding-right: 10px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  width: 95%;
-  height: auto;
-  justify-content: space-between;
+  .contenedor {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    height: 100vh; /* Altura de la pantalla */
+    background-color: #838383;
+  }
+  
+  .rectangulo-gris {
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    width: 95%; /* Ajusta el ancho según lo necesites */
+    height: auto; /* Auto para el ajuste según contenido */
+    justify-content: space-between; /* Espacio entre columnas */
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan */
+  }
+  
+.botoneslocos{
+  background-color: rgb(0, 124, 12);
+  border-radius: 5px;
 }
 
 .columna-izquierda {
@@ -29,61 +40,22 @@
   justify-content: space-between;
 }
 
-/* Estilo de las filas de la columna derecha */
-.fila-superior {
-  flex: 1;
-  margin-bottom: 20px;
-}
-
-.fila-inferior {
-  flex: 1;
-}
-
-
-
-/* Estilos para el buscador */
-#buscador {
-  margin-bottom: 10px;
-  width: 100%;
-  padding: 5px;
-}
-
-/* Filtros y total */
-.filtros {
-  display: flex;
-  flex-direction: column;
-}
-
-.filtros label, .filtros input {
-  margin-bottom: 10px;
-}
-
-#filtrarBtn {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-#filtrarBtn:hover {
-  background-color: #45a049;
-}
-
 #totalVentas {
   margin-top: 10px;
   font-size: 18px;
   font-weight: bold;
 }
 
+.campof{
+  width: 40%;
+  margin: 1%;
+}
 .search-input {
   padding: 8px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  width: 100%;
+  width: 60%;
   box-sizing: border-box;
 }
 
@@ -100,13 +72,14 @@ th, td {
   border: 1px solid lightblue;
   padding: 12px;
   text-align: center;
+  color: #333;
 }
 
 th {
-  background-color: #f0f8ff; /* Color azul claro para encabezados */
+  background-color: #f0f8ff;
   color: #333;
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f9f9f9; /* Color alternativo para filas pares */
+  background-color: #f9f9f9;
 }
