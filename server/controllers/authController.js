@@ -3,41 +3,57 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usersSchema');
 
-// Controlador para registrar un usuario
+// nodemailerConfig.js
+const nodemailer = require('nodemailer');
+
+
+// Función para registrar un nuevo usuario
 const registerUser = async (req, res) => {
+  const { firstName, lastName,email, phone, age, password,  } = req.body; // Asegúrate de incluir email en tu solicitud
+
+  if (!firstName || !lastName || !password || !email) {
+    return res.status(400).json({ message: 'Faltan campos requeridos.' });
+  }
+
   try {
-    const { password, role, firstName, lastName, address, phone, age } = req.body;
-
-    // Generar el username concatenando firstName y lastName
-    const username = `${firstName}${lastName}`.toLowerCase().replace(/\s+/g, '');
-
-    // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ message: 'El usuario ya existe' });
-    }
-
-    // Hashear la contraseña
+    const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear un nuevo usuario
     const newUser = new User({
-      username,
-      password: hashedPassword,
-      role,
       firstName,
       lastName,
-      address,
       phone,
       age,
+      username,
+      password: hashedPassword,
+      email, 
     });
 
     await newUser.save();
-    res.status(201).json({ message: 'Usuario creado exitosamente', username });
+
+    // Enviar correo electrónico al usuario
+    const mailOptions = {
+      from: 'easypc.companymx@gmail.com', // Dirección de correo electrónico desde la cual se envía el mensaje
+      to: email, // Dirección de correo electrónico del destinatario
+      subject: 'Registro Exitoso',
+      text: `¡Hola ${firstName}! Tu nombre de usuario es: ${username}.`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error al enviar el correo:', error);
+      } else {
+        console.log('Correo enviado:', info.response);
+      }
+    });
+
+    res.status(201).json({ message: 'Usuario registrado exitosamente.', username });
   } catch (error) {
-    res.status(500).json({ message: 'Error al registrar usuario', error });
+    console.error('Error al registrar el usuario:', error);
+    res.status(500).json({ message: 'Hubo un problema al registrar el usuario.' });
   }
 };
+
 
 const loginUser = async (req, res) => {
     
