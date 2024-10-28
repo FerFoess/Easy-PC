@@ -10,6 +10,7 @@ import PropocitoSeleccion from './Components/seleccionComponentes/propocitoSelec
 import CheckoutForm from './Components/procesoVenta/CheckoutForm';
 import CrearCuenta from './Components/controlUsuarios/crearCuenta';
 import Prearmados from './Components/seleccionComponentes/prearmados';
+import Almacen from './Components/gestionProveedores/almacen';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="checkoutForm" element={<CheckoutForm/>} />
           <Route path="crearCuenta" element={<CrearCuenta/>} />
           <Route path="prearmados" element={<Prearmados/>} />
+          <Route path="almacen" element={<Almacen/>} />
         </Routes>
       </Router>
     </div>
