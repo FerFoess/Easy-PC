@@ -327,3 +327,17 @@
 .btn-confirmar:hover {
   background-color: #218838;
 }
+
+.carrito-icono {
+  position: absolute;
+  top: 80px; /* Ajusta este valor según la altura de tu navbar */
+  right: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.navbar {
+  position: relative;
+  z-index: 2;
+}
+
