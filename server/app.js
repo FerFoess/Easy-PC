@@ -12,6 +12,7 @@ var ventasRouter = require('./routes/ventasRoutes')
 var auth = require('./routes/auth');
 const optionsRoutes = require('./routes/optionsRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const corteRoutes = require('./routes/corteVentasRoutes');
 var app = express();
 
 let dotenv = require('dotenv');
@@ -43,6 +44,7 @@ app.use('/catego', categoriasRouter);
 app.use('/auth', auth);
 app.use('/options', optionsRoutes);
 app.use('/ventas', ventasRouter);
+app.use('/cortes', corteRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
