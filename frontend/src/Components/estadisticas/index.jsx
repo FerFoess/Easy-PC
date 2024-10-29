@@ -12,6 +12,7 @@ const Ventas = () => {
   const [fechaFin, setFechaFin] = useState(new Date().toISOString().split('T')[0]); // Fecha actual por defecto para fin
   const [graficaDatos, setGraficaDatos] = useState({ labels: [], datasets: [] });
   const [modoGrafica, setModoGrafica] = useState('diario'); // Estado para el tipo de gráfico: diario, semanal, mensual, anual
+  const [totalDelCorte, setTotalDelCorte] = useState(0);
 
   // Función para obtener todas las ventas del backend
   const obtenerVentas = async () => {
@@ -47,6 +48,16 @@ const Ventas = () => {
     total = ventasFiltradasPorFecha.reduce((sum, venta) => sum + venta.costo * venta.cantidad, 0);
     setTotalDelRango(total);
   };
+
+  // Función para calcular el corte del día actual
+  const calcularCorte = () => {
+  const hoy = convertirASoloFecha(new Date()); // Obtener la fecha actual en formato yyyy-mm-dd
+  const ventasDeHoy = ventas.filter(venta => convertirASoloFecha(venta.fecha) === hoy); // Filtrar ventas solo de hoy
+
+  const total = ventasDeHoy.reduce((sum, venta) => sum + venta.costo * venta.cantidad, 0); // Calcular el total
+  setTotalDelCorte(total); // Actualizar el estado con el total del corte
+};
+
 
   // Función para manejar el cambio en el campo de búsqueda
   const handleSearchChange = (e) => {
@@ -188,6 +199,7 @@ const Ventas = () => {
   
 
 return (
+  <div className='contenedor'>
   <div className='rectangulo-gris'>
     <div className='columna-izquierda'>
   <h2>Ventas Filtradas</h2>
@@ -235,22 +247,30 @@ return (
             <Line data={graficaDatos} />
         </div>
       </div>
-      <div className='fila-inferior'>
+      <div className='fila-intermedia'>
         <input
           type="date"
           value={fechaInicio}
           onChange={handleFechaInicioChange}
+          className='campof'
         />
         <input
           type="date"
           value={fechaFin}
           onChange={handleFechaFinChange}
+          className='campof'
         />
-        <button onClick={filtrarPorRangoFechas}>Filtrar</button>
+        <button className='botoneslocos' onClick={filtrarPorRangoFechas}>Filtrar</button>
         <h3>Total: {totalDelRango.toFixed(2)} </h3>
       </div>
+
+      <div className='fila-inferior'>
+      <h2>Corte</h2>
+      <h3>Total del corte: {totalDelCorte.toFixed(2)} </h3>
+      <button className='botoneslocos' onClick={calcularCorte}>Realizar corte</button>
+      </div>
     </div>
-    
+  </div>
   </div>
 );
 
