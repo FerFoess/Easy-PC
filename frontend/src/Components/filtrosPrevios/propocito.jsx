@@ -7,7 +7,7 @@ function propocito() {
   };
 
   const handleRedirect2 = () => {
-    window.location.href = "https://tu-segundo-sitio.com"; // Cambia este enlace al que desees
+    window.location.href = "http://localhost:3000/libreseleccion"; // Cambia este enlace al que desees
   };
 
   const handleGoBack = () => {
