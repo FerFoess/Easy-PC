@@ -47,6 +47,7 @@ app.use('/auth', auth);
 app.use('/options', optionsRoutes);
 app.use('/ventas', ventasRouter);
 app.use('/cortes', corteRoutes);
+app.use('/cortes', corteRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

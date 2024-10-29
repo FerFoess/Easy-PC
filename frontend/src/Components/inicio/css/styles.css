@@ -1,69 +1,134 @@
-/* Fondo y color de texto generales */
-body {
-  background-color: #1a1a1a; /* Un tono de negro */
-  color: #e0e0e0; /* Gris claro para el texto */
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-}
-
+/* General layout */
 .inicio-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-.logo-image {
-  width: 50%;
-  height: auto;
-  max-width: 50px; /* Ajusta según lo necesites */
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  background-color: #27293d;
+  min-height: 100vh;
 }
 
-.logo-text {
-  font-size: 30px;
-  color: #e0e0e0; /* Color claro para resaltar sobre el fondo oscuro */
-  font-weight: bold;
-  margin: 0; /* Para asegurarte de que no haya margen extra */
-}
-
-
+/* Navbar styling */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2c2c2c; /* Un poco más claro que el fondo para distinguir la barra */
-  padding: 10px 20px;
+  padding: 0.5rem 2rem;
+  background-color: #1e1f2b;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.logo {
-  width: 150px; /* Ajusta según el tamaño del logo */
-  height: 40px;
-  background-color: #444; /* Fondo temporal para visualizar el espacio */
+
+.logo-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
 }
 
 .nav-buttons {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .nav-btn {
-  background-color: #444;
-  color: #e0e0e0;
-  border: none;
-  padding: 10px 15px;
+  color: #ffffff;
+  background-color: transparent;
+  border: 2px solid #5c6bc0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
-  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .nav-btn:hover {
-  background-color: #666; /* Cambia a un tono más claro al pasar el mouse */
+  background-color: #5c6bc0;
+  transform: scale(1.05);
+  
 }
 
-.content {
-  flex-grow: 1;
-  background-color: #1a1a1a;
+/* Intro section styling */
+.intro-section {
+  padding: 2rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  
+}
+
+.intro-section h2 {
+  color: #5c6bc0;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.intro-section p {
+  color: #dcdcdc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.cta-buttons {
   display: flex;
+  gap: 1rem;
   justify-content: center;
-  align-items: center;
-  padding: 20px;
-  border-top: px solid #444;
+}
+
+.cta-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 20px;
+  color: #ffffff;
+  background-color: #5c6bc0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-btn.outline {
+  background-color: transparent;
+  border: 2px solid #5c6bc0;
+  color: #5c6bc0;
+}
+
+.cta-btn:hover {
+  background-color: #7986cb;
+  transform: scale(1.05);
+}
+
+.cta-btn.outline:hover {
+  color: #7986cb;
+  border-color: #7986cb;
+}
+
+/* Gallery section styling */
+.gallery-section {
+  padding: 2rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.gallery-section h3 {
+  color: #5c6bc0;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.gallery {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gallery-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }

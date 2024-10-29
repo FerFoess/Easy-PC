@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto';
-import './css/styles.css';
+import 'chart.js/auto'; // Necesario para los gráficos de Chart.js
+import './css/styles.css'; // Importar el archivo CSS para el diseño
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
+
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
+
 
 const Ventas = () => {
   const [ventas, setVentas] = useState([]);
