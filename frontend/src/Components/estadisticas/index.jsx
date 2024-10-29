@@ -61,7 +61,7 @@ const Ventas = () => {
 
   const calcularCorte = (ventas) => {
     const ayer = new Date();
-    ayer.setDate(ayer.getDate() - 1); // Un día anterior
+    ayer.setDate(ayer.getDate());
     const ayerFecha = convertirASoloFecha(ayer);
 
     const ventasDeAyer = ventas.filter(venta => convertirASoloFecha(venta.fecha) === ayerFecha);
@@ -208,7 +208,42 @@ const Ventas = () => {
     paginaActual * registrosPorPagina
   );
 
-  return (
+  const realizarCorte = async () => {
+    const corteData = {
+        total: totalDelCorte,
+        fecha: new Date().toISOString(),
+    };
+
+    console.log('Datos del corte:', corteData); // Verifica que los datos sean correctos
+
+    try {
+        const response = await fetch('http://localhost:3002/cortes/crearCorte', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(corteData),
+        });
+
+        if (response.ok) {
+            const nuevoCorte = await response.json();
+            alert('Corte realizado con éxito');
+            console.log('Nuevo corte:', nuevoCorte);
+            // Aquí podrías actualizar el estado o recargar datos si es necesario
+        } else {
+            const errorResponse = await response.text();
+            console.error('Error al realizar el corte:', errorResponse);
+            alert('Error al realizar el corte: ' + errorResponse);
+        }
+    } catch (error) {
+        console.error('Error al realizar el corte:', error);
+        alert('Error al realizar el corte. Inténtalo de nuevo.');
+    }
+};
+
+  
+
+ return (
     <div className='contenedor'>
   <div className='rectangulo-gris'>
     <div className='columna-izquierda'>
@@ -287,8 +322,8 @@ const Ventas = () => {
 
       <div className='fila-inferior'>
       <h2>Corte</h2>
-      <h3>Total del Corte: ${totalDelCorte.toFixed(2)}</h3>
-      <button className='botoneslocos' onClick={calcularCorte}>Realizar corte</button>
+      <h3>Total del corte: {totalDelCorte}</h3>
+      <button className='botoneslocos' onClick={realizarCorte}>Realizar corte</button>
       </div>
     </div>
   </div>
