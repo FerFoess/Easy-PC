@@ -3,7 +3,7 @@
     "@stripe/react-stripe-js": "^2.8.1",
     "@stripe/stripe-js": "^4.9.0",
     "axios": "^1.7.7",
-    "chart.js": "^4.4.5",
+    "chart.js": "^4.4.6",
     "ejs": "^3.1.10",
     "nodemailer": "^6.9.15",
     "react-chartjs-2": "^5.2.0",
