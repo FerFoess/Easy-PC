@@ -100,3 +100,21 @@
     cursor: pointer;
   }
   
+  .filtro-dropdown {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .filtro-dropdown label {
+    font-weight: bold;
+  }
+  
+  .filtro-dropdown select {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  

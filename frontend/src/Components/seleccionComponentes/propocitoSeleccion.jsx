@@ -26,7 +26,7 @@ const PropocitoSeleccion = () => {
     const fetchOptions = async () => {
       if (selectedPurpose) {
         try {
-          const response = await fetch(`http://localhost:3002/options/purpose/${selectedPurpose}`);
+          const response = await fetch(`http://localhost:3002/components/components/purposes/${selectedPurpose}`);
           if (!response.ok) {
             throw new Error("Error en la respuesta del servidor");
           }
@@ -49,7 +49,7 @@ const PropocitoSeleccion = () => {
 
   const handleOptionChange = (option) => {
     setSelectedOptions((prev) => 
-      prev.includes(option.id) ? prev.filter((id) => id !== option.id) : [...prev, option.id]
+      prev.includes(option) ? prev.filter((id) => id !== option) : [...prev, option]
     );
   };
 
@@ -75,7 +75,7 @@ const PropocitoSeleccion = () => {
         {/* Filtros */}
         <div className="filters">
           <div className="purpose-filters">
-            {["Juegos", "Trabajo", "Ocio", "Estudio"].map((purpose) => (
+            {["VideoJuegos", "Trabajo", "Ocio", "Estudio"].map((purpose) => (
               <button
                 key={purpose}
                 className={selectedPurpose === purpose ? "selected" : ""}
@@ -93,15 +93,15 @@ const PropocitoSeleccion = () => {
           {/* Opciones basadas en el propósito seleccionado */}
           {selectedPurpose && options.length > 0 && (
             <div className="options-container">
-              {options.map((option) => (
-                <div className="option-checkbox" key={option.id}>
+              {options.map((option, index) => (
+                <div className="option-checkbox" key={index}>
                   <input
                     type="checkbox"
-                    id={option.id}
-                    checked={selectedOptions.includes(option.id)}
+                    id={`option-${index}`} // Unique id for checkbox
+                    checked={selectedOptions.includes(option)}
                     onChange={() => handleOptionChange(option)}
                   />
-                  <label htmlFor={option.id}>{option.name}</label>
+                  <label htmlFor={`option-${index}`}>{option}</label>
                 </div>
               ))}
             </div>

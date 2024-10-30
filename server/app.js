@@ -14,6 +14,7 @@ const optionsRoutes = require('./routes/optionsRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
 const filtroRoutes = require('./routes/filtroRoutes');
+const componentsRoutes = require('./routes/componentsRoutes');
 var app = express();
 
 let dotenv = require('dotenv');
@@ -37,7 +38,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
+app.use('/components', componentsRoutes)
 app.use('/filter', filtroRoutes);
 app.use('/payments', paymentRoutes);
 app.use('/', indexRouter);

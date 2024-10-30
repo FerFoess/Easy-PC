@@ -33,6 +33,7 @@ const obtenerFiltrosPorCategoria = async (req, res) => {
 
 
 
+
 // Crear un nuevo filtro
 const crearFiltro = async (req, res) => {
     const { categoria, opciones } = req.body;

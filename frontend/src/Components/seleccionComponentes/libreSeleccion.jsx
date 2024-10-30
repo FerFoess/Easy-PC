@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './css/libreSeleccion.css';
 
 const LibreSeleccion = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [filtros, setFiltros] = useState({});
   const [productos, setProductos] = useState([]);
+  const [filtrosDisponibles, setFiltrosDisponibles] = useState({});
 
-  // Lista de categorías (ejemplo)
   const categorias = [
     'Procesador',
     'Tarjeta Madre',
@@ -21,18 +21,44 @@ const LibreSeleccion = () => {
     'Windows'
   ];
 
-  // Manejador para seleccionar una categoría
   const seleccionarCategoria = (categoria) => {
     setCategoriaSeleccionada(categoria);
     setFiltros({});
-    // Aquí puedes cargar productos específicos según la categoría seleccionada
+    cargarFiltros(categoria);
+    cargarProductos(categoria);
   };
 
-  // Manejador para aplicar filtros
+  const cargarFiltros = (categoria) => {
+    fetch(`http://localhost:3002/filter/filtros/categoria?categoria=${categoria}`)
+      .then((response) => response.json())
+      .then((data) => setFiltrosDisponibles(data || {}))
+      .catch((error) => console.error('Error fetching filters:', error));
+  };
+
+  const cargarProductos = (categoria) => {
+    fetch(`/api/productos?categoria=${categoria}`)
+      .then((response) => response.json())
+      .then((data) => setProductos(data))
+      .catch((error) => console.error('Error fetching products:', error));
+  };
+
+  const manejarFiltroCambio = (filtro, valor) => {
+    setFiltros((prev) => ({
+      ...prev,
+      [filtro]: valor,
+    }));
+  };
+
   const aplicarFiltros = () => {
-    // Aquí simulas la aplicación de filtros y actualizas la lista de productos
-    const productosFiltrados = []; // Debe ser la lista de productos después de aplicar filtros
-    setProductos(productosFiltrados);
+    const queryParams = new URLSearchParams({
+      categoria: categoriaSeleccionada,
+      ...filtros
+    });
+
+    fetch(`/api/productos?${queryParams}`)
+      .then((response) => response.json())
+      .then((data) => setProductos(data))
+      .catch((error) => console.error('Error fetching filtered products:', error));
   };
 
   return (
@@ -55,11 +81,32 @@ const LibreSeleccion = () => {
         ))}
       </div>
 
-      <div className="filtros">
-        <h3>Filtros para {categoriaSeleccionada}</h3>
-        {/* Aquí va el código para mostrar filtros específicos de cada categoría */}
-        <button className="btn-aplicar-filtros" onClick={aplicarFiltros}>Aplicar Filtros</button>
-      </div>
+      {categoriaSeleccionada && (
+        <div className="filtros">
+          <h3>Filtros para {categoriaSeleccionada}</h3>
+          {Object.keys(filtrosDisponibles).length > 0 ? (
+            Object.entries(filtrosDisponibles).map(([filtro, opciones]) => (
+              <div key={filtro} className="filtro-dropdown">
+                <label>{filtro}:</label>
+                <select
+                  value={filtros[filtro] || ''}
+                  onChange={(e) => manejarFiltroCambio(filtro, e.target.value)}
+                >
+                  <option value="">Selecciona una opción</option>
+                  {opciones.map((opcion) => (
+                    <option key={opcion} value={opcion}>
+                      {opcion}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))
+          ) : (
+            <p>No hay filtros disponibles para esta categoría.</p>
+          )}
+          <button className="btn-aplicar-filtros" onClick={aplicarFiltros}>Aplicar Filtros</button>
+        </div>
+      )}
 
       <div className="productos">
         <h3>Productos en {categoriaSeleccionada}</h3>

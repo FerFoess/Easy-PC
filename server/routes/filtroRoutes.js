@@ -17,3 +17,4 @@ router.put('/filtros/:id', actualizarFiltro); // Actualizar un filtro existente
 router.delete('/filtros/:id', eliminarFiltro); // Eliminar un filtro
 
 module.exports = router;
+
