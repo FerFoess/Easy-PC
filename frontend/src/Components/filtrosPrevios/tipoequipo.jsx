@@ -120,6 +120,14 @@ function TipoEquipo() {
           <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
         </div>
         <div style={navButtonsStyle}>
+        <button
+            style={navButtonStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+            onClick={() => navigate('/inicio')}
+          >
+            Inicio
+          </button>
           <button
             style={navButtonStyle}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}

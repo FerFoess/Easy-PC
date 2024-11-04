@@ -14,6 +14,7 @@ const optionsRoutes = require('./routes/optionsRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
 const filtroRoutes = require('./routes/filtroRoutes');
+const prearmadoRoutes = require('./routes/prearmadoRoutes')
 var app = express();
 
 let dotenv = require('dotenv');
@@ -48,6 +49,7 @@ app.use('/options', optionsRoutes);
 app.use('/ventas', ventasRouter);
 app.use('/cortes', corteRoutes);
 app.use('/cortes', corteRoutes);
+app.use('/prearmado', prearmadoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

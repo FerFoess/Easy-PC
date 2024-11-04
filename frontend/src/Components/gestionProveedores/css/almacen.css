@@ -72,3 +72,17 @@
   background-color: #1b1b2f;
 }
     
+
+html, body {
+  background-color: black;
+  color: rgb(0, 0, 0); /* Esto hará que el texto sea blanco para mejor contraste */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.contenedor {
+  background-color: black;
+  min-height: 100vh; /* Asegura que el fondo cubra toda la pantalla */
+  color: rgb(0, 0, 0); /* Esto asegurará que el texto dentro de .contenedor sea blanco */
+}

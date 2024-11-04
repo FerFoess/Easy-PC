@@ -9,26 +9,43 @@ const Prearmados = () => {
     graphics: "",
     priceRange: ""
   });
-  const [systems, setSystems] = useState([]);
+  const [filterOptions, setFilterOptions] = useState({
+    processor: [],
+    ram: [],
+    storage: [],
+    graphics: []
+  });
+  const [selectedSystem, setSelectedSystem] = useState(null); // Estado para el sistema armado
   const [error, setError] = useState("");
 
-  const fetchSystems = async () => {
+  useEffect(() => {
+    fetchFilterOptions();
+  }, []);
+
+  const fetchFilterOptions = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/prearmados`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(filters),
-      });
+      const response = await fetch("http://localhost:3002/prearmado");
+
       if (!response.ok) {
         throw new Error("Error en la respuesta del servidor");
       }
+
       const data = await response.json();
-      setSystems(data);
+
+      const processors = [...new Set(data.map(item => item.processor))];
+      const rams = [...new Set(data.map(item => item.ram))];
+      const storages = [...new Set(data.map(item => item.storage))];
+      const graphicsCards = [...new Set(data.map(item => item.graphics))];
+
+      setFilterOptions({
+        processor: processors,
+        ram: rams,
+        storage: storages,
+        graphics: graphicsCards
+      });
     } catch (error) {
-      console.error("Error fetching systems:", error);
-      setError("Error al cargar los equipos pre-armados");
+      console.error("Error fetching filter options:", error);
+      setError("Error al cargar las opciones de filtros");
     }
   };
 
@@ -39,8 +56,15 @@ const Prearmados = () => {
     }));
   };
 
-  const handleSearch = () => {
-    fetchSystems(); // Llama a la función para buscar sistemas con los filtros actuales
+  const handleBuildSystem = () => {
+    // Genera un sistema con los filtros seleccionados
+    setSelectedSystem({
+      processor: filters.processor,
+      ram: filters.ram,
+      storage: filters.storage,
+      graphics: filters.graphics,
+      priceRange: filters.priceRange,
+    });
   };
 
   return (
@@ -50,7 +74,7 @@ const Prearmados = () => {
           <h1 className="logo-text">Easy-PC</h1>
         </div>
         <div className="nav-text">
-          <h2>Explora nuestros equipos pre-armados</h2>
+          <h2>Arma tu propio equipo pre-armado</h2>
         </div>
       </nav>
 
@@ -63,8 +87,9 @@ const Prearmados = () => {
               onChange={(e) => handleFilterChange("processor", e.target.value)}
             >
               <option value="">Todos</option>
-              <option value="Intel">Intel</option>
-              <option value="AMD">AMD</option>
+              {filterOptions.processor.map((processor) => (
+                <option key={processor} value={processor}>{processor}</option>
+              ))}
             </select>
           </div>
 
@@ -75,9 +100,9 @@ const Prearmados = () => {
               onChange={(e) => handleFilterChange("ram", e.target.value)}
             >
               <option value="">Todos</option>
-              <option value="8GB">8GB</option>
-              <option value="16GB">16GB</option>
-              <option value="32GB">32GB</option>
+              {filterOptions.ram.map((ram) => (
+                <option key={ram} value={ram}>{ram}</option>
+              ))}
             </select>
           </div>
 
@@ -88,8 +113,9 @@ const Prearmados = () => {
               onChange={(e) => handleFilterChange("storage", e.target.value)}
             >
               <option value="">Todos</option>
-              <option value="SSD">SSD</option>
-              <option value="HDD">HDD</option>
+              {filterOptions.storage.map((storage) => (
+                <option key={storage} value={storage}>{storage}</option>
+              ))}
             </select>
           </div>
 
@@ -100,8 +126,9 @@ const Prearmados = () => {
               onChange={(e) => handleFilterChange("graphics", e.target.value)}
             >
               <option value="">Todas</option>
-              <option value="NVIDIA">NVIDIA</option>
-              <option value="AMD">AMD</option>
+              {filterOptions.graphics.map((graphics) => (
+                <option key={graphics} value={graphics}>{graphics}</option>
+              ))}
             </select>
           </div>
 
@@ -117,33 +144,24 @@ const Prearmados = () => {
               <option value="1000+">Más de $1000</option>
             </select>
           </div>
-
-          {/* Botón Buscar */}
-          <button className="search-button" onClick={handleSearch}>
-            Buscar
-          </button>
         </div>
+        <button className="build-button" onClick={handleBuildSystem}>
+          Aceptar
+        </button>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <div className="systems-grid">
-          {systems.length > 0 ? (
-            systems.map((system) => (
-              <div className="system-card" key={system.id}>
-                <img src={system.image} alt={system.name} className="system-image" />
-                <h3>{system.name}</h3>
-                <p>{system.processor} | {system.ram} RAM | {system.storage}</p>
-                <p>Gráficos: {system.graphics}</p>
-                <p>Precio: ${system.price}</p>
-                <button className="view-details-button">
-                  Ver detalles
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No se encontraron equipos con los filtros aplicados.</p>
-          )}
-        </div>
+        {/* Muestra la tarjeta del sistema armado */}
+        {selectedSystem && (
+          <div className="system-card">
+            <h3>PC</h3>
+            <p>Procesador: {selectedSystem.processor || "No seleccionado"}</p>
+            <p>RAM: {selectedSystem.ram || "No seleccionada"}</p>
+            <p>Almacenamiento: {selectedSystem.storage || "No seleccionado"}</p>
+            <p>Tarjeta Gráfica: {selectedSystem.graphics || "No seleccionada"}</p>
+            <p>Rango de Precios: {selectedSystem.priceRange || "No seleccionado"}</p>
+          </div>
+        )}
       </div>
 
       <button className="back-button" onClick={() => window.history.back()}>
