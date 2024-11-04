@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './css/libreSeleccion.css';
 
 const LibreSeleccion = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [filtros, setFiltros] = useState({});
   const [productos, setProductos] = useState([]);
+  const [filtrosDisponibles, setFiltrosDisponibles] = useState({});
+  const [seleccionPorCategoria, setSeleccionPorCategoria] = useState({});
+  const [mostrarDetalles, setMostrarDetalles] = useState(null);
 
-  // Lista de categorías (ejemplo)
   const categorias = [
     'Procesador',
     'Tarjeta Madre',
@@ -20,115 +23,78 @@ const LibreSeleccion = () => {
     'Windows'
   ];
 
-  // Manejador para seleccionar una categoría
   const seleccionarCategoria = (categoria) => {
     setCategoriaSeleccionada(categoria);
     setFiltros({});
-    // Aquí puedes cargar productos específicos según la categoría seleccionada
+    cargarFiltros(categoria);
+    cargarProductos(categoria);
   };
 
-  // Manejador para aplicar filtros
+  const cargarFiltros = (categoria) => {
+    fetch(`http://localhost:3002/components/filtros/categoria?categoria=${categoria}`)
+      .then((response) => response.json())
+      .then((data) => setFiltrosDisponibles(data || {}))
+      .catch((error) => console.error('Error fetching filters:', error));
+  };
+
+  const cargarProductos = (categoria) => {
+    fetch(`/api/productos?categoria=${categoria}`)
+      .then((response) => response.json())
+      .then((data) => setProductos(data))
+      .catch((error) => console.error('Error fetching products:', error));
+  };
+
+  const manejarFiltroCambio = (filtro, valor) => {
+    setFiltros((prev) => ({
+      ...prev,
+      [filtro]: valor,
+    }));
+  };
+
   const aplicarFiltros = () => {
-    // Aquí simulas la aplicación de filtros y actualizas la lista de productos
-    const productosFiltrados = []; // Debe ser la lista de productos después de aplicar filtros
-    setProductos(productosFiltrados);
+    if (!categoriaSeleccionada) {
+      console.error('No se ha seleccionado una categoría.');
+      return;
+    }
+
+    const queryParams = new URLSearchParams({
+      categoria: categoriaSeleccionada,
+      ...filtros
+    });
+
+    fetch(`http://localhost:3002/components/buscar/filtros?${queryParams}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.length > 0) {
+          setProductos(data);
+        } else {
+          console.warn('No se encontraron productos con los filtros aplicados.');
+          setProductos([]);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching filtered products:', error);
+      });
   };
 
-  // Estilos en línea
-  const appStyle = {
-    fontFamily: "Arial, sans-serif",
-    color: "#ffffff",
-    backgroundColor: "#27293d",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "20px",
+  const seleccionarProducto = (producto) => {
+    setSeleccionPorCategoria((prev) => ({
+      ...prev,
+      [categoriaSeleccionada]: producto,
+    }));
   };
 
-  const navbarStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    backgroundColor: "#1e1f2b",
-    padding: "1rem 0",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+  const mostrarDetallesProducto = (producto) => {
+    setMostrarDetalles(producto);
   };
 
-  const logoTextStyle = {
-    fontSize: "2rem",
-  };
-
-  const categoriasStyle = {
-    display: "flex",
-    gap: "1rem",
-    margin: "2rem 0",
-  };
-
-  const categoriaBtnStyle = {
-    backgroundColor: "#3b3c50",
-    color: "#ffffff",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: "20px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  };
-
-  const categoriaSeleccionadaStyle = {
-    backgroundColor: "#5c6bc0",
-    transform: "scale(1.05)",
-  };
-
-  const filtrosStyle = {
-    margin: "1.5rem 0",
-    textAlign: "center",
-  };
-
-  const btnAplicarFiltrosStyle = {
-    backgroundColor: "#5c6bc0",
-    color: "#ffffff",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: "20px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease",
-  };
-
-  const productosStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    width: "100%",
-  };
-
-  const productoStyle = {
-    backgroundColor: "#3b3c50",
-    borderRadius: "10px",
-    padding: "10px",
-    margin: "10px 0",
-    display: "flex",
-    alignItems: "center",
-    width: "80%",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-  };
-
-  const productoImageStyle = {
-    width: "100px",
-    height: "auto",
-    borderRadius: "10px",
-    marginRight: "10px",
-  };
-
-  const detalleBtnStyle = {
-    backgroundColor: "#5c6bc0",
-    color: "#ffffff",
-    border: "none",
-    padding: "8px 16px",
-    borderRadius: "20px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease",
+  const cerrarDetalles = () => {
+    setMostrarDetalles(null);
   };
 
   return (
@@ -154,30 +120,61 @@ const LibreSeleccion = () => {
         ))}
       </div>
 
-      <div style={filtrosStyle}>
-        <h3>Filtros para {categoriaSeleccionada}</h3>
-        {/* Aquí va el código para mostrar filtros específicos de cada categoría */}
-        <button style={btnAplicarFiltrosStyle} onClick={aplicarFiltros}>Aplicar Filtros</button>
-      </div>
+      {categoriaSeleccionada && (
+        <div className="filtros">
+          <h3>Filtros para {categoriaSeleccionada}</h3>
+          {Object.keys(filtrosDisponibles).length > 0 ? (
+            Object.entries(filtrosDisponibles).map(([filtro, opciones]) => (
+              <div key={filtro} className="filtro-dropdown">
+                <label>{filtro}:</label>
+                <select
+                  value={filtros[filtro] || ''}
+                  onChange={(e) => manejarFiltroCambio(filtro, e.target.value)}
+                >
+                  <option value="">Selecciona una opción</option>
+                  {opciones.map((opcion) => (
+                    <option key={opcion} value={opcion}>
+                      {opcion}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))
+          ) : (
+            <p>No hay filtros disponibles para esta categoría.</p>
+          )}
+          <button className="btn-aplicar-filtros" onClick={aplicarFiltros}>Aplicar Filtros</button>
+        </div>
+      )}
 
       <div style={productosStyle}>
         <h3>Productos en {categoriaSeleccionada}</h3>
         {productos.length > 0 ? (
           productos.map((producto, index) => (
-            <div key={index} style={productoStyle}>
-              <img src={producto.imagen} alt={producto.nombre} style={productoImageStyle} />
-              <div>
+            <div key={index} className="producto">
+              <div onClick={() => seleccionarProducto(producto)}>
                 <h4>{producto.nombre}</h4>
                 <p>{producto.descripcion}</p>
                 <p>Precio: ${producto.precio}</p>
-                <button style={detalleBtnStyle}>Ver detalles</button>
+                <button className="btn-detalle" onClick={() => mostrarDetallesProducto(producto)}>Ver detalles</button>
               </div>
             </div>
           ))
         ) : (
-          <p>No hay productos disponibles para esta categoría.</p>
+          <p>"Porfavor selecciona una categoria y selecciona los filtros para esta"</p>
         )}
       </div>
+
+      {mostrarDetalles && (
+        <div className="popup">
+          <div className="popup-content">
+            <h4>{mostrarDetalles.nombre}</h4>
+            <p>{mostrarDetalles.descripcion}</p>
+            <p>Precio: ${mostrarDetalles.precio}</p>
+            <button className="btn-cerrar" onClick={cerrarDetalles}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

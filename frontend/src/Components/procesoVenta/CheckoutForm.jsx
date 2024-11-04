@@ -6,7 +6,7 @@ import './css/styles.css'; // Asegúrate de que los estilos estén bien aplicado
 import { useNavigate } from 'react-router-dom';
 
 // Cargar la clave pública de Stripe
-const stripePromise = loadStripe('pk_live_51QCqe5G2SwsehGOdBazqFqWUA078wznteZNbP7qCVpcbmq2elKeMz84iVRpQB3L63wDvk3vkkRCqQgS3NjHxqEvZ00xWENLFde'); 
+const stripePromise = loadStripe('pk_test_51QCqe5G2SwsehGOdAgYJvAcnk2CLP84ThrP0lBLVu1w2B3m2OE1JZHCCrFunL0MBEoirJBUQMsdn6H7EYVFknhuO00VkqVBiwv'); 
 
 const CheckoutForm = () => {
   const stripe = useStripe();
