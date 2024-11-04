@@ -21,92 +21,122 @@
   font-weight: bold;
 }
 
-.gray-boxD {
-  width: 100%; /* Ocupa el 100% del ancho */
-  max-width: 1000px; /* Limita el ancho máximo */
-  background-color: #2b2b2b;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  margin-top: 20px;
-  padding: 30px; /* Espacio interno */
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Alinear contenido a la izquierda */
-}
-
 .purpose-filters {
   display: flex;
   gap: 15px;
-  justify-content: space-between; /* Ajusta el espacio entre los filtros y el botón de búsqueda */
+  justify-content: center;
+  margin: 20px 0;
 }
 
-.search-button {
-  background-color: #1e90ff;
-  color: #fff;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.search-button:hover {
-  background-color: #1c7ac0;
-  transform: scale(1.05);
-}
-
-.component-category {
-  margin-top: 20px;
-  padding: 15px; /* Espacio interno para las categorías */
-  border-radius: 8px;
-  background-color: #333;
-  color: #fff;
-  transition: background-color 0.3s;
-  width: 100%; /* Ocupa el ancho completo */
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
-}
-
-.component-category:hover {
-  background-color: #444;
-}
-
-.component-items {
-  padding-left: 20px; /* Espacio interno para los elementos */
-  border-left: 2px solid #1e90ff; /* Línea a la izquierda para separar visualmente */
-  margin-top: 10px; /* Espacio superior entre la categoría y los ítems */
+.options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .option-checkbox {
   display: flex;
   align-items: center;
-  margin: 5px 0; /* Espaciado entre las opciones */
 }
 
 .option-checkbox input[type="checkbox"] {
-  accent-color: #1e90ff; /* Color del checkbox */
-  margin-right: 10px; /* Espaciado entre el checkbox y el texto */
+  accent-color: #1e90ff;
+  margin-right: 10px;
 }
 
 .option-checkbox label {
-  color: #ddd; /* Color del texto de las opciones */
+  color: #ddd;
   font-size: 16px;
 }
 
-.error-message {
-  color: red; /* Color del mensaje de error */
+.components-list-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
 }
 
-.back-button {
-  margin-top: 20px; /* Espaciado superior para el botón de regresar */
-  padding: 10px 20px;
+.component-category {
+  margin: 0 15px;
+  text-align: center;
+}
+
+.component-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.component-card {
+  background-color: #444;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  width: 150px;
+}
+
+.select-button {
   background-color: #1e90ff;
   color: #fff;
   border: none;
   border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.back-button:hover {
+.select-button:hover {
   background-color: #1c7ac0;
+}
+
+.categorias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.categoria-btn {
+  background-color: #444;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.categoria-btn.selected {
+  background-color: #1e90ff;
+}
+
+.components-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.component-category {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.component-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.component-card {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px;
+  width: calc(33.33% - 10px);
+  margin-bottom: 10px;
 }

@@ -65,18 +65,18 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Usuario no encontrado' });
     }
-    console.log(user.password);
-    console.log(password);
+    
     const isPasswordValid = await bcrypt.compare(password, user.password);
     console.log(isPasswordValid);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Contraseña incorrecta' });
     }
     const token = jwt.sign(
-      { userId: user._id, role: user.role },
+      { userId: user._id, role: user.role, firstName: user.firstName, lastName: user.lastName, email: user.email, phone: user.phone },
       'bkkcc6',
       { expiresIn: '1h' }
     );
+
 
     res.status(200).json({ message: 'Inicio de sesión exitoso', token });
   } catch (error) {

@@ -10,10 +10,9 @@ var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
 var ventasRouter = require('./routes/ventasRoutes')
 var auth = require('./routes/auth');
-const optionsRoutes = require('./routes/optionsRoutes');
+
 const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
-const filtroRoutes = require('./routes/filtroRoutes');
 const componentsRoutes = require('./routes/componentsRoutes');
 var app = express();
 
@@ -39,13 +38,11 @@ app.use((req, res, next) => {
 });
 
 app.use('/components', componentsRoutes)
-app.use('/filter', filtroRoutes);
 app.use('/payments', paymentRoutes);
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
 app.use('/auth', auth);
-app.use('/options', optionsRoutes);
 app.use('/ventas', ventasRouter);
 app.use('/cortes', corteRoutes);
 app.use('/cortes', corteRoutes);

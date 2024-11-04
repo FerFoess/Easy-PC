@@ -12,9 +12,13 @@ import CrearCuenta from './Components/controlUsuarios/crearCuenta';
 import Prearmados from './Components/seleccionComponentes/prearmados';
 import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import Almacen from './Components/gestionProveedores/almacen';
+import ResumenCompra from './Components/procesoVenta/resumenDecompra';
+import DatosEnvio from './Components/procesoVenta/DatosEnvio';
+import   { CompraProvider } from './Components/procesoVenta/CompraContext';
 
 function App() {
   return (
+    <CompraProvider>
     <div className="App">
       <Router>
         <Routes>
@@ -30,9 +34,12 @@ function App() {
           <Route path="prearmados" element={<Prearmados/>} />
           <Route path="almacen" element={<Almacen/>} />
           <Route path="libreSeleccion" element={<LibreSeleccion/>} />
+          <Route path="resumenCompra" element={<ResumenCompra/>} />
+          <Route path="datosEnvio" element={<DatosEnvio/>} />
         </Routes>
       </Router>
     </div>
+    </CompraProvider>
   );
 }
 

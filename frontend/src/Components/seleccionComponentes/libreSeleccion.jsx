@@ -6,6 +6,8 @@ const LibreSeleccion = () => {
   const [filtros, setFiltros] = useState({});
   const [productos, setProductos] = useState([]);
   const [filtrosDisponibles, setFiltrosDisponibles] = useState({});
+  const [seleccionPorCategoria, setSeleccionPorCategoria] = useState({});
+  const [mostrarDetalles, setMostrarDetalles] = useState(null);
 
   const categorias = [
     'Procesador',
@@ -29,7 +31,7 @@ const LibreSeleccion = () => {
   };
 
   const cargarFiltros = (categoria) => {
-    fetch(`http://localhost:3002/filter/filtros/categoria?categoria=${categoria}`)
+    fetch(`http://localhost:3002/components/filtros/categoria?categoria=${categoria}`)
       .then((response) => response.json())
       .then((data) => setFiltrosDisponibles(data || {}))
       .catch((error) => console.error('Error fetching filters:', error));
@@ -50,15 +52,49 @@ const LibreSeleccion = () => {
   };
 
   const aplicarFiltros = () => {
+    if (!categoriaSeleccionada) {
+      console.error('No se ha seleccionado una categoría.');
+      return;
+    }
+
     const queryParams = new URLSearchParams({
       categoria: categoriaSeleccionada,
       ...filtros
     });
 
-    fetch(`/api/productos?${queryParams}`)
-      .then((response) => response.json())
-      .then((data) => setProductos(data))
-      .catch((error) => console.error('Error fetching filtered products:', error));
+    fetch(`http://localhost:3002/components/buscar/filtros?${queryParams}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.length > 0) {
+          setProductos(data);
+        } else {
+          console.warn('No se encontraron productos con los filtros aplicados.');
+          setProductos([]);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching filtered products:', error);
+      });
+  };
+
+  const seleccionarProducto = (producto) => {
+    setSeleccionPorCategoria((prev) => ({
+      ...prev,
+      [categoriaSeleccionada]: producto,
+    }));
+  };
+
+  const mostrarDetallesProducto = (producto) => {
+    setMostrarDetalles(producto);
+  };
+
+  const cerrarDetalles = () => {
+    setMostrarDetalles(null);
   };
 
   return (
@@ -113,19 +149,29 @@ const LibreSeleccion = () => {
         {productos.length > 0 ? (
           productos.map((producto, index) => (
             <div key={index} className="producto">
-              <img src={producto.imagen} alt={producto.nombre} />
-              <div>
+              <div onClick={() => seleccionarProducto(producto)}>
                 <h4>{producto.nombre}</h4>
                 <p>{producto.descripcion}</p>
                 <p>Precio: ${producto.precio}</p>
-                <button className="btn-detalle">Ver detalles</button>
+                <button className="btn-detalle" onClick={() => mostrarDetallesProducto(producto)}>Ver detalles</button>
               </div>
             </div>
           ))
         ) : (
-          <p>No hay productos disponibles para esta categoría.</p>
+          <p>"Porfavor selecciona una categoria y selecciona los filtros para esta"</p>
         )}
       </div>
+
+      {mostrarDetalles && (
+        <div className="popup">
+          <div className="popup-content">
+            <h4>{mostrarDetalles.nombre}</h4>
+            <p>{mostrarDetalles.descripcion}</p>
+            <p>Precio: ${mostrarDetalles.precio}</p>
+            <button className="btn-cerrar" onClick={cerrarDetalles}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

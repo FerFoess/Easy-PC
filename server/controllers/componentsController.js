@@ -63,16 +63,35 @@ const eliminarProducto = async (req, res) => {
     }
 };
 
-// Obtener productos por filtros
+// Obtener productos por filtros libres
 const obtenerProductosPorFiltro = async (req, res) => {
     const { categoria, ...filtros } = req.query;
     try {
-        const productos = await Components.find({ categoria, ...filtros });
+        // Construir el objeto de consulta
+        const query = { categoria };
+
+        // Agregar filtros dinámicamente
+        for (const [key, value] of Object.entries(filtros)) {
+            if (value) { // Asegúrate de que el valor no sea null o undefined
+                query[`especificaciones.${key}`] = value;
+            }
+        }
+
+        // Realizar la búsqueda en la base de datos
+        const productos = await Components.find(query);
+
+        // Verificar si se encontraron productos
+        if (!productos.length) {
+            return res.status(404).json({ message: 'No se encontraron productos con esos filtros' });
+        }
+
         res.json(productos);
     } catch (error) {
+        console.error('Error al obtener productos por filtro:', error.message);
         res.status(500).json({ error: 'Error al obtener productos por filtro' });
     }
 };
+
 
 // Obtener productos por propósito
 const obtenerProductosPorProposito = async (req, res) => {
@@ -85,7 +104,7 @@ const obtenerProductosPorProposito = async (req, res) => {
     }
 };
 
-// Obtener propósitos por nombre
+// Obtener propósitos por categoria
 const getOptionsByPurpose = async (req, res) => {
     const { name } = req.params; // Obtiene el propósito de los parámetros
 
@@ -106,28 +125,53 @@ const getOptionsByPurpose = async (req, res) => {
     }
 };
 
-
-
-  const obtenerFiltrosPorCategoria = async (req, res) => {
+const obtenerFiltrosPorCategoria = async (req, res) => {
     const { categoria } = req.query;
-  
+
     try {
-        const filtro = await Filtro.findOne({ categoria });
+        // Find the first component with the specified category
+        const filtro = await Components.findOne({ categoria });
+
+
         if (!filtro) {
             return res.status(404).json({ message: "Categoría no encontrada" });
         }
-  
-        // Convertir Map a objeto regular
+
+        // Convert the especificaciones Map to a plain object
         const filtrosObj = {};
-        filtro.filtros.forEach((value, key) => {
+        filtro.especificaciones.forEach((value, key) => {
             filtrosObj[key] = value;
         });
-  
+
         res.json(filtrosObj);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener filtros por categoría' });
     }
-  };
+};
+
+
+const searchComponents = async (req, res) => {
+    const { selectedOptions } = req.body;
+    console.log(selectedOptions)
+    try {
+        const filters = {};
+
+        if (selectedOptions && selectedOptions.categoria) {
+            filters.categoria = selectedOptions.categoria;
+        }
+
+        if (selectedOptions && selectedOptions.propositos && selectedOptions.propositos.length > 0) {
+            filters.propositos = { $in: selectedOptions.propositos }; 
+        }
+
+        const components = await Components.find(filters);
+        return res.status(200).json(components.length > 0 ? components : []); 
+    } catch (error) {
+        console.error("Error fetching components:", error);
+        return res.status(500).json({ message: "Error al cargar los componentes" });
+    }
+};
+
   
   
 
@@ -141,4 +185,6 @@ module.exports = {
     obtenerProductosPorProposito,
     getOptionsByPurpose,
     obtenerFiltrosPorCategoria,
+    searchComponents,
+    
 };
