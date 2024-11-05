@@ -26,19 +26,38 @@ exports.obtenerCortePorId = async (req, res) => {
 };
 
 exports.crearCorteVenta = async (req, res) => {
-    try {
-      const {fecha, total } = req.body;
+  try {
+    const { fecha, total } = req.body;
+
+    // Validar que la fecha tenga el formato YYYY-MM-DD
+    const fechaRegex = /^\d{4}-\d{2}-\d{2}$/; // Expresión regular para YYYY-MM-DD
+    if (!fechaRegex.test(fecha)) {
+      return res.status(400).json({ error: 'Formato de fecha inválido. Debe ser YYYY-MM-DD.' });
+    }
+
+    // Buscar un corte existente en la misma fecha
+    const corteExistente = await CorteVentas.findOne({ fecha });
+
+    if (corteExistente) {
+      // Si ya existe un corte, actualízalo
+      corteExistente.total = total; // Actualizar el total con el nuevo valor
+      const corteActualizado = await corteExistente.save();
+      return res.status(200).json(corteActualizado);
+    } else {
+      // Si no existe, crea un nuevo corte
       const nuevoCorte = new CorteVentas({
-        fecha,
+        fecha, // Guardar la fecha como una cadena
         total
       });
       const corteGuardado = await nuevoCorte.save();
-      res.status(201).json(corteGuardado);
-    } catch (error) {
-      console.error(error);
-      res.status(400).json({ error: `Error al crear el corte de ventas: ${error.message}` });
+      return res.status(201).json(corteGuardado);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: `Error al crear o actualizar el corte de ventas: ${error.message}` });
+  }
+};
+
   
 
 // Controlador para actualizar un corte de ventas existente
