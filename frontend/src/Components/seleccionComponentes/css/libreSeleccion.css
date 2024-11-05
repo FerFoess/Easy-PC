@@ -1,115 +1,157 @@
-.libreSeleccion {
-  color: #f5f5f5;
-  background-color: #1c1c1c;
-  min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Estilos Generales */
+body, html {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
 }
 
+/* Navbar */
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #333;
-  padding: 10px 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  margin-bottom: 20px;
+  background-color: #2a2a72;
+  padding: 15px;
+  text-align: center;
 }
 
 .logo-text {
-  color: #f5f5f5;
-  font-size: 1.5rem;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
 }
 
+/* Propositos */
+.propositos {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.proposito-btn {
+  background-color: #6c63ff;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.proposito-btn:hover {
+  background-color: #5a54d6;
+}
+
+.proposito-btn.seleccionado {
+  background-color: #4a47a3;
+}
+
+/* Opciones de selección */
+.options-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 20px;
+}
+
+.option-checkbox label {
+  margin-left: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.option-checkbox input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Categorias */
 .categorias {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .categoria-btn {
-  padding: 10px;
-  background-color: #444;
-  color: #f5f5f5;
-  border: none;
-  border-radius: 8px;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s;
+}
+
+.categoria-btn:hover {
+  background-color: #d4d4d4;
 }
 
 .categoria-btn.seleccionada {
-  background-color: #2b6cb0;
+  background-color: #6c63ff;
+  color: #fff;
+  border: 1px solid #5a54d6;
 }
 
-.filtros {
-  background-color: #2b2b2b;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.btn-aplicar-filtros {
-  background-color: #2b6cb0;
-  color: #f5f5f5;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.filtro-dropdown {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.filtro-dropdown label {
+.finalizar-seleccion {
+  background-color: #28a745;
+  color: white;
   font-weight: bold;
+  transition: all 0.3s;
 }
 
-.filtro-dropdown select {
-  padding: 5px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.finalizar-seleccion:hover {
+  background-color: #218838;
 }
 
+/* Productos */
 .productos {
-  display: block;
-  margin-top: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 .producto {
   background-color: #333;
-  color: #f5f5f5;
+  color: #fff;
   padding: 15px;
-  border-radius: 8px;
-  width: 200px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  text-align: center;
-  cursor: pointer;
-}
-
-.producto img {
-  width: 100%;
   border-radius: 5px;
   margin-bottom: 10px;
-}
-
-.btn-detalle {
-  background-color: #2b6cb0;
-  color: #f5f5f5;
-  border: none;
-  padding: 5px;
-  border-radius: 5px;
   cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.producto:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.producto h4 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.producto p {
+  margin: 5px 0;
+}
+
+.producto.seleccionado {
+  background-color: #4a47a3;
+}
+
+.producto.no-seleccionado {
+  background-color: #6c63ff;
+}
+
+/* Popup */
 .popup {
   position: fixed;
   top: 0;
@@ -118,27 +160,66 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 10;
+  align-items: center;
+  z-index: 1000;
 }
 
 .popup-content {
-  background-color: #333;
-  color: #f5f5f5;
+  background-color: #ffffff;
   padding: 20px;
-  border-radius: 8px;
-  width: 300px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.popup-content h4 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.popup-content p {
+  margin: 5px 0;
+}
+
+.btn-seleccionar {
+  background-color: #6c63ff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+}
+
+.btn-seleccionar:hover {
+  background-color: #4a47a3;
 }
 
 .btn-cerrar {
-  background-color: #2b6cb0;
-  color: #f5f5f5;
+  background-color: #e0e0e0;
+  color: #333;
   border: none;
-  padding: 5px 10px;
+  padding: 10px 20px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.btn-cerrar:hover {
+  background-color: #d4d4d4;
+}
+
+/* Error Message */
+.error-message {
+  color: #ff4d4f;
+  font-weight: bold;
+  text-align: center;
   margin-top: 10px;
 }
