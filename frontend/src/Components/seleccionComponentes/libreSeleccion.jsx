@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/libreSeleccion.css';
 
-const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCategoria }) => (
+const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCategoria, finalizarSeleccion }) => (
   <div className="categorias">
     {categorias.map((categoria) => (
       <button
@@ -13,7 +13,7 @@ const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCateg
         {categoria}
       </button>
     ))}
-    <button className="btn-finalizar">Finalizar Selección</button>
+    <button className="btn-finalizar" onClick={finalizarSeleccion}>Finalizar Selección</button>
   </div>
 );
 
@@ -172,6 +172,7 @@ const LibreSeleccion = () => {
         categorias={categorias}
         categoriaSeleccionada={categoriaSeleccionada}
         seleccionarCategoria={seleccionarCategoria}
+        finalizarSeleccion={finalizarSeleccion}
       />
 
       {categoriaSeleccionada && (
