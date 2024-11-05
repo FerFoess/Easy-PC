@@ -7,6 +7,30 @@ const User = require('../models/usersSchema');
 const nodemailer = require('nodemailer');
 
 
+
+
+// Endpoint para enviar la confirmación de compra
+const sendPurchaseConfirmation = async (req, res) => {
+    const { email, amount } = req.body;
+
+    const mailOptions = {
+        from: 'easypc.companymx@gmail.com',
+        to: email,
+        subject: 'Confirmación de Compra',
+        text: `¡Gracias por tu compra! El monto total es: $${(amount / 100).toFixed(2)} MXN. Tus datos de envío han sido recibidos.`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Correo enviado a:', email);
+        res.status(200).json({ message: 'Correo enviado exitosamente' });
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ message: 'Error al enviar el correo' });
+    }
+};
+
+
 // Función para registrar un nuevo usuario
 const registerUser = async (req, res) => {
   const { firstName, lastName,email, phone, age, password,  } = req.body; // Asegúrate de incluir email en tu solicitud
@@ -65,18 +89,18 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Usuario no encontrado' });
     }
-    console.log(user.password);
-    console.log(password);
+    
     const isPasswordValid = await bcrypt.compare(password, user.password);
     console.log(isPasswordValid);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Contraseña incorrecta' });
     }
     const token = jwt.sign(
-      { userId: user._id, role: user.role },
+      { userId: user._id, role: user.role, firstName: user.firstName, lastName: user.lastName, email: user.email, phone: user.phone },
       'bkkcc6',
       { expiresIn: '1h' }
     );
+
 
     res.status(200).json({ message: 'Inicio de sesión exitoso', token });
   } catch (error) {
@@ -84,4 +108,4 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser,sendPurchaseConfirmation  };

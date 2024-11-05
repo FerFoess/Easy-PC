@@ -10,10 +10,11 @@ var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
 var ventasRouter = require('./routes/ventasRoutes')
 var auth = require('./routes/auth');
-const optionsRoutes = require('./routes/optionsRoutes');
+
 const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
-const filtroRoutes = require('./routes/filtroRoutes');
+const componentsRoutes = require('./routes/componentsRoutes');
+const prearmadoRoutes = require('./routes/prearmadoRoutes')
 var app = express();
 
 let dotenv = require('dotenv');
@@ -37,17 +38,16 @@ app.use((req, res, next) => {
   next();
 });
 
-
-app.use('/filter', filtroRoutes);
+app.use('/components', componentsRoutes)
 app.use('/payments', paymentRoutes);
 app.use('/', indexRouter);
 app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
 app.use('/auth', auth);
-app.use('/options', optionsRoutes);
 app.use('/ventas', ventasRouter);
 app.use('/cortes', corteRoutes);
 app.use('/cortes', corteRoutes);
+app.use('/prearmado', prearmadoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
