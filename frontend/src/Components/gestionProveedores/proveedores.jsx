@@ -16,7 +16,7 @@ const GestionProveedores = () => {
     { id: 9, nombre: "Tarjetas de video" },
   ]);
   const [productos, setProductos] = useState([]);
-  const [filtroCategoria, setFiltroCategoria] = useState("RAM");
+  const [filtroCategoria, setFiltroCategoria] = useState("");
   const [filtroProducto, setFiltroProducto] = useState("");
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [productosEnCarrito, setProductosEnCarrito] = useState([]);
@@ -68,7 +68,7 @@ const GestionProveedores = () => {
         JSON.stringify(productosEnCarrito)
       );
 
-      navigate("/almacen");
+      navigate("");
     } else {
       alert("No hay productos en el carrito.");
     }
@@ -121,16 +121,26 @@ const GestionProveedores = () => {
         <div style={navButtonsStyle}>
           <button
             style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor =
+                navButtonHoverStyle.backgroundColor)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
             onClick={() => navigate("/almacen")}
           >
             Almacen
           </button>
           <button
             style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor =
+                navButtonHoverStyle.backgroundColor)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
             onClick={() => navigate("/estadisticas")}
           >
             Estadisticas
@@ -138,7 +148,7 @@ const GestionProveedores = () => {
         </div>
       </nav>
 
-      <div className="contenedor" style={{background: 'black'}}>
+      <div className="contenedor" style={{ background: "black" }}>
         <div
           className="carrito-icono"
           onClick={() => setMostrarCarrito(!mostrarCarrito)}
@@ -231,7 +241,7 @@ const GestionProveedores = () => {
           {productoSeleccionado && (
             <div className="detalle-producto">
               <h2>{productoSeleccionado.nombre}</h2>
-              
+
               <div className="proveedores-lista">
                 {productoSeleccionado.proveedores?.map((proveedor, index) => (
                   <div key={index} className="proveedor-item">
@@ -248,36 +258,36 @@ const GestionProveedores = () => {
                       }
                     />
                     <button
-  style={{
-    marginTop: "0.5rem",
-    padding: "0.4rem 0.8rem",
-    backgroundColor: "#4CAF50",
-    color: "#ffffff",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontSize: "0.9rem",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.backgroundColor = "#45a049";
-    e.currentTarget.style.transform = "scale(1.05)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.backgroundColor = "#4CAF50";
-    e.currentTarget.style.transform = "scale(1)";
-  }}
-  onClick={() =>
-    agregarAlCarrito(
-      productoSeleccionado,
-      proveedor,
-      parseInt(cantidadSeleccionada[proveedor.proveedor])
-    )
-  }
->
-  Añadir al carrito
-</button>
-
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.4rem 0.8rem",
+                        backgroundColor: "#4CAF50",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#45a049";
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "#4CAF50";
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                      onClick={() =>
+                        agregarAlCarrito(
+                          productoSeleccionado,
+                          proveedor,
+                          parseInt(cantidadSeleccionada[proveedor.proveedor])
+                        )
+                      }
+                    >
+                      Añadir al carrito
+                    </button>
                   </div>
                 ))}
               </div>

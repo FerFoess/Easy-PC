@@ -35,7 +35,7 @@ const LibreSeleccion = () => {
 
   const fetchOpciones = async () => {
     try {
-      const response = await fetch(`http://192.168.1.77:3002/components/components/purposes/${propositoSeleccionado}`);
+      const response = await fetch(`http://192.168.1.77/components/components/purposes/${propositoSeleccionado}`);
       if (!response.ok) throw new Error("Error en la respuesta del servidor");
       const data = await response.json();
       setOpciones(data.slice(0, 8));

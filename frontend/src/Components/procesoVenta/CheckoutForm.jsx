@@ -169,6 +169,7 @@ const PaymentScreen = () => {
             <button style={navButtonStyle} onClick={() => navigate('/catalogo-componentes')}>Catálogo de componentes</button>
             <button style={navButtonStyle} onClick={() => navigate('/sobre-nosotros')}>Más sobre nosotros</button>
             <button style={navButtonStyle} onClick={() => navigate('/mi-cuenta')}>Mi cuenta</button>
+            
           </div>
         </nav>
         

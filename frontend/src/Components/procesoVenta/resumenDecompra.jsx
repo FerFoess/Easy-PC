@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import './css/resumenCompra.css';
 
+
 const ResumenCompra = () => {
   const location = useLocation();
   const { selecciones } = location.state || {};
@@ -9,6 +10,8 @@ const ResumenCompra = () => {
   const handleRedirect1 = () => {
     window.location.href = "http://localhost:3000/propocitoSeleccion"; 
   };
+
+  
 
   const handleRedirect2 = () => {
     const totalPrecio = Object.values(selecciones).reduce((total, productos) => {

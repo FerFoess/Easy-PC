@@ -176,13 +176,6 @@ const Almacen = () => {
                   <div className="producto-card" key={index}>
                   <p><strong>Producto:</strong> {producto.nombre}</p>
                   <p><strong>Cantidad:</strong> {producto.cantidad}</p>
-                  <p>
-                    <strong>Fecha de adición:</strong> {
-                      producto.fecha
-                        ? new Date(Date.parse(producto.fecha)).toLocaleDateString() // Convierte correctamente la fecha
-                        : "Fecha no disponible"
-                    }
-                  </p>
                   <button
                     style={{
                       marginTop: "0.5rem",
