@@ -1,173 +1,215 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom';
-import "./css/prearmados.css"; 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./css/prearmados.css";
 
-function Propocito() {
+const Prearmados = () => {
   const navigate = useNavigate();
 
-  const handleRedirect1 = () => {
-    window.location.href = "http://localhost:3000/propocitoSeleccion";  
+  const [filters, setFilters] = useState({
+    processor: "",
+    ram: "",
+    storage: "",
+    graphics: "",
+    priceRange: ""
+  });
+  const [filterOptions, setFilterOptions] = useState({
+    processor: [],
+    ram: [],
+    storage: [],
+    graphics: []
+  });
+  const [prearmados, setPrearmados] = useState([]);
+  const [filteredPrearmados, setFilteredPrearmados] = useState([]);
+  const [selectedPC, setSelectedPC] = useState(null); // Estado para el prearmado seleccionado
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchPrearmados();
+  }, []);
+
+  const fetchPrearmados = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/prearmado");
+
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
+
+      const data = await response.json();
+      setPrearmados(data);
+
+      const processors = [...new Set(data.map(item => item.processor))];
+      const rams = [...new Set(data.map(item => item.ram))];
+      const storages = [...new Set(data.map(item => item.storage))];
+      const graphicsCards = [...new Set(data.map(item => item.graphics))];
+
+      setFilterOptions({
+        processor: processors,
+        ram: rams,
+        storage: storages,
+        graphics: graphicsCards
+      });
+
+      setFilteredPrearmados(data);
+    } catch (error) {
+      console.error("Error fetching prearmados:", error);
+      setError("Error al cargar los prearmados");
+    }
   };
 
-  const handleRedirect2 = () => {
-    window.location.href = "http://localhost:3000/libreseleccion";
+  const handleFilterChange = (filterName, value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterName]: value,
+    }));
   };
 
-  const handleGoBack = () => {
-    window.history.back(); 
+  useEffect(() => {
+    const filtered = prearmados.filter((item) => {
+      return (
+        (!filters.processor || item.processor === filters.processor) &&
+        (!filters.ram || item.ram === filters.ram) &&
+        (!filters.storage || item.storage === filters.storage) &&
+        (!filters.graphics || item.graphics === filters.graphics) &&
+        (!filters.priceRange || 
+          (filters.priceRange === "0-500" && item.price <= 500) ||
+          (filters.priceRange === "500-1000" && item.price > 500 && item.price <= 1000) ||
+          (filters.priceRange === "1000+" && item.price > 1000))
+      );
+    });
+    setFilteredPrearmados(filtered);
+  }, [filters, prearmados]);
+
+  const handleSelectPC = (pc) => {
+    setSelectedPC(pc);
   };
 
-  // Estilos en línea
-  const containerStyle = {
-    fontFamily: 'Arial, sans-serif',
-    color: '#ffffff',
-    backgroundColor: '#27293d',
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  };
-
-  const navbarStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.5rem 2rem',
-    backgroundColor: '#1e1f2b',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-    width: '100%',
-  };
-
-  const logoImageStyle = {
-    width: '90px',
-    height: '90px',
-    borderRadius: '50%',
-  };
-
-  const navButtonsStyle = {
-    display: 'flex',
-    gap: '1rem',
-  };
-
-  const navButtonStyle = {
-    color: '#ffffff',
-    backgroundColor: 'transparent',
-    border: '2px solid #5c6bc0',
-    padding: '0.6rem 1.2rem',
-    borderRadius: '20px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-  };
-
-  const navButtonHoverStyle = {
-    backgroundColor: '#5c6bc0',
-    transform: 'scale(1.05)',
+  const handleAcceptPC = () => {
+    if (selectedPC) {
+      navigate('/resumenCompra', { state: { selecciones: { pcSeleccionada: [selectedPC] } } });
+    }
   };
 
   return (
-    <div style={containerStyle}>
+    <div className="app">
       {/* Navbar */}
-      <nav style={navbarStyle}>
+      <nav className="navbar">
         <div className="logo">
-          <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
+          <img src="/assets/logo.png" alt="Logo" className="logo-image" />
         </div>
-        <div style={navButtonsStyle}>
-          <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/Tipoequipo')}
-          >
-            Arma tu pc
-          </button>
-          <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/catalogo-componentes')}
-          >
-            Catálogo de componentes
-          </button>
-          <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/sobre-nosotros')}
-          >
-            Más sobre nosotros
-          </button>
-          <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/mi-cuenta')}
-          >
-            Mi cuenta
-          </button>
+        <div className="nav-buttons">
+          <button className="nav-button" onClick={() => navigate('/inicio')}>Inicio</button>
+          <button className="nav-button" onClick={() => navigate('/Tipoequipo')}>Arma tu pc</button>
+          <button className="nav-button" onClick={() => navigate('/catalogo-componentes')}>Catálogo de componentes</button>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <h1 style={{ fontSize: '1.5rem', textAlign: 'center', marginTop: '1rem' }}>Elige para qué quieres usar tu equipo o trabaja libremente</h1>
+      <div className="gray-boxD">
+        <div className="filters-horizontal">
+          <div className="filter-group">
+            <label>Procesador:</label>
+            <select
+              value={filters.processor}
+              onChange={(e) => handleFilterChange("processor", e.target.value)}
+            >
+              <option value="">Todos</option>
+              {filterOptions.processor.map((processor) => (
+                <option key={processor} value={processor}>{processor}</option>
+              ))}
+            </select>
+          </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', margin: '2rem' }}>
-        <div
-          className="card"
-          onClick={handleRedirect1}
-          style={{
-            backgroundColor: '#5c6bc0',
-            borderRadius: '10px',
-            padding: '1rem',
-            margin: '1rem',
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-            width: '200px',
-            textAlign: 'center'
-          }}
-        >
-          <img src="/assets/armar.png" alt="Imagen 1" className="card-image" style={{ width: '100%', borderRadius: '10px' }} />
-          <h2 className="card-text" style={{ color: '#ffffff', margin: '0.5rem 0' }}>Propósito</h2>
+          <div className="filter-group">
+            <label>RAM:</label>
+            <select
+              value={filters.ram}
+              onChange={(e) => handleFilterChange("ram", e.target.value)}
+            >
+              <option value="">Todos</option>
+              {filterOptions.ram.map((ram) => (
+                <option key={ram} value={ram}>{ram}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Almacenamiento:</label>
+            <select
+              value={filters.storage}
+              onChange={(e) => handleFilterChange("storage", e.target.value)}
+            >
+              <option value="">Todos</option>
+              {filterOptions.storage.map((storage) => (
+                <option key={storage} value={storage}>{storage}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Tarjeta Gráfica:</label>
+            <select
+              value={filters.graphics}
+              onChange={(e) => handleFilterChange("graphics", e.target.value)}
+            >
+              <option value="">Todas</option>
+              {filterOptions.graphics.map((graphics) => (
+                <option key={graphics} value={graphics}>{graphics}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Rango de Precios:</label>
+            <select
+              value={filters.priceRange}
+              onChange={(e) => handleFilterChange("priceRange", e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="0-500">$0 - $500</option>
+              <option value="500-1000">$500 - $1000</option>
+              <option value="1000+">Más de $1000</option>
+            </select>
+          </div>
         </div>
-        <div
-          className="card"
-          onClick={handleRedirect2}
-          style={{
-            backgroundColor: '#5c6bc0',
-            borderRadius: '10px',
-            padding: '1rem',
-            margin: '1rem',
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-            width: '200px',
-            textAlign: 'center'
-          }}
-        >
-          <img src="/assets/armado.png" alt="Imagen 2" className="card-image" style={{ width: '100%', borderRadius: '10px' }} />
-          <h2 className="card-text" style={{ color: '#ffffff', margin: '0.5rem 0' }}>Libre</h2>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <div className="prearmados-cards">
+          {filteredPrearmados.map((system) => (
+            <div key={system._id} className="system-card">
+              <h3>{system.name}</h3>
+              <p>Procesador: {system.processor}</p>
+              <p>RAM: {system.ram}</p>
+              <p>Almacenamiento: {system.storage}</p>
+              <p>Tarjeta Gráfica: {system.graphics}</p>
+              <p>Precio: ${system.price}</p>
+              <button onClick={() => handleSelectPC(system)}>
+                Seleccionar PC
+              </button>
+            </div>
+          ))}
+          {filteredPrearmados.length === 0 && <p>No se encontraron equipos con los filtros seleccionados.</p>}
         </div>
+        
+        {selectedPC && (
+          <div className="selected-pc">
+            <h3>PC Seleccionada</h3>
+            <p>Nombre: {selectedPC.name}</p>
+            <p>Procesador: {selectedPC.processor}</p>
+            <p>RAM: {selectedPC.ram}</p>
+            <p>Almacenamiento: {selectedPC.storage}</p>
+            <p>Tarjeta Gráfica: {selectedPC.graphics}</p>
+            <p>Precio: ${selectedPC.price}</p>
+            <button onClick={handleAcceptPC}>Aceptar</button>
+          </div>
+        )}
       </div>
 
-      <button
-        className="back-button"
-        onClick={handleGoBack}
-        style={{
-          backgroundColor: '#e57373',
-          border: 'none',
-          color: '#ffffff',
-          padding: '0.6rem 1rem',
-          borderRadius: '20px',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s ease',
-          marginBottom: '1rem'
-        }}
-      >
+      <button className="back-button" onClick={() => window.history.back()}>
         Regresar
       </button>
     </div>
   );
-}
+};
 
-export default Propocito;
+export default Prearmados;

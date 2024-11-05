@@ -144,6 +144,14 @@ function TipoEquipo() {
           >
             Catálogo de componentes
           </button>
+          <button
+                        style={navButtonStyle}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'red')}
+                        onClick={() => navigate('/login')}
+                    >
+                        Cerrar Sesión
+                    </button>
         </div>
       </nav>
 

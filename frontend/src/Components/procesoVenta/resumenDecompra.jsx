@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import './css/resumenCompra.css';
 
+
 const ResumenCompra = () => {
   const location = useLocation();
   const { selecciones } = location.state || {};
@@ -10,6 +11,8 @@ const ResumenCompra = () => {
     window.history.back();
 };
 
+
+  
 
   const handleRedirect2 = () => {
     const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
