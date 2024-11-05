@@ -142,3 +142,7 @@
   cursor: pointer;
   margin-top: 10px;
 }
+
+.producto.seleccionado {
+  background-color: #d1c4e9;
+}
