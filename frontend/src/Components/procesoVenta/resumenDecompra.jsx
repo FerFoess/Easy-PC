@@ -8,8 +8,9 @@ const ResumenCompra = () => {
   const { selecciones } = location.state || {};
 
   const handleRedirect1 = () => {
-    window.location.href = "http://localhost:3000/propocitoSeleccion"; 
-  };
+    window.history.back();
+};
+
 
   
 
