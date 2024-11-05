@@ -5,11 +5,13 @@
   }
 
   .contenedor {
-    display: flex;
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
-    height: 100vh; /* Altura de la pantalla */
-    background-color: #838383;
+    display: absolute;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #27293d;
+    padding: 20px;
   }
   
   .rectangulo-gris {
@@ -24,13 +26,43 @@
     flex-wrap: wrap; /* Permitir que los elementos se envuelvan */
   }
   
-.botoneslocos{
-  background-color: rgb(0, 124, 12);
+  .botoneslocos, .pagina-button {
+    background-color: #5c6bc0;
+    color: #ffffff;
+    border-radius: 5px;
+    width: 10%;
+    margin-left: 5px;
+    height: 40px;
+    border: none;
+    box-shadow: none; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 1rem;
+  }
+
+.botoneslocos2 {
+  background-color: #5c6bc0;
+  color: #ffffff;
   border-radius: 5px;
+  width: 20%;
+  height: 50px;
+  margin: 0;
+  border: none;
+  box-shadow: none; 
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 1rem;
 }
+
+.botoneslocos2:hover, .botoneslocos:hover {
+  background-color: #7986cb;
+  transform: scale(1.05);
+}
+
 
 .columna-izquierda {
   width: 40%;
+  margin-left: 40px;
 }
 
 .columna-derecha {
@@ -40,6 +72,10 @@
   justify-content: space-between;
 }
 
+.columna-izquierda, .columna-derecha  {
+  margin-top: 30px;
+}
+
 #totalVentas {
   margin-top: 10px;
   font-size: 18px;
@@ -47,8 +83,13 @@
 }
 
 .campof{
-  width: 40%;
-  margin: 1%;
+  width: 30%;
+  height: 40px;
+  margin: 15px;
+  border-radius: 6px;
+  border: none;
+  box-shadow: none;
+  text-align: center;
 }
 .search-input {
   padding: 8px;
@@ -57,6 +98,11 @@
   border-radius: 5px;
   width: 60%;
   box-sizing: border-box;
+}
+
+.fila-inferior{
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .ventas-table {

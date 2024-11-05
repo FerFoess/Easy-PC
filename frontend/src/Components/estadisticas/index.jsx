@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto'; // Necesario para los gráficos de Chart.js
-import './css/styles.css'; // Importar el archivo CSS para el diseño
+import './css/stylesEst.css'; // Importar el archivo CSS para el diseño
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
+import Navbar from '../navBarAdmins/navbar';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
@@ -14,12 +15,12 @@ const Ventas = () => {
   const [totalDelRango, setTotalDelRango] = useState(0);
   const [fechaInicio, setFechaInicio] = useState(() => {
     const fecha = new Date();
-    fecha.setDate(fecha.getDate() - 1); // Un día anterior
+    fecha.setDate(fecha.getDate()); // Un día anterior
     return fecha.toISOString().split('T')[0];
   });
   const [fechaFin, setFechaFin] = useState(() => {
     const fecha = new Date();
-    fecha.setDate(fecha.getDate() - 1); // Un día anterior
+    fecha.setDate(fecha.getDate()); // Un día anterior
     return fecha.toISOString().split('T')[0];
   });
   const [graficaDatos, setGraficaDatos] = useState({ labels: [], datasets: [] });
@@ -249,9 +250,10 @@ const Ventas = () => {
 
  return (
     <div className='contenedor'>
+      <Navbar />
   <div className='rectangulo-gris'>
     <div className='columna-izquierda'>
-  <h2>Ventas Filtradas</h2>
+  <h2>Ventas</h2>
   <input
     type="text"
     value={idVentaBuscado}
@@ -263,6 +265,7 @@ const Ventas = () => {
             <thead>
               <tr>
                 <th>ID Venta</th>
+                <th>Cliente</th>
                 <th>Cantidad</th>
                 <th>Costo</th>
                 <th>Fecha</th>
@@ -272,6 +275,7 @@ const Ventas = () => {
               {registrosAPresentar.map(venta => (
                 <tr key={venta.idVenta}>
                   <td>{venta.idVenta}</td>
+                  <td>{venta.ArrayidUsuario}</td>
                   <td>{venta.cantidad}</td>
                   <td>{venta.costo.toFixed(2)}</td>
                   <td>{convertirASoloFecha(venta.fecha)}</td>
@@ -327,7 +331,7 @@ const Ventas = () => {
       <div className='fila-inferior'>
       <h2>Corte</h2>
       <h3>Total del corte: {totalDelCorte}</h3>
-      <button className='botoneslocos' onClick={realizarCorte}>Realizar corte</button>
+      <button className='botoneslocos2' onClick={realizarCorte}>Realizar corte</button>
       </div>
     </div>
   </div>
