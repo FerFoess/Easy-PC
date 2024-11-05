@@ -1,0 +1,134 @@
+/* General layout */
+.inicio-container {
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  background-color: #27293d;
+  min-height: 100vh;
+}
+
+/* Navbar styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background-color: #1e1f2b;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+.logo-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  color: #ffffff;
+  background-color: transparent;
+  border: 2px solid #5c6bc0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-btn:hover {
+  background-color: #5c6bc0;
+  transform: scale(1.05);
+  
+}
+
+/* Intro section styling */
+.intro-section {
+  padding: 2rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  
+}
+
+.intro-section h2 {
+  color: #5c6bc0;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.intro-section p {
+  color: #dcdcdc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.cta-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 20px;
+  color: #ffffff;
+  background-color: #5c6bc0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-btn.outline {
+  background-color: transparent;
+  border: 2px solid #5c6bc0;
+  color: #5c6bc0;
+}
+
+.cta-btn:hover {
+  background-color: #7986cb;
+  transform: scale(1.05);
+}
+
+.cta-btn.outline:hover {
+  color: #7986cb;
+  border-color: #7986cb;
+}
+
+/* Gallery section styling */
+.gallery-section {
+  padding: 2rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.gallery-section h3 {
+  color: #5c6bc0;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.gallery {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gallery-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
