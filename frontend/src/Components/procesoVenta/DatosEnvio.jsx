@@ -39,9 +39,17 @@ const DatosEnvio = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes manejar el envío de los datos
-    console.log("Datos de envío:", formData);
-    // Redirigir a la siguiente página o mostrar un mensaje de éxito
+    // Verificar si todos los campos están llenos
+    const allFieldsFilled = Object.values(formData).every(field => field.trim() !== '');
+
+    if (allFieldsFilled) {
+      // Aquí puedes manejar el envío de los datos
+      console.log("Datos de envío:", formData);
+      // Redirigir a la siguiente página
+      window.location.href = "http://localhost:3000/checkoutForm"; 
+    } else {
+      alert("Por favor, completa todos los campos."); // Mensaje de advertencia
+    }
   };
 
   return (

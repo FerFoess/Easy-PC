@@ -14,11 +14,10 @@ import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import Almacen from './Components/gestionProveedores/almacen';
 import ResumenCompra from './Components/procesoVenta/resumenDecompra';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
-import   { CompraProvider } from './Components/procesoVenta/CompraContext';
+
 
 function App() {
   return (
-    <CompraProvider>
     <div className="App">
       <Router>
         <Routes>
@@ -39,7 +38,6 @@ function App() {
         </Routes>
       </Router>
     </div>
-    </CompraProvider>
   );
 }
 

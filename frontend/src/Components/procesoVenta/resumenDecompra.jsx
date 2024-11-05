@@ -1,16 +1,14 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import './css/resumenCompra.css'; 
-import { useCompra } from './CompraContext'; 
+import './css/resumenCompra.css';
+
 const ResumenCompra = () => {
   const location = useLocation();
   const { selecciones } = location.state || {};
-  const { setTotalPrecio } = useCompra();
 
   const handleRedirect1 = () => {
     window.location.href = "http://localhost:3000/propocitoSeleccion"; 
   };
-
 
   const handleRedirect2 = () => {
     const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
@@ -20,19 +18,16 @@ const ResumenCompra = () => {
       }, 0);
     }, 0);
     
-    setTotalPrecio(totalPrecio); // Guardar el total en el contexto
+    localStorage.setItem('totalCompra', totalPrecio); // Guardar el total en localStorage
     window.location.href = "http://localhost:3000/datosEnvio"; 
   };
-
 
   if (!selecciones) {
     return <div>No hay selecciones disponibles.</div>;
   }
 
-  // Calcular el precio total
   const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
     return total + productos.reduce((subtotal, producto) => {
-      // Asegúrate de que el precio sea un número
       const precio = typeof producto.precio === 'number' ? producto.precio : parseFloat(producto.precio) || 0;
       return subtotal + precio;
     }, 0);
