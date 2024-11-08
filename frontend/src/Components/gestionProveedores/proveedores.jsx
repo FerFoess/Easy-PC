@@ -16,7 +16,7 @@ const GestionProveedores = () => {
     { id: 9, nombre: "Tarjetas de video" },
   ]);
   const [productos, setProductos] = useState([]);
-  const [filtroCategoria, setFiltroCategoria] = useState("");
+  const [filtroCategoria, setFiltroCategoria] = useState("RAM");
   const [filtroProducto, setFiltroProducto] = useState("");
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [productosEnCarrito, setProductosEnCarrito] = useState([]);
@@ -63,17 +63,24 @@ const GestionProveedores = () => {
 
   const confirmarPedido = () => {
     if (productosEnCarrito.length > 0) {
-      localStorage.setItem(
-        "productosConfirmados",
-        JSON.stringify(productosEnCarrito)
-      );
-
-      navigate("");
+      // Recuperar productos confirmados previos desde localStorage
+      const productosConfirmadosPrevios = JSON.parse(localStorage.getItem("productosConfirmados")) || [];
+  
+      // Combinar los productos actuales con los previos
+      const productosActualizados = [...productosConfirmadosPrevios, ...productosEnCarrito];
+  
+      // Guardar los productos actualizados en localStorage
+      localStorage.setItem("productosConfirmados", JSON.stringify(productosActualizados));
+  
+      // Redirigir a la página de almacen
+      navigate("/almacen");
     } else {
       alert("No hay productos en el carrito.");
     }
   };
+  
 
+  // Estilos en línea para la navbar
   // Estilos en línea para la navbar
   const navbarStyle = {
     display: "flex",
@@ -83,6 +90,9 @@ const GestionProveedores = () => {
     backgroundColor: "#000f5a",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
     width: "100%",
+    position: "sticky",
+    top: "0",
+    zIndex: "1000",
   };
 
   const logoImageStyle = {
@@ -111,6 +121,107 @@ const GestionProveedores = () => {
     backgroundColor: "black",
     transform: "scale(1.05)",
   };
+
+  const contenedorStyle = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    padding: "20px",
+    backgroundColor: "#f4f4f9",
+    minHeight: "100vh",
+  };
+
+  const sidebarStyle = {
+    position: "fixed",
+    top: "120px",
+    left: "0",
+    width: "200px",
+    backgroundColor: "#1e1e2f",
+    padding: "15px",
+    borderRadius: "10px",
+    color: "white",
+  };
+
+  const searchBarStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginBottom: "20px",
+  };
+
+  const productoCardStyle = {
+    backgroundColor: "#ffffff",
+    padding: "15px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    cursor: "pointer",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  };
+
+  const productoCardHoverStyle = {
+    transform: "scale(1.05)",
+    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+  };
+
+  const detalleProductoStyle = {
+    backgroundColor: "#ffffff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    width: "300px",
+    marginTop: "20px",
+  };
+
+  const proveedorItemStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  };
+
+  const carritoIconoStyle = {
+    position: "fixed",
+    top: "10px",
+    right: "20px",
+    color: "#ffffff",
+    cursor: "pointer",
+  };
+
+  const contadorCarritoStyle = {
+    backgroundColor: "#ff4757",
+    color: "#ffffff",
+    padding: "3px 7px",
+    borderRadius: "50%",
+    fontSize: "0.8rem",
+    position: "absolute",
+    top: "-5px",
+    right: "-10px",
+  };
+
+  const cardCarritoStyle = {
+    position: "fixed",
+    right: "20px",
+    top: "50px",
+    backgroundColor: "#ffffff",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    padding: "15px",
+    display: "none",
+    width: "250px",
+  };
+
+  const btnConfirmarStyle = {
+    backgroundColor: "#000f5a",
+    color: "#ffffff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "10px",
+    cursor: "pointer",
+    width: "100%",
+    marginTop: "10px",
+    transition: "background-color 0.3s ease",
+  };
+
+  // Asegúrate de aplicar estos estilos en las respectivas secciones JSX del componente
 
   return (
     <>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 import './css/libreSeleccion.css';
 
 const LibreSeleccion = () => {
-  const navigate = useNavigate(); // Inicializa el hook useNavigate
+  const navigate = useNavigate();
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [productos, setProductos] = useState([]);
   const [mostrarDetalles, setMostrarDetalles] = useState(null);
@@ -31,11 +31,11 @@ const LibreSeleccion = () => {
     if (categoriaSeleccionada) {
       buscarProductos();
     }
-  }, [categoriaSeleccionada]);
+  }, [categoriaSeleccionada, seleccionadas]);
 
   const fetchOpciones = async () => {
     try {
-      const response = await fetch(`http://192.168.1.77/components/components/purposes/${propositoSeleccionado}`);
+      const response = await fetch(`http://localhost:3002/components/components/purposes/${propositoSeleccionado}`);
       if (!response.ok) throw new Error("Error en la respuesta del servidor");
       const data = await response.json();
       setOpciones(data.slice(0, 8));
@@ -58,25 +58,6 @@ const LibreSeleccion = () => {
       const newSeleccionadas = prev.includes(option)
         ? prev.filter((selected) => selected !== option)
         : [...prev, option];
-
-      // Manejar la selección/deselección de opciones
-      if (!newSeleccionadas.includes(option)) {
-        setComponentesSeleccionados((prev) => {
-          const newComponentes = { ...prev };
-          // Eliminar componentes que dependen de la opción deseleccionada
-          for (const key in newComponentes) {
-            if (newComponentes[key].some(comp => comp.proposito === option)) {
-              if (newComponentes[key].length === 1) {
-                delete newComponentes[key];
-              } else {
-                newComponentes[key] = newComponentes[key].filter(comp => comp.proposito !== option);
-              }
-            }
-          }
-          return newComponentes;
-        });
-      }
-
       return newSeleccionadas;
     });
   };
@@ -93,7 +74,7 @@ const LibreSeleccion = () => {
     };
 
     try {
-      const response = await fetch(`http://192.168.1.77:3002/components/components/search`, {
+      const response = await fetch(`http://localhost:3002/components/components/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ selectedOptions: selectedOptionsPayload }),
@@ -121,12 +102,13 @@ const LibreSeleccion = () => {
       const isAlreadySelected = newComponentes.find(p => p.id === producto.id);
 
       if (isAlreadySelected) {
+        // Si el producto ya está seleccionado, lo eliminamos
         return {
           ...prev,
           [categoriaSeleccionada]: newComponentes.filter(p => p.id !== producto.id),
         };
       } else {
-        // Añadimos el producto seleccionado, asegurándonos de incluir el propósito
+        // Si no está seleccionado, lo añadimos
         return {
           ...prev,
           [categoriaSeleccionada]: [...newComponentes, { ...producto, proposito: propositoSeleccionado }],
@@ -139,15 +121,12 @@ const LibreSeleccion = () => {
     componentesSeleccionados[categoriaSeleccionada]?.some(p => p.id === producto.id);
 
   const obtenerProductosMostrados = () => {
-    // Incluye solo los productos seleccionados que no están ya en la lista de productos
     const productosMostrados = [...productos];
 
+    // Aquí se incluyen solo los productos seleccionados
     const seleccionadosDeCategoria = componentesSeleccionados[categoriaSeleccionada] || [];
-    const idsSeleccionados = new Set(productosMostrados.map(p => p.id));
-
     seleccionadosDeCategoria.forEach((producto) => {
-      // Agregar solo si no está ya en la lista
-      if (!idsSeleccionados.has(producto.id)) {
+      if (!productosMostrados.some(p => p.id === producto.id)) {
         productosMostrados.push(producto);
       }
     });
@@ -155,13 +134,12 @@ const LibreSeleccion = () => {
     return productosMostrados;
   };
 
-  // Método para manejar la finalización de la selección
   const finalizarSeleccion = () => {
     if (Object.keys(componentesSeleccionados).length === 0) {
       setError("No has seleccionado ningún componente.");
       return;
     }
-    navigate('/resumenCompra', { state: { selecciones: componentesSeleccionados } }); // Redirige a la pantalla de resumen
+    navigate('/resumenCompra', { state: { selecciones: componentesSeleccionados } });
   };
 
   return (
@@ -215,7 +193,7 @@ const LibreSeleccion = () => {
         <button 
           className="categoria-btn finalizar-seleccion" 
           style={{ backgroundColor: 'green', color: 'white' }} 
-          onClick={finalizarSeleccion} // Llama al método al hacer clic
+          onClick={finalizarSeleccion}
         >
           Finalizar Selección
         </button>

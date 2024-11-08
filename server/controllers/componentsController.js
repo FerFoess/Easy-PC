@@ -149,7 +149,6 @@ const obtenerFiltrosPorCategoria = async (req, res) => {
     }
 };
 
-
 const searchComponents = async (req, res) => {
     const { selectedOptions } = req.body;
     console.log(selectedOptions)
@@ -172,6 +171,20 @@ const searchComponents = async (req, res) => {
     }
 };
 
+// Obtener cantidad de stock disponible de un producto
+const obtenerStockProducto = async (req, res) => {
+    const { id } = req.params;  // Obtenemos el id del producto de los parámetros de la URL
+    try {
+      const producto = await Components.findById(id);  // Buscamos el producto por id
+      if (!producto) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+      }
+      res.json({ stockDisponible: producto.stock });  // Devolvemos el stock disponible
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener el stock del producto' });
+    }
+  };
+  
   
   
 
@@ -186,5 +199,6 @@ module.exports = {
     getOptionsByPurpose,
     obtenerFiltrosPorCategoria,
     searchComponents,
+    obtenerStockProducto,
     
 };
