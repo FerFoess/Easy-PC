@@ -88,7 +88,7 @@ const Prearmados = () => {
     if (selectedPC) {
       navigate('/resumenCompra', { state: { selecciones: { pcSeleccionada: [selectedPC] } } });
     }
-  };
+  };  
 
   return (
     <div className="app">

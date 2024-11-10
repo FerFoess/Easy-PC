@@ -2,22 +2,24 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import './css/resumenCompra.css';
 
-
 const ResumenCompra = () => {
   const location = useLocation();
   const { selecciones } = location.state || {};
 
   const handleRedirect1 = () => {
     window.history.back();
-};
-
-
-  
+  };
 
   const handleRedirect2 = () => {
+    // Calcular el total de la compra
     const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
       return total + productos.reduce((subtotal, producto) => {
-        const precio = typeof producto.precio === 'number' ? producto.precio : parseFloat(producto.precio) || 0;
+        // Detecta si el producto es un prearmado (con 'price') o un producto regular (con 'precio')
+        const precio = typeof producto.precio === 'number'
+          ? producto.precio
+          : typeof producto.price === 'number'
+          ? producto.price
+          : parseFloat(producto.precio || producto.price) || 0;
         return subtotal + precio;
       }, 0);
     }, 0);
@@ -30,9 +32,14 @@ const ResumenCompra = () => {
     return <div>No hay selecciones disponibles.</div>;
   }
 
+  // Calcular el total para mostrar en el resumen
   const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
     return total + productos.reduce((subtotal, producto) => {
-      const precio = typeof producto.precio === 'number' ? producto.precio : parseFloat(producto.precio) || 0;
+      const precio = typeof producto.precio === 'number'
+        ? producto.precio
+        : typeof producto.price === 'number'
+        ? producto.price
+        : parseFloat(producto.precio || producto.price) || 0;
       return subtotal + precio;
     }, 0);
   }, 0);
@@ -56,7 +63,11 @@ const ResumenCompra = () => {
               <ul>
                 {productos.map(producto => (
                   <li key={producto.id}>
-                    <strong>{producto.nombre}</strong> - ${producto.precio.toFixed(2)}
+                    <strong>
+                      {/* Detecta si el producto es un prearmado (con 'name') o un producto regular (con 'nombre') */}
+                      {producto.nombre || producto.name}
+                    </strong> - $
+                    {(producto.precio || producto.price).toFixed(2)}
                   </li>
                 ))}
               </ul>
