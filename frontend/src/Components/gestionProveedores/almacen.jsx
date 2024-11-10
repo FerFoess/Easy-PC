@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './css/almacen.css';
 
@@ -11,13 +11,17 @@ const Almacen = () => {
   const [filtroProveedor, setFiltroProveedor] = useState("");
   const [filtroProducto, setFiltroProducto] = useState("");
 
+  useEffect(() => {
+    // Guarda productosConfirmados en localStorage cada vez que cambie su estado
+    localStorage.setItem("productosConfirmados", JSON.stringify(productosConfirmados));
+  }, [productosConfirmados]);
+
   const handleCancelarProducto = (proveedor, productoIndex) => {
     const nuevosProductos = productosConfirmados.filter((producto, index) => 
       !(producto.proveedor === proveedor && index === productoIndex)
     );
 
     setProductosConfirmados(nuevosProductos);
-    localStorage.setItem("productosConfirmados", JSON.stringify(nuevosProductos));
   };
 
   const productosPorProveedor = productosConfirmados.reduce((acc, producto) => {
@@ -85,7 +89,6 @@ const Almacen = () => {
     marginRight: "1rem",
     color: "white",
     transition: "all 0.2s ease-in-out",
-    
   };
 
   const filterButtonFocusStyle = {
@@ -174,34 +177,33 @@ const Almacen = () => {
               <div className="productos-grid">
                 {productos.map((producto, index) => (
                   <div className="producto-card" key={index}>
-                  <p><strong>Producto:</strong> {producto.nombre}</p>
-                  <p><strong>Cantidad:</strong> {producto.cantidad}</p>
-                  <button
-                    style={{
-                      marginTop: "0.5rem",
-                      padding: "0.4rem 0.8rem",
-                      backgroundColor: "#ff4c4c",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: "10px",
-                      cursor: "pointer",
-                      fontSize: "0.9rem",
-                      transition: "background-color 0.3s ease, transform 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#ff3333";
-                      e.currentTarget.style.transform = "scale(1.05)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#ff4c4c";
-                      e.currentTarget.style.transform = "scale(1)";
-                    }}
-                    onClick={() => handleCancelarProducto(proveedor, index)}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-                
+                    <p><strong>Producto:</strong> {producto.nombre}</p>
+                    <p><strong>Cantidad:</strong> {producto.cantidad}</p>
+                    <button
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.4rem 0.8rem",
+                        backgroundColor: "#ff4c4c",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                        transition: "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#ff3333";
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "#ff4c4c";
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
+                      onClick={() => handleCancelarProducto(proveedor, index)}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
