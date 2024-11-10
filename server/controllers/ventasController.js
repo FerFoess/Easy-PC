@@ -25,25 +25,6 @@ exports.obtenerVentaPorId = async (req, res) => {
   }
 };
 
-// Controlador para crear una nueva venta
-exports.crearVenta = async (req, res) => {
-  try {
-    const { idVenta, idUsuario, categoría, costo, cantidad, fecha } = req.body;
-    const nuevaVenta = new Venta({
-      idVenta,
-      idUsuario,
-      categoría,
-      costo,
-      cantidad,
-      fecha: fecha || Date.now() // Usa la fecha actual si no se proporciona
-    });
-    const ventaGuardada = await nuevaVenta.save();
-    res.status(201).json(ventaGuardada);
-  } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: 'Error al crear la venta' });
-  }
-};
 
 // Controlador para actualizar una venta existente
 exports.actualizarVenta = async (req, res) => {
@@ -72,3 +53,26 @@ exports.eliminarVenta = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar la venta' });
   }
 };
+
+
+// Controlador para crear una nueva venta
+exports.crearVenta = async (req, res) => {
+  try {
+    const { idVenta, idUsuario, total, productos, fecha } = req.body;
+
+    const nuevaVenta = new Venta({
+      idVenta,
+      idUsuario,
+      total,
+      productos, // Esto será un array de objetos (idProducto, nombre, cantidad, categoría, costo)
+      fecha: fecha || Date.now(), // Usa la fecha actual si no se proporciona una
+    });
+
+    const ventaGuardada = await nuevaVenta.save();
+    res.status(201).json({ message: 'Venta guardada exitosamente', venta: ventaGuardada });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: 'Error al crear la venta' });
+  }
+};
+

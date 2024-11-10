@@ -44,9 +44,9 @@ const Filtros = ({ categoria, filtrosDisponibles, filtros, manejarFiltroCambio, 
   </div>
 );
 
-const ProductoCard = ({ producto, seleccionarProducto, mostrarDetallesProducto }) => (
+const ProductoCard = ({ producto, isSelected, seleccionarProducto, mostrarDetallesProducto }) => (
   <div
-    className={`producto ${producto.seleccionado ? 'seleccionado' : ''}`}
+    className={`producto ${isSelected ? 'seleccionado' : ''}`}
     onClick={() => seleccionarProducto(producto)}
   >
     <h4>{producto.nombre}</h4>
@@ -56,7 +56,7 @@ const ProductoCard = ({ producto, seleccionarProducto, mostrarDetallesProducto }
       className="btn-detalle"
       onClick={(e) => { e.stopPropagation(); mostrarDetallesProducto(producto); }}
     >
-      {producto.seleccionado ? '✔ Seleccionado' : 'Seleccionar'}
+      {isSelected ? '✔ Seleccionado' : 'Seleccionar'}
     </button>
   </div>
 );
@@ -137,13 +137,6 @@ const LibreSeleccion = () => {
           : [...seleccionActual, producto],
       };
     });
-    setProductos((prev) =>
-      prev.map(p =>
-        p.id === producto.id
-          ? { ...p, seleccionado: !p.seleccionado }
-          : p
-      )
-    );
   };
 
   const mostrarDetallesProducto = (producto) => {
@@ -188,10 +181,11 @@ const LibreSeleccion = () => {
       <div className="productos">
         <h3>Productos en {categoriaSeleccionada}</h3>
         {productos.length > 0 ? (
-          productos.map((producto, index) => (
+          productos.map((producto) => (
             <ProductoCard
-              key={index}
+              key={producto.id}
               producto={producto}
+              isSelected={!!seleccionPorCategoria[categoriaSeleccionada]?.find(p => p.id === producto.id)}
               seleccionarProducto={seleccionarProducto}
               mostrarDetallesProducto={mostrarDetallesProducto}
             />

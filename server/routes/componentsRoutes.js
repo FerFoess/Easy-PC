@@ -16,5 +16,5 @@ router.get('/propositos', componentsController.obtenerProductosPorProposito);
 router.get('/components/purposes/:name', componentsController.getOptionsByPurpose);
 router.get('/filtros/categoria', componentsController.obtenerFiltrosPorCategoria);
 router.post('/components/search', componentsController.searchComponents);
-
+router.get('/:id/existencia', componentsController.obtenerStockProducto);
 module.exports = router;

@@ -216,7 +216,7 @@ const Ventas = () => {
   const realizarCorte = async () => {
     const corteData = {
         total: totalDelCorte,
-        fecha: new Date().toISOString(),
+        fecha: convertirASoloFecha(new Date()), // Usamos tu función para convertir la fecha
     };
 
     console.log('Datos del corte:', corteData); // Verifica que los datos sean correctos
@@ -245,6 +245,7 @@ const Ventas = () => {
         alert('Error al realizar el corte. Inténtalo de nuevo.');
     }
 };
+
 
   
 
@@ -275,7 +276,7 @@ const Ventas = () => {
               {registrosAPresentar.map(venta => (
                 <tr key={venta.idVenta}>
                   <td>{venta.idVenta}</td>
-                  <td>{venta.ArrayidUsuario}</td>
+                  <td>{venta.idUsuario}</td>
                   <td>{venta.cantidad}</td>
                   <td>{venta.costo.toFixed(2)}</td>
                   <td>{convertirASoloFecha(venta.fecha)}</td>

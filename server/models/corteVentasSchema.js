@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Definición del esquema para corteVentas
 const corteVentasSchema = new mongoose.Schema({
-  fecha: { type: Date, default: Date.now }, // Fecha del corte, por defecto la fecha actual
+  fecha: { type: String, unique: true, required: true }, // Cambiado a String
   total: { type: Number, required: true } // Campo requerido para el dinero
 });
 

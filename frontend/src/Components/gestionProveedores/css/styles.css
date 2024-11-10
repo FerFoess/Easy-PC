@@ -1,0 +1,154 @@
+/* Contenedor general */
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4f4f9;
+  min-height: 100vh;
+}
+
+/* Sidebar de categorías */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 100px;
+  width: 200px;
+  background-color: #1e1e2f;
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+  background-color: #33334d;
+  border-radius: 8px;
+}
+
+/* Barra de búsqueda */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-bar input,
+.search-bar select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  font-size: 1rem;
+}
+
+/* Contenedor de productos */
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.producto-card {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.producto-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Detalle de producto */
+.detalle-producto {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  margin-top: 20px;
+}
+
+.proveedores-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proveedor-item p {
+  margin: 0;
+}
+
+.proveedor-item input {
+  width: 100px;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+/* Carrito de compras */
+.carrito-icono {
+  position: fixed;
+  top: 110px;
+  right: 20px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.contador-carrito {
+  background-color: #ff4757;
+  color: #ffffff;
+  padding: 3px 7px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+}
+
+.card-carrito {
+  position: fixed;
+  right: 20px;
+  top: 50px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  display: none;
+  width: 250px;
+}
+
+.card-carrito.visible {
+  display: block;
+}
+
+.btn-confirmar {
+  background-color: #000f5a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-confirmar:hover {
+  background-color: #3e3e8a;
+}
