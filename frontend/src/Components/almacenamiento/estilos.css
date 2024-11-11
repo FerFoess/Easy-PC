@@ -1,0 +1,83 @@
+/* Para cubrir toda la pantalla */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #27293d;
+}
+
+.container {
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #27293d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Contenedor de las tarjetas */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Tarjeta de producto */
+.card {
+  background-color: #1e1f2b;
+  width: 250px;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-image img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.card-content h3 {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.card-content p {
+  margin: 0.5rem 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Botones de acciones */
+.button {
+  color: #000000;
+  background-color: transparent;
+  border: 2px solid #5c6bc0;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+  background-color: #5c6bc0;
+  transform: scale(1.05);
+}

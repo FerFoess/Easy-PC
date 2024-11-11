@@ -10,6 +10,28 @@ const ResumenCompra = () => {
   const [stockDisponible, setStockDisponible] = useState({});
   const [seleccionesState, setSeleccionesState] = useState(selecciones); // Estado para las selecciones
 
+<<<<<<< HEAD
+  const handleRedirect1 = () => {
+    window.history.back();
+  };
+
+  const handleRedirect2 = () => {
+    // Calcular el total de la compra
+    const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
+      return total + productos.reduce((subtotal, producto) => {
+        // Detecta si el producto es un prearmado (con 'price') o un producto regular (con 'precio')
+        const precio = typeof producto.precio === 'number'
+          ? producto.precio
+          : typeof producto.price === 'number'
+          ? producto.price
+          : parseFloat(producto.precio || producto.price) || 0;
+        return subtotal + precio;
+      }, 0);
+    }, 0);
+    
+    localStorage.setItem('totalCompra', totalPrecio); // Guardar el total en localStorage
+    window.location.href = "http://localhost:3000/datosEnvio"; 
+=======
   // Obtener el stock disponible para cada producto desde el backend
   const obtenerStock = async (productoId) => {
     console.log("Producto ID:", productoId); // Log para verificar el ID
@@ -42,6 +64,7 @@ const ResumenCompra = () => {
 
   const handleRedirect1 = () => {
     window.history.back(); // Regresar a la pantalla anterior
+>>>>>>> fe356577f30430da49c6643d6667f067a36e6d53
   };
 
   const handleConfirmPurchase = () => {
@@ -70,6 +93,17 @@ const ResumenCompra = () => {
     return <div>No hay selecciones disponibles.</div>;
   }
 
+<<<<<<< HEAD
+  // Calcular el total para mostrar en el resumen
+  const totalPrecio = Object.values(selecciones).reduce((total, productos) => {
+    return total + productos.reduce((subtotal, producto) => {
+      const precio = typeof producto.precio === 'number'
+        ? producto.precio
+        : typeof producto.price === 'number'
+        ? producto.price
+        : parseFloat(producto.precio || producto.price) || 0;
+      return subtotal + precio;
+=======
   // Función para actualizar la cantidad de un producto
   const actualizarCantidad = (productoId, tipo) => {
     setSeleccionesState(prevSelecciones => {
@@ -96,11 +130,41 @@ const ResumenCompra = () => {
     return total + productos.reduce((subtotal, producto) => {
       const precio = (producto.precio || producto.price).toFixed(2);
       return subtotal + precio * producto.cantidad;
+>>>>>>> fe356577f30430da49c6643d6667f067a36e6d53
     }, 0);
   }, 0);
 
   return (
     <div className="resumen-compra">
+<<<<<<< HEAD
+      <div className="barra-proceso">
+        <div className="paso activo">Seleccionar Productos</div>
+        <div className="paso activo">Resumen de Compra</div>
+        <div className="paso">Datos de Envío</div>
+        <div className="paso">Realizar pago</div>
+      </div>
+      
+      <h2 className="titulo-resumen">Resumen de Compra</h2>
+      
+      {Object.keys(selecciones).length > 0 ? (
+        <div className="productos-resumen">
+          {Object.entries(selecciones).map(([categoria, productos]) => (
+            <div key={categoria} className="categoria-resumen">
+              <h3>{categoria}</h3>
+              <ul>
+                {productos.map(producto => (
+                  <li key={producto.id}>
+                    <strong>
+                      {/* Detecta si el producto es un prearmado (con 'name') o un producto regular (con 'nombre') */}
+                      {producto.nombre || producto.name}
+                    </strong> - $
+                    {(producto.precio || producto.price).toFixed(2)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+=======
       <h2 className="titulo-resumen">Carrito de Compra</h2>
 
       {Object.keys(seleccionesState).length > 0 ? (
@@ -145,6 +209,7 @@ const ResumenCompra = () => {
               ))}
             </tbody>
           </table>
+>>>>>>> fe356577f30430da49c6643d6667f067a36e6d53
         </div>
       ) : (
         <p>No hay productos seleccionados.</p>
