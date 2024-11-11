@@ -32,7 +32,7 @@ const Login = () => {
         if (decoded.role === "user") {
           window.location.href = "http://localhost:3000/inicio";
         } else {
-          window.location.href = "http://localhost:3000/";
+          window.location.href = "http://localhost:3000/proveedores";
         }
       } else {
         setError(data.message || "Error al iniciar sesión");

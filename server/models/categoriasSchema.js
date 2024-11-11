@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-// Esquema de la Categoria
-const CategoriaSchema = new Schema({
-  nombre: {
-    type: String,
+const categoriaSchema = new mongoose.Schema({
+  nombre: { type: String, required: true },
+  descripcion: { type: String },
+  categoria: { type: String, required: true },
+  precio: { type: Number, required: true },
+  detalles: {
+    type: Object, // Detalles como objeto plano
     required: true
-  }
+  },
+  imagen: { type: String } // Nueva propiedad para guardar la ruta de la imagen
 });
 
-// Exportar el modelo Categoria
-module.exports = mongoose.model('Categoria', CategoriaSchema);
+module.exports = mongoose.model('Categoria', categoriaSchema);

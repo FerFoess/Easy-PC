@@ -1,14 +1,19 @@
 const mongoose = require('mongoose');
 
-// Definición del esquema para ventas
-const ventasSchema = new mongoose.Schema({
-  idVenta: { type: Number, required: false },
-  idUsuario: { type: Number, required: false },
-  categoría: { type: String, required: false }, 
-  costo: { type: Number, required: false },
-  cantidad: { type: Number, required: false },
-  fecha: { type: Date, default: Date.now } // Fecha de la venta, por defecto la fecha actual
+const ventaSchema = new mongoose.Schema({
+  idVenta: { type: String, required: true },
+  idUsuario: { type: String, required: true },
+  total: { type: Number, required: true },
+  fecha: { type: Date, default: Date.now },
+  productos: [
+    {
+      idProducto: { type: String, required: true },
+      nombre: { type: String, required: true },
+      cantidad: { type: Number, required: true },
+      categoria: { type: String, required: true },
+      costo: { type: Number, required: true },
+    },
+  ],
 });
 
-// Exportar el modelo de Venta
-module.exports = mongoose.model('Venta', ventasSchema);
+module.exports = mongoose.model('Venta', ventaSchema);
