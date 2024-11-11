@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./estilos.css";
+import "./estilos.css"; // Asegúrate de incluir los nuevos estilos en este archivo
 
 const ProductForm = ({ selectedProduct, onProductSaved }) => {
   const [formData, setFormData] = useState({
@@ -8,12 +8,12 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     precio: "",
     descripcion: "",
     imagen: null,
-    detalles: {}, // Almacenará los detalles específicos de la categoría seleccionada
+    detalles: {},
   });
   const [categorias, setCategorias] = useState([]);
   const [detallesCategoria, setDetallesCategoria] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar el spinner
 
-  // Cargar datos del producto seleccionado (si se está editando)
   useEffect(() => {
     if (selectedProduct) {
       setFormData({
@@ -27,7 +27,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     }
   }, [selectedProduct]);
 
-  // Cargar las categorías desde el backend al montar el componente
   useEffect(() => {
     fetch("http://localhost:3002/catego")
       .then((respuesta) => respuesta.json())
@@ -35,7 +34,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
       .catch((error) => console.error("Error al obtener categorías:", error));
   }, []);
 
-  // Maneja el cambio de la categoría seleccionada
   const handleCategoriaChange = (e) => {
     const categoriaSeleccionada = e.target.value;
     setFormData({
@@ -44,7 +42,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
       detalles: {},
     });
 
-    // Encuentra la categoría seleccionada y carga sus detalles
     const categoria = categorias.find(
       (c) => c.categoria === categoriaSeleccionada
     );
@@ -53,7 +50,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     );
   };
 
-  // Maneja cambios en los campos de formulario
   const handleChange = async (e) => {
     const { name, value, files } = e.target;
 
@@ -62,7 +58,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
       const base64 = await convertToBase64(file);
       setFormData((prevData) => ({
         ...prevData,
-        [name]: base64, // Almacena la imagen como base64 en formData
+        [name]: base64,
       }));
     } else {
       setFormData((prevData) => ({
@@ -72,7 +68,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     }
   };
 
-  // Función para convertir un archivo a base64
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -82,28 +77,26 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     });
   };
 
-  // Maneja cambios en los campos de detalles específicos
-  // Maneja cambios en los campos de detalles específicos
   const handleDetalleChange = (e, detalleNombre) => {
     setFormData((prevData) => ({
       ...prevData,
       detalles: {
         ...prevData.detalles,
-        [detalleNombre]: e.target.value, // Ahora los detalles se almacenan como un objeto
+        [detalleNombre]: e.target.value,
       },
     }));
   };
 
-  // Enviar formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Muestra el spinner mientras se guarda el producto
 
     const producto = {
       nombre: formData.nombre,
-      categoria: formData.categoria, // Incluye la categoría
-      precio: formData.precio, // Incluye el precio
+      categoria: formData.categoria,
+      precio: formData.precio,
       descripcion: formData.descripcion,
-      detalles: formData.detalles, // Ya es un objeto plano
+      detalles: formData.detalles,
       id: selectedProduct ? selectedProduct.id : Date.now(),
     };
 
@@ -131,27 +124,31 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
           imagen: null,
           detalles: {},
         });
-        if (onProductSaved) onProductSaved(resultado); // Actualiza la lista de productos
+        if (onProductSaved) onProductSaved(resultado);
       } else {
         throw new Error("Error al guardar el producto");
       }
     } catch (error) {
       console.error("Error al guardar el producto:", error);
       alert("Hubo un error al guardar el producto. Inténtalo de nuevo.");
+    } finally {
+      setIsLoading(false); // Oculta el spinner después de completar la solicitud
     }
   };
 
   return (
-    <div className="">
-      <form onSubmit={handleSubmit}>
-        <h2>{selectedProduct ? "Editar Producto" : "Agregar Producto"}</h2>
+    <div className="foess-product-form-container">
+      <form onSubmit={handleSubmit} className="product-form">
+        <h2 style={{ color: "black", fontSize: "24px" }}>
+          {selectedProduct ? "Editar Producto" : "Agregar Producto"}
+        </h2>
 
-        {/* Campo de selección de categoría */}
         <select
           name="categoria"
           value={formData.categoria}
           onChange={handleCategoriaChange}
           required
+          className="input-select"
         >
           <option value="">Selecciona una categoría</option>
           {categorias.map((categoria) => (
@@ -162,7 +159,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
         </select>
         <br />
 
-        {/* Campo de nombre */}
         <input
           type="text"
           name="nombre"
@@ -170,9 +166,9 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
           value={formData.nombre}
           onChange={handleChange}
           required
+          className="input-field"
         />
 
-        {/* Campo de precio */}
         <input
           type="number"
           name="precio"
@@ -180,28 +176,32 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
           value={formData.precio}
           onChange={handleChange}
           required
+          className="input-field"
         />
         <br />
 
-        {/* Campo de descripción */}
         <textarea
           name="descripcion"
           placeholder="Descripción"
           value={formData.descripcion}
           onChange={handleChange}
+          className="input-field"
         ></textarea>
         <br />
 
-        {/* Campo de imagen */}
-        <input type="file" name="imagen" onChange={handleChange} />
+        <input
+          type="file"
+          name="imagen"
+          onChange={handleChange}
+          className="input-file"
+        />
         <br />
 
-        {/* Campos de detalles específicos según la categoría */}
         {detallesCategoria.length > 0 && (
-          <div className="detalles-categoria">
+          <div className="foess-categoria-details-container">
             <h3>Detalles específicos de {formData.categoria}</h3>
             {detallesCategoria.map(([detalleNombre, tipo]) => (
-              <div key={detalleNombre}>
+              <div key={detalleNombre} className="detail-input-container">
                 <label>{detalleNombre}:</label>
                 <input
                   type={tipo === "number" ? "number" : "text"}
@@ -209,16 +209,21 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
                   placeholder={detalleNombre}
                   value={formData.detalles[detalleNombre] || ""}
                   onChange={(e) => handleDetalleChange(e, detalleNombre)}
+                  className="input-field"
                 />
               </div>
             ))}
           </div>
         )}
 
-        {/* Botón de submit */}
-        <button type="submit">
-          {selectedProduct ? "Actualizar Producto" : "Agregar Producto"}
+        <button type="submit" className="submit-button">
+          {isLoading ? "Guardando..." : selectedProduct ? "Actualizar Producto" : "Agregar Producto"}
         </button>
+        {isLoading && (
+          <div className="spinner">
+            <div className="spinner-circle"></div>
+          </div>
+        )}
       </form>
     </div>
   );

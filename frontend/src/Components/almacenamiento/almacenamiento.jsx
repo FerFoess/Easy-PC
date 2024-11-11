@@ -1,90 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import ProductForm from './ProductoForm';
-import './estilos.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./estilos.css";
+import ProductForm from "./ProductoForm"; // Manteniendo la importación de ProductForm
 
 const ProductList = () => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productos, setProductos] = useState([]);
 
-  // Cargar productos desde la base de datos
   useEffect(() => {
-    fetch('http://localhost:3002/catego')
+    fetch("http://localhost:3002/catego")
       .then((respuesta) => respuesta.json())
-      .then((datos) => setProducts(datos))
-      .catch((error) => console.error('Error al obtener productos:', error));
+      .then((datos) => {
+        console.log("Productos recibidos:", datos); // Verifica los datos recibidos
+        setProductos(datos);
+      })
+      .catch((error) => console.error("Error al obtener productos:", error));
   }, []);
 
-  // Función para agregar o actualizar un producto
-  const addOrUpdateProduct = (product) => {
-    if (selectedProduct) {
-      // Si estamos editando, actualizamos el producto en la lista
-      setProducts(products.map((p) => (p.id === product.id ? product : p)));
-    } else {
-      // Si estamos agregando, creamos un nuevo producto
-      setProducts([...products, product]);
-    }
-    setSelectedProduct(null); // Reset selected product after save
-  };
-
-  // Función para eliminar un producto
-  const handleDelete = (id) => {
-    console.log("ID enviado para eliminación:", id); // Depurar el ID que se pasa
-    
-    fetch(`http://localhost:3002/catego/${id}`, {
-      method: 'DELETE',
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al eliminar la categoría');
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Estás seguro de que quieres eliminar esta categoría?")) {
+      try {
+        const response = await fetch(`http://localhost:3002/catego/${id}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          alert("Categoría eliminada correctamente");
+          // Actualiza el estado de las categorías en tu frontend (si es necesario)
+        } else {
+          alert("Hubo un error al eliminar la categoría");
         }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Categoría eliminada:', data);
-        setProducts(products.filter((product) => product._id !== id));
-      })
-      .catch((error) => {
-        console.error('Error al eliminar la categoría:', error);
-        alert('Hubo un error al eliminar la categoría. Inténtalo de nuevo.');
-      });
+      } catch (error) {
+        console.error("Error al eliminar la categoría:", error);
+        alert("Hubo un error al eliminar la categoría");
+      }
+    }
   };
   
   
-  
 
-  // Función para editar un producto
-  const handleEdit = (product) => {
-    setSelectedProduct(product);
+  const handleAddProduct = (nuevoProducto) => {
+    setProductos((prevProductos) => [...prevProductos, nuevoProducto]);
   };
 
   return (
-    <div className="container">
-      <h1>Lista de Productos</h1>
-      <ProductForm onProductSaved={addOrUpdateProduct} selectedProduct={selectedProduct} />
-      <div className="card-container">
-        {products.map((product) => (
-          <div className="card" key={product.id}>
-            <div className="card-image">
-            {product.imagen && (
-              <img
-                src={`http://localhost:3002/${product.imagen}`}
-                alt={product.nombre}
-                width="100"
-              />
-            )}
-          </div>
+    <div className="foess-product-product-list-container">
+      <h2 style={{ color: "white" }}>Lista de Productos</h2>
+      {/* Formulario para agregar productos */}
+      <div className="foess-product-form-container">
+        <ProductForm onAddProduct={handleAddProduct} />
+      </div>
 
-
-            <div className="card-content">
-              <h3>{product.nombre}</h3>
-              <p><strong>Categoría:</strong> {product.categoria}</p>
-              <p><strong>Precio:</strong> ${product.precio}</p>
-              <p><strong>Descripción:</strong> {product.descripcion}</p>
+      <div className="foess-product-product-card-container">
+        {productos.map((producto) => (
+          <div key={producto.id} className="foess-product-product-card">
+            <div className="foess-product-product-card-image">
+              <img src={producto.imagen} alt={producto.nombre} />
             </div>
-            <div className="card-actions">
-              <button className="button" onClick={() => handleEdit(product)}>Editar</button>
-              <button className='button' onClick={() => handleDelete(product._id)}>Eliminar</button>
-
+            <div className="foess-product-product-card-content">
+              <h3>{producto.nombre}</h3>
+              <p>{producto.descripcion}</p>
+              <p>Precio: ${producto.precio}</p>
+              <p>Categoría: {producto.categoria}</p>
+            </div>
+            <div className="foess-product-product-card-actions">
+              <Link
+                to={`/editar-producto/${producto.id}`}
+                className="foess-product-product-button"
+              >
+                Editar
+              </Link>
+              <br />
+              <br />
+              <button
+                className="foessmalo-product-product-button"
+                onClick={() => handleDelete(producto.id)}
+              >
+                Eliminar
+              </button>
             </div>
           </div>
         ))}
