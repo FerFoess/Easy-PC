@@ -14,6 +14,7 @@ import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import Almacen from './Components/gestionProveedores/almacen';
 import ResumenCompra from './Components/procesoVenta/resumenDecompra';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
+import CarritoCompra from './Components/procesoVenta/carritoCompra';
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           <Route path="libreSeleccion" element={<LibreSeleccion/>} />
           <Route path="resumenCompra" element={<ResumenCompra/>} />
           <Route path="datosEnvio" element={<DatosEnvio/>} />
+          <Route path="carritoCompra" element={<CarritoCompra/>} />
         </Routes>
       </Router>
     </div>

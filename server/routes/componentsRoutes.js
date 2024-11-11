@@ -6,9 +6,12 @@ const componentsController = require('../controllers/componentsController');
 // CRUD
 router.post('/', componentsController.crearProducto);
 router.get('/', componentsController.obtenerProductos);
-router.get('/:id', componentsController.obtenerProductoPorId);
+
+router.post('/getCartItems', componentsController.obtenerProductosCarrito);
+
 router.put('/:id', componentsController.actualizarProducto);
 router.delete('/:id', componentsController.eliminarProducto);
+
 
 // Operaciones de filtrado
 router.get('/buscar/filtros', componentsController.obtenerProductosPorFiltro);

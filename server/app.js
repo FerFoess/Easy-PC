@@ -15,6 +15,8 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
 const componentsRoutes = require('./routes/componentsRoutes');
 const prearmadoRoutes = require('./routes/prearmadoRoutes')
+const cartRoutes = require ('./routes/cartRoutes');
+
 var app = express();
 
 let dotenv = require('dotenv');
@@ -38,6 +40,8 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.use('/cart', cartRoutes)
 app.use('/components', componentsRoutes)
 app.use('/payments', paymentRoutes);
 app.use('/', indexRouter);
