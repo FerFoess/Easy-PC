@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto'; // Necesario para los gráficos de Chart.js
-import './css/stylesEst.css'; // Importar el archivo CSS para el diseño
+import 'chart.js/auto';
+import './css/stylesEst.css';
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
 import Navbar from '../navBarAdmins/navbar';
 
@@ -15,12 +15,12 @@ const Ventas = () => {
   const [totalDelRango, setTotalDelRango] = useState(0);
   const [fechaInicio, setFechaInicio] = useState(() => {
     const fecha = new Date();
-    fecha.setDate(fecha.getDate()); // Un día anterior
+    fecha.setDate(fecha.getDate());
     return fecha.toISOString().split('T')[0];
   });
   const [fechaFin, setFechaFin] = useState(() => {
     const fecha = new Date();
-    fecha.setDate(fecha.getDate()); // Un día anterior
+    fecha.setDate(fecha.getDate());
     return fecha.toISOString().split('T')[0];
   });
   const [graficaDatos, setGraficaDatos] = useState({ labels: [], datasets: [] });
@@ -216,10 +216,10 @@ const Ventas = () => {
   const realizarCorte = async () => {
     const corteData = {
         total: totalDelCorte,
-        fecha: convertirASoloFecha(new Date()), // Usamos tu función para convertir la fecha
+        fecha: convertirASoloFecha(new Date()),
     };
 
-    console.log('Datos del corte:', corteData); // Verifica que los datos sean correctos
+    console.log('Datos del corte:', corteData);
 
     try {
         const response = await fetch('http://localhost:3002/cortes/crearCorte', {
@@ -234,7 +234,6 @@ const Ventas = () => {
             const nuevoCorte = await response.json();
             alert('Corte realizado con éxito');
             console.log('Nuevo corte:', nuevoCorte);
-            // Aquí podrías actualizar el estado o recargar datos si es necesario
         } else {
             const errorResponse = await response.text();
             console.error('Error al realizar el corte:', errorResponse);
@@ -302,7 +301,7 @@ const Ventas = () => {
     <div className='columna-derecha'>
       <div className='fila-superior'>
         <div className="grafica-ganancias">
-            <h2>Gráfica de Ganancias</h2>
+            <h2>Gráfica de Ventas</h2>
             <select value={modoGrafica} onChange={handleModoGraficaChange}>
               <option value="diario">Diario</option>
               <option value="semanal">Semanal</option>
@@ -313,7 +312,7 @@ const Ventas = () => {
         </div>
       </div>
       <div className='fila-intermedia'>
-      <h3>Total de ganancias: ${totalDelRango.toFixed(2)} </h3>
+      <h3>Total de ventas: ${totalDelRango.toFixed(2)} </h3>
         <input
           type="date"
           value={fechaInicio}
@@ -330,7 +329,7 @@ const Ventas = () => {
       </div>
 
       <div className='fila-inferior'>
-      <h2>Corte</h2>
+      <h2>Corte</h2> 
       <h3>Total del corte: {totalDelCorte}</h3>
       <button className='botoneslocos2' onClick={realizarCorte}>Realizar corte</button>
       </div>

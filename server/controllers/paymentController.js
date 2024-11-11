@@ -1,4 +1,4 @@
-const stripe = require('stripe')('');
+const stripe = require('stripe')('sk_test_51QCqe5G2SwsehGOd94jUKqaRqH7LeO6alWoy8pUC2mfgjG3QlfDkBkdmHcFndGeGBtcvQg6zWrRKKbLxnbMAYQRL004HCUSsa0');
 exports.createPaymentIntent = async (req, res) => {
   const { amount } = req.body;
 
