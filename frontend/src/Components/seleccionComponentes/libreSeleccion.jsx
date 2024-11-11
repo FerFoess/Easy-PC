@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/libreSeleccion.css';
+import { jwtDecode } from 'jwt-decode'; // Importamos jwtDecode
 
 const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCategoria, finalizarSeleccion }) => (
   <div className="categorias">
@@ -70,6 +71,18 @@ const LibreSeleccion = () => {
   const [seleccionPorCategoria, setSeleccionPorCategoria] = useState({});
   const [mostrarDetalles, setMostrarDetalles] = useState(null);
   const [error, setError] = useState('');
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // Obtenemos el token
+    if (token) {
+      const decoded = jwtDecode(token); // Decodificamos el token
+      setUserId(decoded.userId); // Suponiendo que el userId está en el token
+    } else {
+      // Si no hay token, redirigir al login o hacer alguna acción
+      window.location.href = 'http://localhost:3000';
+    }
+  }, []);
 
   const categorias = [
     'Procesador', 'Tarjeta Madre', 'Tarjeta de Video', 'Memoria RAM',
@@ -113,12 +126,7 @@ const LibreSeleccion = () => {
     });
 
     fetch(`http://localhost:3002/components/buscar/filtros?${queryParams}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         const seleccionados = seleccionPorCategoria[categoriaSeleccionada] || [];
         setProductos([...data, ...seleccionados]);
@@ -130,6 +138,9 @@ const LibreSeleccion = () => {
     setSeleccionPorCategoria((prev) => {
       const seleccionActual = prev[categoriaSeleccionada] || [];
       const yaSeleccionado = seleccionActual.some(p => p.id === producto.id);
+      if (!yaSeleccionado) {
+        agregarAlCarrito(producto); // Llamada para agregar el producto al carrito
+      }
       return {
         ...prev,
         [categoriaSeleccionada]: yaSeleccionado
@@ -137,6 +148,25 @@ const LibreSeleccion = () => {
           : [...seleccionActual, producto],
       };
     });
+  };
+
+  // Función para agregar el producto al carrito
+  const agregarAlCarrito = (producto) => {
+    fetch(`http://localhost:3002/cart/cart/${userId}/addComponentToCart`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        componentId: producto.id,
+        quantity: 1, // Aquí ajustamos la cantidad a 1
+        price: producto.precio, // Agregamos el precio del producto
+      }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Error al agregar el producto al carrito');
+      }
+    })
+    .catch((error) => console.error('Error al agregar producto al carrito:', error));
   };
 
   const mostrarDetallesProducto = (producto) => {

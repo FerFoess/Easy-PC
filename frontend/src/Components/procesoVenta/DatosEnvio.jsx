@@ -54,12 +54,6 @@ const DatosEnvio = () => {
 
   return (
     <div className="datos-envio">
-      <div className="barra-proceso">
-        <div className="paso activo">Seleccionar Productos</div>
-        <div className="paso activo">Resumen de Compra</div>
-        <div className="paso activo">Datos de Envío</div>
-        <div className="paso">Realizar pago</div>
-      </div>
       <h2>Datos de Envío</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

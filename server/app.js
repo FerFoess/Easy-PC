@@ -18,6 +18,10 @@ const corteRoutes = require('./routes/corteVentasRoutes');
 const componentsRoutes = require('./routes/componentsRoutes');
 const prearmadoRoutes = require('./routes/prearmadoRoutes');
 const almacenamientoRoutes = require('./routes/almacenamientoRoutes');
+const prearmadoRoutes = require('./routes/prearmadoRoutes')
+const cartRoutes = require ('./routes/cartRoutes');
+
+var app = express();
 
 let dotenv = require('dotenv');
 dotenv.config();
