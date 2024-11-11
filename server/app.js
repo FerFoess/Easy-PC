@@ -3,31 +3,35 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require('cors'); // Importa el middleware cors
+var cors = require('cors');
+
+
+// Otras configuraciones del servidor...
+
 
 var indexRouter = require('./routes/index');
-var productosRouter = require('./routes/productosRoutes');
 var categoriasRouter = require('./routes/categoriasRoutes');
-var ventasRouter = require('./routes/ventasRoutes')
+var ventasRouter = require('./routes/ventasRoutes');
 var auth = require('./routes/auth');
-
 const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
 const componentsRoutes = require('./routes/componentsRoutes');
-const prearmadoRoutes = require('./routes/prearmadoRoutes')
-var app = express();
+const prearmadoRoutes = require('./routes/prearmadoRoutes');
+const almacenamientoRoutes = require('./routes/almacenamientoRoutes');
 
 let dotenv = require('dotenv');
 dotenv.config();
 
-let mongo = require('./config/dbconfig');
+let mongo = require('./config/dbconfig'); // Conexión a MongoDB
 
-// Si no estás usando un motor de plantillas, elimina esta sección
-// view engine setup
+var app = express();
+
+// view engine setup - solo si estás usando vistas
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(cors()); // Usa el middleware cors una vez
+// Middlewares
+app.use(cors()); // Habilitar CORS para todas las rutas
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,29 +42,32 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/components', componentsRoutes)
-app.use('/payments', paymentRoutes);
+
+// Asegúrate de agregar esto para servir las imágenes
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+// Rutas
 app.use('/', indexRouter);
-app.use('/produ', productosRouter);
 app.use('/catego', categoriasRouter);
 app.use('/auth', auth);
 app.use('/ventas', ventasRouter);
 app.use('/cortes', corteRoutes);
-app.use('/cortes', corteRoutes);
+app.use('/components', componentsRoutes);
+app.use('/payments', paymentRoutes);
 app.use('/prearmado', prearmadoRoutes);
+app.use('/almacen', almacenamientoRoutes);
 
-// catch 404 and forward to error handler
+// Manejo de errores 404
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Manejo de errores generales
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // En vez de renderizar una vista, puedes enviar un JSON de error
   res.status(err.status || 500);
   res.json({ message: 'Error', error: res.locals.error });
 });

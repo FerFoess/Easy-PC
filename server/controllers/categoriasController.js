@@ -28,10 +28,24 @@ exports.obtenerCategoriaPorId = async (req, res) => {
 // Controlador para crear una nueva categoría
 exports.crearCategoria = async (req, res) => {
   try {
-    const { nombre, descripcion} = req.body;
+    const { nombre, descripcion, detalles } = req.body;
+
+    // Validación de campos obligatorios
+    if (!nombre || !Array.isArray(detalles)) {
+      return res.status(400).json({ error: 'Nombre y detalles son obligatorios, y detalles debe ser un arreglo' });
+    }
+
+    // Validar que cada detalle tenga un nombre y un tipo
+    for (let detalle of detalles) {
+      if (!detalle.nombre || !detalle.tipo) {
+        return res.status(400).json({ error: 'Cada detalle debe incluir un nombre y un tipo' });
+      }
+    }
+
     const nuevaCategoria = new Categoria({
       nombre,
-      descripcion
+      descripcion,
+      detalles
     });
     const categoriaGuardada = await nuevaCategoria.save();
     res.status(201).json(categoriaGuardada);
@@ -44,7 +58,27 @@ exports.crearCategoria = async (req, res) => {
 // Controlador para actualizar una categoría existente
 exports.actualizarCategoria = async (req, res) => {
   try {
-    const categoria = await Categoria.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { nombre, descripcion, detalles } = req.body;
+
+    // Validación opcional de campos si están presentes en la solicitud
+    if (detalles && !Array.isArray(detalles)) {
+      return res.status(400).json({ error: 'Detalles debe ser un arreglo' });
+    }
+
+    if (detalles) {
+      for (let detalle of detalles) {
+        if (!detalle.nombre || !detalle.tipo) {
+          return res.status(400).json({ error: 'Cada detalle debe incluir un nombre y un tipo' });
+        }
+      }
+    }
+
+    const categoria = await Categoria.findByIdAndUpdate(
+      req.params.id,
+      { nombre, descripcion, detalles },
+      { new: true }
+    );
+
     if (!categoria) {
       return res.status(404).json({ error: 'Categoría no encontrada' });
     }

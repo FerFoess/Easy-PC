@@ -4,6 +4,7 @@
     "@stripe/stripe-js": "^4.9.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
+    "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "nodemailer": "^6.9.15",
     "react-chartjs-2": "^5.2.0",
