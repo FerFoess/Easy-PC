@@ -10,7 +10,6 @@ import CheckoutForm from './Components/procesoVenta/CheckoutForm';
 import CrearCuenta from './Components/controlUsuarios/crearCuenta';
 import Prearmados from './Components/seleccionComponentes/prearmados';
 import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
-import ResumenCompra from './Components/procesoVenta/resumenDecompra';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
 import CarritoCompra from './Components/procesoVenta/carritoCompra';
 import Almacen from './Components/almacenamiento/almacenamiento'
@@ -31,7 +30,6 @@ function App() {
           <Route path="crearCuenta" element={<CrearCuenta/>} />
           <Route path="prearmados" element={<Prearmados/>} />
           <Route path="libreSeleccion" element={<LibreSeleccion/>} />
-          <Route path="resumenCompra" element={<ResumenCompra/>} />
           <Route path="datosEnvio" element={<DatosEnvio/>} />
           <Route path="carritoCompra" element={<CarritoCompra/>} />
           <Route path="almace" element={<Almacen/>} />
