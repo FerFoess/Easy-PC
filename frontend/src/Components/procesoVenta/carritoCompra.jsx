@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import './css/ShoppingCart.css';
-import { jwtDecode } from 'jwt-decode';
+import React, { useState, useEffect } from "react";
+import "./css/ShoppingCart.css";
+import { jwtDecode } from "jwt-decode";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState(null);
+  const [cartId, setCartId] = useState(null);
   const handleGoBack = () => {
     window.history.back();
   };
 
- 
-
   // Obtener el userId desde el JWT token almacenado en localStorage
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
       setUserId(decoded.userId);
     } else {
-      window.location.href = 'http://localhost:3000';
+      window.location.href = "http://localhost:3000";
     }
   }, []);
 
@@ -28,20 +27,23 @@ const ShoppingCart = () => {
     if (userId) {
       const fetchCartData = async () => {
         try {
-          // Obtener los items del carrito con sus IDs
           const response = await fetch(`http://localhost:3002/cart/${userId}`);
           const data = await response.json();
-
+  
+          console.log("Respuesta del backend:", data);  // Ver los detalles completos
+  
           if (response.ok) {
-            // Solicitar los detalles de cada componente en una solicitud POST
+            setCartId(data._id);
+            localStorage.setItem("cartId", data._id); // Guardar cartId en localStorage
+  
             const productosConDetalles = await obtenerDetallesComponentes(data.cartItems);
             setCartItems(productosConDetalles);
           } else {
-            throw new Error(data.message || 'Error al obtener el carrito');
+            throw new Error(data.message || "Error al obtener el carrito");
           }
         } catch (error) {
-          console.error('Error al obtener el carrito:', error);
-          setError('Hubo un problema al obtener los productos del carrito');
+          console.error("Error al obtener el carrito:", error);
+          setError("Hubo un problema al obtener los productos del carrito");
         } finally {
           setLoading(false);
         }
@@ -49,117 +51,149 @@ const ShoppingCart = () => {
       fetchCartData();
     }
   }, [userId]);
+  
 
   const obtenerDetallesComponentes = async (cartItems) => {
     try {
-      const response = await fetch(`http://localhost:3002/components/getCartItems`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cartItems }),
-      });
+      const response = await fetch(
+        `http://localhost:3002/components/getCartItems`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cartItems }),
+        }
+      );
       const productosConDetalles = await response.json();
 
       if (response.ok) {
         // Asigna directamente la cantidad como 1 para cada producto
-        return productosConDetalles.map(producto => ({
+        return productosConDetalles.map((producto) => ({
           ...producto,
-          cantidad: 1  // Aquí la cantidad se asigna como 1 sin comprobar nada
+          cantidad: 1, // Aquí la cantidad se asigna como 1 sin comprobar nada
         }));
       } else {
-        throw new Error('Error al obtener detalles de los componentes');
+        throw new Error("Error al obtener detalles de los componentes");
       }
     } catch (error) {
-      console.error('Error al obtener los detalles de los componentes:', error);
+      console.error("Error al obtener los detalles de los componentes:", error);
       return [];
     }
   };
 
   const handleRemoveItem = async (componentId) => {
     try {
-      const response = await fetch(`http://localhost:3002/cart/cart/${userId}/removeComponent`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ componentId }),
-      });
-  
+      const response = await fetch(
+        `http://localhost:3002/cart/cart/${userId}/removeComponent`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ componentId }),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Error al eliminar el producto');
+        throw new Error("Error al eliminar el producto");
       }
-  
+
       // Obtener los datos actualizados del carrito después de la eliminación
-      const updatedCartResponse = await fetch(`http://localhost:3002/cart/${userId}`);
+      const updatedCartResponse = await fetch(
+        `http://localhost:3002/cart/${userId}`
+      );
       const updatedCartData = await updatedCartResponse.json();
-  
+
       if (updatedCartResponse.ok) {
-        const productosConDetalles = await obtenerDetallesComponentes(updatedCartData.cartItems);
-        setCartItems(productosConDetalles);  // Actualiza los productos en el carrito
+        const productosConDetalles = await obtenerDetallesComponentes(
+          updatedCartData.cartItems
+        );
+        setCartItems(productosConDetalles); // Actualiza los productos en el carrito
       } else {
-        throw new Error(updatedCartData.message || 'Error al obtener el carrito actualizado');
+        throw new Error(
+          updatedCartData.message || "Error al obtener el carrito actualizado"
+        );
       }
     } catch (error) {
-      console.error('Error al eliminar el producto:', error);
+      console.error("Error al eliminar el producto:", error);
     }
   };
-  
-  
+
   // Limpiar el carrito
   const handleClearCart = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/cart/cart/${userId}/clearCart`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `http://localhost:3002/cart/cart/${userId}/clearCart`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Error al limpiar el carrito');
+        throw new Error("Error al limpiar el carrito");
       }
 
       setCartItems([]);
     } catch (error) {
-      console.error('Error al limpiar el carrito:', error);
+      console.error("Error al limpiar el carrito:", error);
     }
   };
 
   // Calcular el subtotal
   const calculateSubtotal = () => {
-    return cartItems.reduce((acc, item) => acc + item.precio * item.cantidad, 0).toFixed(2);
+    return cartItems
+      .reduce((acc, item) => acc + item.precio * item.cantidad, 0)
+      .toFixed(2);
   };
 
   // Función para manejar el cambio de la cantidad localmente
   const handleQuantityChange = (componentId, newQuantity) => {
-    if (newQuantity < 1) return;  // No permitir cantidades menores a 1
+    if (newQuantity < 1) return; // No permitir cantidades menores a 1
 
     // Actualiza la cantidad localmente
-    setCartItems(cartItems.map(item => 
-      item.id === componentId ? { ...item, cantidad: newQuantity } : item
-    ));
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === componentId ? { ...item, cantidad: newQuantity } : item
+      )
+    );
   };
 
   const handleCheckout = async () => {
     try {
-      const subtotal = calculateSubtotal(); // Calcula el subtotal directamente
-      const response = await fetch(`http://localhost:3002/cart/cart/${userId}/updateTotal`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ total: subtotal }), // Enviar el total calculado
-      });
-  
+      const subtotal = calculateSubtotal();
+      const response = await fetch(
+        `http://localhost:3002/cart/cart/${userId}/updateTotal`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ total: subtotal }),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Error al actualizar el total');
+        throw new Error("Error al actualizar el total");
       }
-  
-      // Aquí directamente guardamos el total en localStorage
-      localStorage.setItem('totalCompra', subtotal);
-      alert(subtotal)
-      // Después de guardar el total, rediriges a la siguiente pantalla
-      window.location.href = "http://localhost:3000/datosenvio"; 
+
+      // Guardar total y datos del carrito en localStorage
+      localStorage.setItem("totalCompra", subtotal);
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(
+          cartItems.map((item) => ({
+            idProducto: item.id,
+            nombre: item.nombre,
+            cantidad: item.cantidad,
+            categoria: item.categoria, // Verifica si tienes esta propiedad en los datos
+            costo: item.precio,
+          }))
+        )
+      );
+      // Redirigir a la siguiente pantalla
+      window.location.href = "http://localhost:3000/datosenvio";
     } catch (error) {
-      console.error('Error al hacer el checkout:', error);
+      console.error("Error al hacer el checkout:", error);
     }
   };
-  
 
   // Imagen por defecto
-  const defaultImage = 'https://via.placeholder.com/150';
+  const defaultImage = "https://via.placeholder.com/150";
 
   if (loading) {
     return <div>Loading...</div>;
@@ -176,6 +210,7 @@ const ShoppingCart = () => {
         <thead>
           <tr>
             <th>Imagen</th>
+            <th>Categoria</th>
             <th>Producto</th>
             <th>Precio unitario</th>
             <th>Cantidad</th>
@@ -187,17 +222,25 @@ const ShoppingCart = () => {
         <tbody>
           {cartItems.length === 0 ? (
             <tr>
-              <td colSpan="7" style={{ textAlign: 'center' }}>
-                Aún no tienes productos en tu carrito de compras. Agrega productos para empezar a verlos aquí.
+              <td colSpan="7" style={{ textAlign: "center" }}>
+                Aún no tienes productos en tu carrito de compras. Agrega
+                productos para empezar a verlos aquí.
               </td>
             </tr>
           ) : (
-            cartItems.map(item => {
+            cartItems.map((item) => {
               const imageSrc = item.imagen || defaultImage;
 
               return (
                 <tr key={item.id}>
-                  <td><img src={imageSrc} alt={item.nombre} className="product-image" /></td>
+                  <td>
+                    <img
+                      src={imageSrc}
+                      alt={item.nombre}
+                      className="product-image"
+                    />
+                  </td>
+                  <td className="product-categoria">{item.categoria}</td>
                   <td className="product-info">{item.nombre}</td>
                   <td>${item.precio.toFixed(2)}</td>
                   <td>
@@ -206,13 +249,20 @@ const ShoppingCart = () => {
                       value={item.cantidad}
                       min="1"
                       max={item.stock}
-                      onChange={e => handleQuantityChange(item.id, parseInt(e.target.value, 10))}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          item.id,
+                          parseInt(e.target.value, 10)
+                        )
+                      }
                     />
                   </td>
                   <td>{item.stock}</td>
                   <td>${(item.precio * item.cantidad).toFixed(2)}</td>
                   <td>
-                    <button onClick={() => handleRemoveItem(item.id)}>Remover</button>
+                    <button onClick={() => handleRemoveItem(item.id)}>
+                      Remover
+                    </button>
                   </td>
                 </tr>
               );

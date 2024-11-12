@@ -1,11 +1,11 @@
 const Cart = require('../models/Cart');
 
-// Obtener el carrito del usuario
 const getCart = async (req, res) => {
   const userId = req.params.userId;  // Usamos userId de los parámetros de la URL
 
   try {
     let cart = await Cart.findOne({ userId });
+    console.log("estamos en cartio", cart);
 
     // Si el carrito no existe, creamos uno vacío
     if (!cart) {
@@ -13,12 +13,17 @@ const getCart = async (req, res) => {
       await cart.save(); // Guarda el carrito vacío
     }
 
-    res.json({ cartItems: cart.items });
+    // Responder con cartItems y el _id del carrito
+    res.json({ 
+      _id: cart._id,  // Enviamos el ID del carrito
+      cartItems: cart.items 
+    });
   } catch (error) {
     console.error('Error al obtener el carrito:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
 
 // Crear un carrito para el usuario
 const createCart = async (req, res) => {

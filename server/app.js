@@ -18,7 +18,6 @@ const corteRoutes = require('./routes/corteVentasRoutes');
 const componentsRoutes = require('./routes/componentsRoutes');
 const prearmadoRoutes = require('./routes/prearmadoRoutes');
 const almacenamientoRoutes = require('./routes/almacenamientoRoutes');
-const prearmadoRoutes = require('./routes/prearmadoRoutes')
 const cartRoutes = require ('./routes/cartRoutes');
 
 var app = express();
@@ -61,6 +60,7 @@ app.use('/components', componentsRoutes);
 app.use('/payments', paymentRoutes);
 app.use('/prearmado', prearmadoRoutes);
 app.use('/almacen', almacenamientoRoutes);
+app.use('/cart', cartRoutes);
 
 // Manejo de errores 404
 app.use(function(req, res, next) {

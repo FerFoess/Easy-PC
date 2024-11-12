@@ -14,7 +14,7 @@ const DatosEnvio = () => {
   });
 
   useEffect(() => {
-    // Obtener el token del localStorage
+    
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = jwtDecode(token);
@@ -45,7 +45,8 @@ const DatosEnvio = () => {
     if (allFieldsFilled) {
       // Aquí puedes manejar el envío de los datos
       console.log("Datos de envío:", formData);
-      // Redirigir a la siguiente página
+      localStorage.setItem('email', formData.email);
+
       window.location.href = "http://localhost:3000/checkoutForm"; 
     } else {
       alert("Por favor, completa todos los campos."); // Mensaje de advertencia
