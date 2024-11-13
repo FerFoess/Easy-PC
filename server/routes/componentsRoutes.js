@@ -20,4 +20,6 @@ router.get('/components/purposes/:name', componentsController.getOptionsByPurpos
 router.get('/filtros/categoria', componentsController.obtenerFiltrosPorCategoria);
 router.post('/components/search', componentsController.searchComponents);
 router.get('/:id/existencia', componentsController.obtenerStockProducto);
+router.post('/reducir-stock', componentsController.reducirStock);
+
 module.exports = router;

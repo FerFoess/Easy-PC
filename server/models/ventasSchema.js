@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
 const ventaSchema = new mongoose.Schema({
-  idVenta: { type: String, required: true },
-  idUsuario: { type: String, required: true },
-  total: { type: Number, required: true },
+  idVenta: { type: String, required: false },
+  idUsuario: { type: String, required: false },
+  total: { type: Number, required: false },
   fecha: { type: Date, default: Date.now },
   productos: [
     {
-      idProducto: { type: String, required: true },
-      nombre: { type: String, required: true },
-      cantidad: { type: Number, required: true },
-      categoria: { type: String, required: true },
-      costo: { type: Number, required: true },
+      idProducto: { type: String, required: false },
+      nombre: { type: String, required: false },
+      cantidad: { type: Number, required: false },
+      categoria: { type: String, required: false },
+      costo: { type: Number, required: false },
     },
   ],
 });

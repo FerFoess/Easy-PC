@@ -13,7 +13,6 @@ const obtenerProductos = async (req, res) => {
 // Obtener productos en el carrito
 const obtenerProductosCarrito = async (req, res) => {
     const { cartItems } = req.body;
-    console.log("entro")
     console.log(cartItems)
     try {
         if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -22,15 +21,14 @@ const obtenerProductosCarrito = async (req, res) => {
         }
 
         const productosConDetalles = await Promise.all(cartItems.map(async (item) => {
-
-    console.log(item.componentId)
             const producto = await Components.findById(item.componentId);
             return producto ? {
                 id: producto._id,
                 nombre: producto.nombre,
                 imagen: producto.imagen,
                 precio: producto.precio,
-                stock: producto.stock
+                stock: producto.stock,
+                categoria: producto.categoria,
             } : null;
         }));
 
@@ -90,30 +88,53 @@ const obtenerProductosPorFiltro = async (req, res) => {
     const { categoria, ...filtros } = req.query;
     try {
         const query = { categoria };
+
+        // Filtrar por otros criterios en 'especificaciones'
         for (const [key, value] of Object.entries(filtros)) {
             if (value) query[`especificaciones.${key}`] = value;
         }
+
+        // Obtener productos que coincidan con los filtros
         const productos = await Components.find(query);
-        if (!productos.length) {
-            return res.status(404).json({ message: 'No se encontraron productos con esos filtros' });
+
+        // Filtrar productos con stock > 0
+        const productosDisponibles = productos.filter(producto => producto.stock > 0);
+
+        if (!productosDisponibles.length) {
+            return res.status(404).json({ message: 'No se encontraron productos disponibles con esos filtros' });
         }
-        res.json(productos);
+
+        // Responder solo con productos que tienen stock disponible
+        res.json(productosDisponibles);
     } catch (error) {
         console.error('Error al obtener productos por filtro:', error);
         res.status(500).json({ error: 'Error al obtener productos por filtro' });
     }
 };
 
+
 // Obtener productos por propósito
 const obtenerProductosPorProposito = async (req, res) => {
     const { proposito } = req.query;
     try {
+        // Buscar productos por el propósito
         const productos = await Components.find({ propositos: proposito });
-        res.json(productos);
+
+        // Filtrar productos con stock mayor a 0
+        const productosDisponibles = productos.filter(producto => producto.stock > 0);
+
+        if (!productosDisponibles.length) {
+            return res.status(404).json({ message: 'No se encontraron productos disponibles para ese propósito' });
+        }
+
+        // Responder con los productos disponibles
+        res.json(productosDisponibles);
     } catch (error) {
+        console.error('Error al obtener productos por propósito:', error);
         res.status(500).json({ error: 'Error al obtener productos por propósito' });
     }
 };
+
 
 // Obtener propósitos por categoría
 const getOptionsByPurpose = async (req, res) => {
@@ -151,17 +172,27 @@ const searchComponents = async (req, res) => {
     const { selectedOptions } = req.body;
     try {
         const filters = {};
+
+        // Aplicar filtros de categoria y propositos si están presentes
         if (selectedOptions?.categoria) filters.categoria = selectedOptions.categoria;
         if (selectedOptions?.propositos?.length) {
             filters.propositos = { $in: selectedOptions.propositos };
         }
+
+        // Buscar componentes con los filtros aplicados
         const components = await Components.find(filters);
-        res.status(200).json(components.length > 0 ? components : []);
+
+        // Filtrar los componentes con stock mayor a 0
+        const availableComponents = components.filter(component => component.stock > 0);
+
+        // Responder con los componentes disponibles
+        res.status(200).json(availableComponents.length > 0 ? availableComponents : []);
     } catch (error) {
         console.error("Error fetching components:", error);
         res.status(500).json({ message: "Error al cargar los componentes" });
     }
 };
+
 
 // Obtener cantidad de stock disponible de un producto
 const obtenerStockProducto = async (req, res) => {
@@ -191,6 +222,33 @@ const obtenerProductoPorId = async (req, res) => {
     }
 };
 
+// Reducir el stock de los productos según las cantidades solicitadas
+const reducirStock = async (req, res) => {
+    const { productos } = req.body; // Recibimos el array de productos con sus cantidades
+    try {
+        const productosActualizados = await Promise.all(productos.map(async (producto) => {
+            const { idProducto, cantidad } = producto;
+            const componente = await Components.findById(idProducto);
+            if (!componente) {
+                throw new Error(`Producto con id ${idProducto} no encontrado`);
+            }
+            if (componente.stock < cantidad) {
+                throw new Error(`No hay suficiente stock para el producto ${componente.nombre}`);
+            }
+            // Reducir el stock
+            componente.stock -= cantidad;
+            await componente.save();
+            return componente;
+        }));
+
+        res.json({ message: "Stock actualizado correctamente", productosActualizados });
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
 module.exports = {
     obtenerProductos,
     crearProducto,
@@ -203,5 +261,6 @@ module.exports = {
     searchComponents,
     obtenerStockProducto,
     obtenerProductosCarrito,
-    obtenerProductoPorId
+    obtenerProductoPorId,
+    reducirStock,
 };
