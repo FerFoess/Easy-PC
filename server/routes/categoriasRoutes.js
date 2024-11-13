@@ -18,14 +18,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Ruta para crear una nueva categoría con imagen
-// Ruta para crear una nueva categoría con imagen
 router.post('/', upload.single('imagen'), async (req, res) => {
   try {
-    const { nombre, descripcion, detalles, categoria, precio } = req.body;
+    const { nombre, descripcion, detalles, categoria, precio, tipo, proposito, stock } = req.body;
 
     // Validar que los campos requeridos estén presentes
-    if (!nombre || !categoria || !precio || !detalles) {
-      return res.status(400).json({ error: 'Nombre, categoría, precio y detalles son obligatorios' });
+    if (!nombre || !categoria || !precio || !detalles || !tipo || !proposito || stock === undefined) {
+      return res.status(400).json({ error: 'Nombre, categoría, precio, detalles, tipo, propósito y stock son obligatorios' });
     }
 
     // Convertir `detalles` a objeto si se envía como cadena JSON
@@ -43,6 +42,9 @@ router.post('/', upload.single('imagen'), async (req, res) => {
       categoria,
       precio,
       detalles: detallesParsed, // Asigna el objeto parseado o directamente el objeto
+      tipo,
+      proposito,
+      stock // Incluye el campo de stock
     };
 
     if (req.file) {
@@ -59,9 +61,6 @@ router.post('/', upload.single('imagen'), async (req, res) => {
   }
 });
 
-
-
-
 // Ruta para obtener una categoría por su ID
 router.get('/', async (req, res) => {
   try {
@@ -73,13 +72,12 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 // Ruta para actualizar una categoría existente por su ID
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', upload.single('imagen'), async (req, res) => {
   try {
-    const { nombre, descripcion, detalles, categoria, precio } = req.body;
+    const { nombre, descripcion, detalles, categoria, precio, tipo, proposito, stock } = req.body;
 
-    // Validar que 'nombre', 'detalles', 'categoria' y 'precio', si están presentes, tengan el formato correcto
+    // Validar que los campos requeridos sean correctos (como en tu código original)
     if (nombre && typeof nombre !== 'string') {
       return res.status(400).json({ error: 'Nombre debe ser una cadena de texto' });
     }
@@ -92,24 +90,60 @@ router.patch('/:id', async (req, res) => {
     if (precio && typeof precio !== 'number') {
       return res.status(400).json({ error: 'Precio debe ser un número' });
     }
+    if (tipo && typeof tipo !== 'string') {
+      return res.status(400).json({ error: 'Tipo debe ser una cadena de texto' });
+    }
+    if (proposito && typeof proposito !== 'string') {
+      return res.status(400).json({ error: 'Propósito debe ser una cadena de texto' });
+    }
+    if (stock && typeof stock !== 'number') {
+      return res.status(400).json({ error: 'Stock debe ser un número' });
+    }
 
-    const categoriaActualizada = await Categoria.findByIdAndUpdate(
-      req.params.id,
-      { nombre, descripcion, detalles, categoria, precio },
-      { new: true }
+    // Parsear los detalles si vienen como una cadena JSON
+    let detallesParsed;
+    try {
+      detallesParsed = typeof detalles === 'string' ? JSON.parse(detalles) : detalles;
+    } catch (parseError) {
+      return res.status(400).json({ error: 'Detalles debe ser un objeto válido o una cadena JSON' });
+    }
+
+    // Crear un objeto para actualizar, solo si los campos han sido proporcionados
+    const categoriaActualizada = {
+      nombre,
+      descripcion,
+      categoria,
+      precio,
+      detalles: detallesParsed,
+      tipo,
+      proposito,
+      stock // Actualiza el campo de stock
+    };
+
+    // Si se sube una nueva imagen, se reemplaza la anterior
+    if (req.file) {
+      categoriaActualizada.imagen = req.file.path; // Asigna la nueva imagen
+    }
+
+    // Actualizar la categoría en la base de datos
+    const updatedCategory = await Categoria.findByIdAndUpdate(
+      req.params.id, // Usamos el ID de la categoría para encontrarla
+      categoriaActualizada, // Los datos a actualizar
+      { new: true } // Devuelve el documento actualizado
     );
 
-    if (!categoriaActualizada) {
+    // Si la categoría no se encuentra, devolvemos un error
+    if (!updatedCategory) {
       return res.status(404).json({ error: 'Categoría no encontrada' });
     }
 
-    res.json(categoriaActualizada);
+    // Devolvemos la categoría actualizada
+    res.json(updatedCategory);
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: 'Error al actualizar la categoría' });
   }
 });
-
 
 // Ruta para eliminar una categoría por su ID
 router.delete('/:id', async (req, res) => {
@@ -125,7 +159,5 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar la categoría' });
   }
 });
-
-
 
 module.exports = router;

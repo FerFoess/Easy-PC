@@ -12,7 +12,8 @@ import Prearmados from './Components/seleccionComponentes/prearmados';
 import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
 import CarritoCompra from './Components/procesoVenta/carritoCompra';
-import Almacen from './Components/almacenamiento/almacenamiento'
+import Almacen from './Components/almacenamiento/almacenamiento';
+import ProductForm from './Components/almacenamiento/ProductoForm';
 
 
 function App() {
@@ -32,7 +33,8 @@ function App() {
           <Route path="libreSeleccion" element={<LibreSeleccion/>} />
           <Route path="datosEnvio" element={<DatosEnvio/>} />
           <Route path="carritoCompra" element={<CarritoCompra/>} />
-          <Route path="almace" element={<Almacen/>} />
+          <Route path="almacen" element={<Almacen/>} />
+          <Route path="productForm" element={<ProductForm/>} />
         </Routes>
       </Router>
     </div>
