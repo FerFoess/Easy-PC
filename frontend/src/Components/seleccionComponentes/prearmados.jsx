@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";  
 import "./css/prearmados.css";
-
+import Navbar from '../inicio/Navbar.js';
+import { jwtDecode } from "jwt-decode";
 const Prearmados = () => {
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
@@ -25,6 +28,13 @@ const Prearmados = () => {
 
   useEffect(() => {
     fetchPrearmados();
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUserId(decoded.userId);
+    } else {
+      window.location.href = "http://localhost:3000";
+    }
   }, []);
 
   const fetchPrearmados = async () => {
@@ -84,26 +94,25 @@ const Prearmados = () => {
     setSelectedPC(pc);
   };
 
-  const handleAcceptPC = () => {
+  const handleAcceptPC = async () => {
     if (selectedPC) {
-      navigate('/resumenCompra', { state: { selecciones: { pcSeleccionada: [selectedPC] } } });
+      try {
+        const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
+          componentId: selectedPC._id,
+        });
+        
+        if (response.status === 200) {
+          alert("Producto agregado al carrito");
+        }
+      } catch (error) {
+        console.error("Error al agregar producto al carrito:", error);
+      }
     }
-  };  
+  }; 
 
   return (
     <div className="app">
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="logo">
-          <img src="/assets/logo.png" alt="Logo" className="logo-image" />
-        </div>
-        <div className="nav-buttons">
-          <button className="nav-button" onClick={() => navigate('/inicio')}>Inicio</button>
-          <button className="nav-button" onClick={() => navigate('/Tipoequipo')}>Arma tu pc</button>
-          <button className="nav-button" onClick={() => navigate('/catalogo-componentes')}>Catálogo de componentes</button>
-        </div>
-      </nav>
-
+  <Navbar />
       <div className="gray-boxD">
         <div className="filters-horizontal">
           <div className="filter-group">
@@ -200,7 +209,7 @@ const Prearmados = () => {
             <p>Almacenamiento: {selectedPC.storage}</p>
             <p>Tarjeta Gráfica: {selectedPC.graphics}</p>
             <p>Precio: ${selectedPC.price}</p>
-            <button onClick={handleAcceptPC}>Aceptar</button>
+            <button onClick={handleAcceptPC}>Agregar al carrito</button>
           </div>
         )}
       </div>
@@ -212,4 +221,4 @@ const Prearmados = () => {
   );
 };
 
-export default Prearmados;
+export default Prearmados; 

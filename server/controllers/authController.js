@@ -5,6 +5,13 @@ const User = require('../models/usersSchema');
 
 // nodemailerConfig.js
 const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+  service: 'gmail', 
+  auth: {
+    user: 'easypc.companymx@gmail.com', 
+    pass: 'ceao hocb dxri cnsr', 
+  },
+});
 
 
 

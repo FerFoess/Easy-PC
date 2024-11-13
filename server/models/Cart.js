@@ -2,22 +2,18 @@ const mongoose = require('mongoose');
 
 const cartItemSchema = new mongoose.Schema({
   componentId: {
-    type: mongoose.Schema.Types.ObjectId, // Sigue usando ObjectId para los IDs de componentes
+     type: String ,  // Sigue usando ObjectId para los IDs de componentes
     required: true,
   },
-  // Se eliminan los campos 'quantity' y 'price'
+
 });
 
 const cartSchema = new mongoose.Schema({
   userId: {
-    type: String, // Puedes almacenar solo el ID como cadena
+    type: String, 
     required: true,
   },
-  items: [cartItemSchema], // Lista de productos en el carrito
-  total: {
-    type: Number,
-    default: 0,
-  },
+  items: [cartItemSchema], 
   status: {
     type: String,
     enum: ['active', 'completed', 'abandoned'],

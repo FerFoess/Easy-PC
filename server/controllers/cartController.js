@@ -5,7 +5,6 @@ const getCart = async (req, res) => {
 
   try {
     let cart = await Cart.findOne({ userId });
-    console.log("estamos en cartio", cart);
 
     // Si el carrito no existe, creamos uno vacío
     if (!cart) {
@@ -47,10 +46,9 @@ const createCart = async (req, res) => {
   }
 };
 
-// Agregar un componente al carrito
 const addComponentToCart = async (req, res) => {
   const { userId } = req.params;
-  const { componentId, quantity, price } = req.body;
+  const { componentId } = req.body;
 
   try {
     // Buscar el carrito del usuario
@@ -62,18 +60,18 @@ const addComponentToCart = async (req, res) => {
     }
 
     // Verificar si el componente ya está en el carrito
-    const existingItem = cart.items.find(item => item.componentId.toString() === componentId);
+    const existingItem = cart.items.find(
+      item => item.componentId.toString() === componentId.toString()
+    );
 
     if (existingItem) {
-      existingItem.quantity += quantity;  // Aumentar la cantidad
+      existingItem.quantity += 1;  // Aumentar la cantidad
     } else {
-      cart.items.push({ componentId, quantity, price });
+      // Convertir componentId a String antes de guardarlo
+      cart.items.push({ componentId: componentId.toString() });
     }
 
-    // Recalcular el total
-    cart.total = cart.items.reduce((total, item) => total + item.quantity * item.price, 0);
-
-    await cart.save();  // Guardar los cambios
+    await cart.save(); 
     res.status(200).send({ message: 'Producto agregado al carrito' });
 
   } catch (error) {
@@ -81,6 +79,8 @@ const addComponentToCart = async (req, res) => {
     res.status(500).send({ message: 'Error al agregar producto al carrito' });
   }
 };
+
+
 
 // Eliminar un componente del carrito
 const removeComponentFromCart = async (req, res) => {

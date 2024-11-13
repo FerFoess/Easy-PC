@@ -1,5 +1,6 @@
 import React from "react";
 import "./css/styles.css"; // Puedes mantener la importación si tienes estilos adicionales en CSS
+import Navbar from '../inicio/Navbar.js';
 
 function Propocito() {
   const handleRedirect1 = () => {
@@ -16,10 +17,7 @@ function Propocito() {
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#27293d', color: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: '#1e1f2b', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)', width: '100%' }}>
-        <div style={{ fontSize: '2rem' }}>Easy-PC</div>
-        <h1 style={{ fontSize: '1.5rem', textAlign: 'center', margin: '0' }}>Elige para qué quieres usar tu equipo o trabaja libremente</h1>
-      </nav>
+     <Navbar />
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', margin: '2rem' }}>
         <div
