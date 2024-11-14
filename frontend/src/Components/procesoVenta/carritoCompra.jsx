@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./css/ShoppingCart.css";
 import { jwtDecode } from "jwt-decode";
+import Navbar from "../inicio/Navbar.js";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -197,6 +198,8 @@ const ShoppingCart = () => {
   }
 
   return (
+    <div>
+ <Navbar />
     <div className="shopping-cart">
       <h1>Tu Carrito de compra</h1>
       <table className="cart-table">
@@ -300,6 +303,7 @@ const ShoppingCart = () => {
         <button className="checkout-button" onClick={handleCheckout}>
           Comprar
         </button>
+      </div>
       </div>
     </div>
   );
