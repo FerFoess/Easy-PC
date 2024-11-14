@@ -25,7 +25,9 @@ const Prearmados = () => {
   const [filteredPrearmados, setFilteredPrearmados] = useState([]);
   const [selectedPC, setSelectedPC] = useState(null); // Estado para el prearmado seleccionado
   const [error, setError] = useState("");
-
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupMensaje, setPopupMensaje] = useState('');
+  
   useEffect(() => {
     fetchPrearmados();
     const token = localStorage.getItem("token");
@@ -94,21 +96,29 @@ const Prearmados = () => {
     setSelectedPC(pc);
   };
 
-  const handleAcceptPC = async () => {
-    if (selectedPC) {
-      try {
-        const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
-          componentId: selectedPC._id,
-        });
-        
-        if (response.status === 200) {
-          alert("Producto agregado al carrito");
-        }
-      } catch (error) {
-        console.error("Error al agregar producto al carrito:", error);
+  const handleAcceptPC = async (producto) => {
+    try {
+      const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
+        componentId: selectedPC._id,
+      });
+      if (response.status === 200) {
+        setPopupVisible(false);
+        setTimeout(() => {
+          setPopupMensaje('Producto agregado al carrito');
+          setPopupVisible(true);
+        }, 300);
+      } else {
+        throw new Error('Error al agregar el producto al carrito');
       }
+    } catch (error) {
+      console.error('Error al agregar producto al carrito:', error);
     }
-  }; 
+  };
+ 
+  const cerrarPopups = () => {
+    setSelectedPC(null);
+    setPopupVisible(false);
+  };
 
   return (
     <div className="app">
@@ -201,7 +211,8 @@ const Prearmados = () => {
         </div>
         
         {selectedPC && (
-          <div className="selected-pc">
+           <div className="popup">
+          <div className="popup-content">
             <h3>PC Seleccionada</h3>
             <p>Nombre: {selectedPC.name}</p>
             <p>Procesador: {selectedPC.processor}</p>
@@ -210,8 +221,19 @@ const Prearmados = () => {
             <p>Tarjeta Gráfica: {selectedPC.graphics}</p>
             <p>Precio: ${selectedPC.price}</p>
             <button onClick={handleAcceptPC}>Agregar al carrito</button>
+            <button className="btn-cerrar" onClick={cerrarPopups}>Cerrar</button>
+          </div>
           </div>
         )}
+
+{popupVisible && (
+        <div className="popup-overlay" onClick={cerrarPopups}>
+          <div className="popup-message">
+            <p>{popupMensaje}</p>
+            <button onClick={cerrarPopups}>Cerrar</button>
+          </div>
+        </div>
+      )}
       </div>
 
       <button className="back-button" onClick={() => window.history.back()}>

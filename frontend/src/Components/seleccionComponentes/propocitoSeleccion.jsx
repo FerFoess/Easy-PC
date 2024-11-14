@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './css/libreSeleccion.css';
+import './css/sty.css';
 import Navbar from '../inicio/Navbar.js';
-const LibreSeleccion = () => {
+import axios from "axios";
+import {jwtDecode} from 'jwt-decode';
+
+const PropocitoSeleccion = () => {
   const navigate = useNavigate();
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [productos, setProductos] = useState([]);
@@ -12,6 +15,9 @@ const LibreSeleccion = () => {
   const [seleccionadas, setSeleccionadas] = useState([]);
   const [componentesSeleccionados, setComponentesSeleccionados] = useState({});
   const [error, setError] = useState('');
+  const [userId, setUserId] = useState(null);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupMensaje, setPopupMensaje] = useState('');
 
   const categorias = [
     'Procesador', 'Tarjeta Madre', 'Tarjeta de Video', 'Memoria RAM',
@@ -20,6 +26,16 @@ const LibreSeleccion = () => {
   ];
 
   const propositos = ["VideoJuegos", "Trabajo", "Ocio", "Estudio"];
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUserId(decoded.userId);
+    } else {
+      window.location.href = 'http://localhost:3000';
+    }
+  }, []);
 
   useEffect(() => {
     if (propositoSeleccionado) {
@@ -96,61 +112,39 @@ const LibreSeleccion = () => {
     setMostrarDetalles(null);
   };
 
-  const seleccionarComponente = (producto) => {
-    setComponentesSeleccionados((prev) => {
-      const newComponentes = prev[categoriaSeleccionada] || [];
-      const isAlreadySelected = newComponentes.find(p => p.id === producto.id);
-
-      if (isAlreadySelected) {
-        // Si el producto ya está seleccionado, lo eliminamos
-        return {
-          ...prev,
-          [categoriaSeleccionada]: newComponentes.filter(p => p.id !== producto.id),
-        };
+  const agregarAlCarrito = async (producto) => {
+    try {
+      const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
+        componentId: producto._id,
+      });
+      if (response.status === 200) {
+        setPopupVisible(false);
+        setTimeout(() => {
+          setPopupMensaje('Producto agregado al carrito');
+          setPopupVisible(true);
+        }, 300);
       } else {
-        // Si no está seleccionado, lo añadimos
-        return {
-          ...prev,
-          [categoriaSeleccionada]: [...newComponentes, { ...producto, proposito: propositoSeleccionado }],
-        };
+        throw new Error('Error al agregar el producto al carrito');
       }
-    });
-  };
-
-  const isSeleccionado = (producto) => 
-    componentesSeleccionados[categoriaSeleccionada]?.some(p => p.id === producto.id);
-
-  const obtenerProductosMostrados = () => {
-    const productosMostrados = [...productos];
-
-    // Aquí se incluyen solo los productos seleccionados
-    const seleccionadosDeCategoria = componentesSeleccionados[categoriaSeleccionada] || [];
-    seleccionadosDeCategoria.forEach((producto) => {
-      if (!productosMostrados.some(p => p.id === producto.id)) {
-        productosMostrados.push(producto);
-      }
-    });
-
-    return productosMostrados;
-  };
-
-  const finalizarSeleccion = () => {
-    if (Object.keys(componentesSeleccionados).length === 0) {
-      setError("No has seleccionado ningún componente.");
-      return;
+    } catch (error) {
+      console.error('Error al agregar producto al carrito:', error);
     }
-    navigate('/resumenCompra', { state: { selecciones: componentesSeleccionados } });
+  };
+
+  const cerrarPopups = () => {
+    setMostrarDetalles(null);
+    setPopupVisible(false);
   };
 
   return (
-    <div className="libreSeleccion">
+    <div className="propocitoeleccion">
       <Navbar />
 
       <div className="propositos">
         {propositos.map((proposito) => (
           <button
             key={proposito}
-            className={`proposito-btn ${proposito === propositoSeleccionado ? 'seleccionado' : ''}`}
+            className="proposito-btn"
             onClick={() => handlePropositoChange(proposito)}
           >
             {proposito}
@@ -159,20 +153,24 @@ const LibreSeleccion = () => {
       </div>
 
       {propositoSeleccionado && opciones.length > 0 && (
-        <div className="options-container">
-          {opciones.map((opcion, index) => (
-            <div className="option-checkbox" key={index}>
-              <input
-                type="checkbox"
-                id={`option-${index}`}
-                checked={seleccionadas.includes(opcion)}
-                onChange={() => handleOptionChange(opcion)}
-              />
-              <label htmlFor={`option-${index}`}>{opcion}</label>
-            </div>
-          ))}
+  <div className="options-container">
+    {opciones.map((opcion, index) => (
+      <div
+        key={index}
+        className={`option-card ${seleccionadas.includes(opcion) ? 'option-card-selected' : ''}`}
+        onClick={() => handleOptionChange(opcion)}
+      >
+        <span>{opcion}</span>
+        <div className="check-icon">
+          <i className="fa fa-check"></i> {/* Icono de check usando FontAwesome */}
         </div>
-      )}
+      </div>
+    ))}
+  </div>
+)}
+
+
+
 
       {error && <p className="error-message">{error}</p>}
 
@@ -180,30 +178,26 @@ const LibreSeleccion = () => {
         {categorias.map((categoria) => (
           <button
             key={categoria}
-            className={`categoria-btn ${categoria === categoriaSeleccionada ? 'seleccionada' : ''}`}
+            className="categoria-btn"
             onClick={() => seleccionarCategoria(categoria)}
           >
             {categoria}
           </button>
         ))}
-        <button 
-          className="categoria-btn finalizar-seleccion" 
-          style={{ backgroundColor: 'green', color: 'white' }} 
-          onClick={finalizarSeleccion}
-        >
-          Finalizar Selección
-        </button>
       </div>
+      <div>
+  {categoriaSeleccionada && (
+    <h3 style={{ color: 'white' }}>Productos en la categoria {categoriaSeleccionada}</h3>
+  )}
+</div>
 
       <div className="productos">
-        <h3>Productos en {categoriaSeleccionada}</h3>
-        {obtenerProductosMostrados().length > 0 ? (
-          obtenerProductosMostrados().map((producto, index) => (
+        {productos.length > 0 ? (
+          productos.map((producto, index) => (
             <div
               key={index}
-              className={`producto ${isSeleccionado(producto) ? 'seleccionado' : 'no-seleccionado'}`}
+              className="producto"
               onClick={() => mostrarDetallesProducto(producto)}
-              style={{ backgroundColor: isSeleccionado(producto) ? 'purple' : '#333' }}
             >
               <h4>{producto.nombre}</h4>
               <p>{producto.descripcion}</p>
@@ -211,7 +205,7 @@ const LibreSeleccion = () => {
             </div>
           ))
         ) : (
-          <p>Por favor selecciona un propósito y una categoría para ver los productos.</p>
+          <p></p>
         )}
       </div>
 
@@ -221,15 +215,35 @@ const LibreSeleccion = () => {
             <h4>{mostrarDetalles.nombre}</h4>
             <p>{mostrarDetalles.descripcion}</p>
             <p>Precio: ${mostrarDetalles.precio}</p>
-            <button className="btn-seleccionar" onClick={() => seleccionarComponente(mostrarDetalles)}>
-              {isSeleccionado(mostrarDetalles) ? 'Quitar Selección' : 'Seleccionar'}
+            <div className="especificaciones">
+              <h5>Especificaciones:</h5>
+              <ul>
+                {Object.entries(mostrarDetalles.especificaciones).map(([key, value]) => (
+                  <li key={key}>
+                    <strong>{key}:</strong> {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button className="btn-agregar-carrito" onClick={() => agregarAlCarrito(mostrarDetalles)}>
+              Agregar al carrito
             </button>
             <button className="btn-cerrar" onClick={cerrarDetalles}>Cerrar</button>
           </div>
         </div>
       )}
+
+      {popupVisible && (
+        <div className="popup-overlay" onClick={cerrarPopups}>
+          <div className="popup-message">
+            <p>{popupMensaje}</p>
+            <button onClick={cerrarPopups}>Cerrar</button>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };
 
-export default LibreSeleccion;
+export default PropocitoSeleccion;
