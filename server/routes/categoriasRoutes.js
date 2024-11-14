@@ -20,31 +20,31 @@ const upload = multer({ storage: storage });
 // Ruta para crear una nueva categoría con imagen
 router.post('/', upload.single('imagen'), async (req, res) => {
   try {
-    const { nombre, descripcion, detalles, categoria, precio, tipo, proposito, stock } = req.body;
+    const { nombre, descripcion, especificaciones, categoria, precio, tipo, proposito, stock } = req.body;
 
-    // Validar que los campos requeridos estén presentes
-    if (!nombre || !categoria || !precio || !detalles || !tipo || !proposito || stock === undefined) {
-      return res.status(400).json({ error: 'Nombre, categoría, precio, detalles, tipo, propósito y stock son obligatorios' });
-    }
-
-    // Convertir `detalles` a objeto si se envía como cadena JSON
-    let detallesParsed;
+    // Convertir especificaciones a un objeto si es necesario
+    let especificacionesParsed = {};
     try {
-      detallesParsed = typeof detalles === 'string' ? JSON.parse(detalles) : detalles;
-    } catch (parseError) {
-      return res.status(400).json({ error: 'Detalles debe ser un objeto válido o una cadena JSON' });
+      especificacionesParsed = JSON.parse(especificaciones);
+    } catch (error) {
+      return res.status(400).json({ error: 'Las especificaciones deben ser un objeto válido' });
     }
 
-    // Crear un nuevo objeto con la imagen si se subió una
+    // Validaciones
+    if (!nombre || !categoria || !precio || !especificacionesParsed || !tipo || !proposito || stock === undefined) {
+      return res.status(400).json({ error: 'Nombre, categoría, precio, especificaciones, tipo, propósito y stock son obligatorios' });
+    }
+
+    // Crear un nuevo producto
     let nuevaCategoria = {
       nombre,
       descripcion,
       categoria,
       precio,
-      detalles: detallesParsed, // Asigna el objeto parseado o directamente el objeto
+      especificaciones: new Map(Object.entries(especificacionesParsed)), // Convertir a Map
       tipo,
       proposito,
-      stock // Incluye el campo de stock
+      stock,
     };
 
     if (req.file) {
@@ -61,7 +61,8 @@ router.post('/', upload.single('imagen'), async (req, res) => {
   }
 });
 
-// Ruta para obtener una categoría por su ID
+
+// Ruta para obtener todas las categorías
 router.get('/', async (req, res) => {
   try {
     const categorias = await Categoria.find();
@@ -72,17 +73,31 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Ruta para obtener una categoría por su ID
+router.get('/:id', async (req, res) => {
+  try {
+    const categoria = await Categoria.findById(req.params.id);
+    if (!categoria) {
+      return res.status(404).json({ error: 'Categoría no encontrada' });
+    }
+    res.json(categoria);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener la categoría' });
+  }
+});
+
 // Ruta para actualizar una categoría existente por su ID
 router.patch('/:id', upload.single('imagen'), async (req, res) => {
   try {
-    const { nombre, descripcion, detalles, categoria, precio, tipo, proposito, stock } = req.body;
+    const { nombre, descripcion, especificaciones, categoria, precio, tipo, proposito, stock } = req.body;
 
-    // Validar que los campos requeridos sean correctos (como en tu código original)
+    // Validación de los campos recibidos
     if (nombre && typeof nombre !== 'string') {
       return res.status(400).json({ error: 'Nombre debe ser una cadena de texto' });
     }
-    if (detalles && typeof detalles !== 'object') {
-      return res.status(400).json({ error: 'Detalles debe ser un objeto' });
+    if (especificaciones && typeof especificaciones !== 'object') {
+      return res.status(400).json({ error: 'Especificaciones debe ser un objeto' });
     }
     if (categoria && typeof categoria !== 'string') {
       return res.status(400).json({ error: 'Categoría debe ser una cadena de texto' });
@@ -100,24 +115,16 @@ router.patch('/:id', upload.single('imagen'), async (req, res) => {
       return res.status(400).json({ error: 'Stock debe ser un número' });
     }
 
-    // Parsear los detalles si vienen como una cadena JSON
-    let detallesParsed;
-    try {
-      detallesParsed = typeof detalles === 'string' ? JSON.parse(detalles) : detalles;
-    } catch (parseError) {
-      return res.status(400).json({ error: 'Detalles debe ser un objeto válido o una cadena JSON' });
-    }
-
     // Crear un objeto para actualizar, solo si los campos han sido proporcionados
     const categoriaActualizada = {
       nombre,
       descripcion,
       categoria,
       precio,
-      detalles: detallesParsed,
+      especificaciones: especificaciones ? new Map(Object.entries(especificaciones)) : undefined, // Convertir a Map si especificaciones existe
       tipo,
       proposito,
-      stock // Actualiza el campo de stock
+      stock, // Actualiza el campo de stock
     };
 
     // Si se sube una nueva imagen, se reemplaza la anterior
@@ -147,7 +154,6 @@ router.patch('/:id', upload.single('imagen'), async (req, res) => {
 
 // Ruta para eliminar una categoría por su ID
 router.delete('/:id', async (req, res) => {
-  console.log("ID recibido en el backend:", req.params.id);  // Depurar el valor de id en el backend
   try {
     const categoriaEliminada = await Categoria.findByIdAndDelete(req.params.id);
     if (!categoriaEliminada) {
