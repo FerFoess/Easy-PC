@@ -5,9 +5,9 @@ const categoriaSchema = new mongoose.Schema({
   descripcion: { type: String },
   categoria: { type: String, required: true },
   precio: { type: Number, required: true },
-  detalles: {
-    type: Object, // Detalles como objeto plano
-    required: true
+  especificaciones: {
+    type: Map,
+    of: [String], 
   },
   tipo: { type: String, required: true },  // Asegúrate de agregar esto
   proposito: { type: String, required: true },  // Asegúrate de agregar esto

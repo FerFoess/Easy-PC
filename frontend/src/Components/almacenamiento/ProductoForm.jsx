@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./estilos.css";
-import { useLocation } from "react-router-dom";
 
-
-
-const API_URL = process.env.REACT_APP_BACKEND_URL
-
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ProductForm = ({ selectedProduct, onProductSaved }) => {
   const navigate = useNavigate();
-
   const location = useLocation();
   const { state } = location;
+  const selectedProductFromState = state?.product;
 
   // Estilos en línea
   const containerStyle = {
@@ -67,13 +63,14 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     descripcion: "",
     proposito: "", // Nuevo campo proposito
     imagen: null,
-    detalles: {},
+    especificaciones: {}, // Cambiado de 'detalles' a 'especificaciones'
     tipo: "",
     stock: "", // Nuevo campo stock
   });
+  
   const [categorias, setCategorias] = useState([]);
   const [detallesCategoria, setDetallesCategoria] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Estado para controlar el spinner
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetch(`${API_URL}/catego`)
@@ -83,39 +80,41 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedProduct) {
+    if (selectedProductFromState) {
       setFormData({
-        nombre: selectedProduct.nombre,
-        categoria: selectedProduct.categoria,
-        precio: selectedProduct.precio,
-        descripcion: selectedProduct.descripcion,
-        proposito: selectedProduct.proposito || "",
-        imagen: selectedProduct.imagen,
-        detalles: selectedProduct.detalles || {},
-        tipo: selectedProduct.tipo || "",
-        stock: selectedProduct.stock || "",
+        nombre: selectedProductFromState.nombre,
+        categoria: selectedProductFromState.categoria,
+        precio: selectedProductFromState.precio,
+        descripcion: selectedProductFromState.descripcion,
+        proposito: selectedProductFromState.proposito || "",
+        imagen: selectedProductFromState.imagen,
+        especificaciones: selectedProductFromState.especificaciones || {}, // Cambio aquí
+        tipo: selectedProductFromState.tipo || "",
+        stock: selectedProductFromState.stock || "",
       });
 
       const categoria = categorias.find(
-        (c) => c.categoria === selectedProduct.categoria
+        (c) => c.categoria === selectedProductFromState.categoria
       );
-      setDetallesCategoria(categoria?.detalles ? Object.entries(categoria.detalles) : []);
+      setDetallesCategoria(
+        categoria?.especificaciones ? Object.entries(categoria.especificaciones) : [] // Cambiado de detalles a especificaciones
+      );
     }
-  }, [selectedProduct, categorias]);
+  }, [selectedProductFromState, categorias]);
 
   const handleCategoriaChange = (e) => {
     const categoriaSeleccionada = e.target.value;
     setFormData({
       ...formData,
       categoria: categoriaSeleccionada,
-      detalles: {},
+      especificaciones: {},
     });
 
     const categoria = categorias.find(
       (c) => c.categoria === categoriaSeleccionada
     );
     setDetallesCategoria(
-      categoria?.detalles ? Object.entries(categoria.detalles) : []
+      categoria?.especificaciones ? Object.entries(categoria.especificaciones) : []
     );
   };
 
@@ -145,22 +144,20 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
   };
 
   // Convertir un archivo a base64
-const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
-
-  
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const handleDetalleChange = (e, detalleNombre) => {
     setFormData((prevData) => ({
       ...prevData,
-      detalles: {
-        ...prevData.detalles,
+      especificaciones: {
+        ...prevData.especificaciones,
         [detalleNombre]: e.target.value,
       },
     }));
@@ -170,47 +167,45 @@ const convertToBase64 = (file) => {
     e.preventDefault();
     setIsLoading(true);
   
-    // Excluir la propiedad 'imagen' del objeto 'producto' que se envía al backend
-    const { imagen, ...producto } = {
-      nombre: formData.nombre,
-      categoria: formData.categoria,
-      precio: formData.precio,
-      descripcion: formData.descripcion,
-      proposito: formData.proposito,
-      detalles: formData.detalles,
-      tipo: formData.tipo,
-      stock: formData.stock,
-      id: selectedProduct ? selectedProduct.id : Date.now(),
-    };
+    const requestData = new FormData();
+    requestData.append('nombre', formData.nombre);
+    requestData.append('categoria', formData.categoria);
+    requestData.append('precio', formData.precio);
+    requestData.append('descripcion', formData.descripcion);
+    requestData.append('proposito', formData.proposito);
+    requestData.append('tipo', formData.tipo);
+    requestData.append('stock', formData.stock);
+    requestData.append('especificaciones', JSON.stringify(formData.especificaciones));
   
-    console.log("Producto enviado (sin imagen):", producto);
+    // Si hay una imagen nueva, agregarla a la solicitud
+    if (formData.imagen && formData.imagen instanceof File) {
+      requestData.append('imagen', formData.imagen); // Enviar la imagen como archivo
+    }
   
     try {
-      const response = await fetch("http://localhost:3002/catego", {
-        method: selectedProduct ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(producto),
+      const url = selectedProductFromState
+        ? `${API_URL}/catego/${selectedProductFromState._id}` // PATCH para actualizar
+        : `${API_URL}/catego`; // POST para crear un nuevo producto
+  
+      const response = await fetch(url, {
+        method: selectedProductFromState ? "PATCH" : "POST", // PATCH para actualizar
+        body: requestData,
       });
   
       if (response.ok) {
         const resultado = await response.json();
-        alert(`Producto ${selectedProduct ? "actualizado" : "agregado"} con éxito.`);
-  
-        // Reiniciar el formulario sin agregar categorías nuevas
+        alert(`Producto ${selectedProductFromState ? "actualizado" : "agregado"} con éxito.`);
         setFormData({
           nombre: "",
           categoria: "",
           precio: "",
           descripcion: "",
           proposito: "",
-          imagen: null, // Restablecer la imagen también
-          detalles: {},
+          imagen: null,
+          especificaciones: {},
           tipo: "",
           stock: "",
         });
-  
         if (onProductSaved) onProductSaved(resultado);
       } else {
         throw new Error("Error al guardar el producto");
@@ -222,6 +217,7 @@ const convertToBase64 = (file) => {
       setIsLoading(false);
     }
   };
+  
   
   
   
@@ -265,7 +261,7 @@ const convertToBase64 = (file) => {
       <div className="foess-product-form-container">
         <form onSubmit={handleSubmit} className="product-form">
           <h2 style={{ color: "black", fontSize: "24px" }}>
-            {selectedProduct ? "Editar Producto" : "Agregar Producto"}
+            {selectedProductFromState ? "Editar Producto" : "Agregar Producto"}
           </h2>
           <select
             name="categoria"
@@ -301,89 +297,81 @@ const convertToBase64 = (file) => {
           <input
             type="text"
             name="nombre"
-            placeholder="Nombre del producto"
             value={formData.nombre}
             onChange={handleChange}
+            placeholder="Nombre del producto"
             required
-            className="input-field"
+            className="input-text"
           />
+          <br />
 
           <input
             type="number"
             name="precio"
-            placeholder="Precio"
             value={formData.precio}
             onChange={handleChange}
+            placeholder="Precio del producto"
             required
-            className="input-field"
+            className="input-text"
+          />
+          <br />
+
+          <input
+            type="number"
+            name="stock"
+            value={formData.stock}
+            onChange={handleChange}
+            placeholder="Stock disponible"
+            required
+            className="input-text"
           />
           <br />
 
           <textarea
             name="descripcion"
-            placeholder="Descripción"
             value={formData.descripcion}
             onChange={handleChange}
-            className="input-field"
-          ></textarea>
+            placeholder="Descripción del producto"
+            required
+            className="input-textarea"
+          />
           <br />
 
-          <textarea
+          {detallesCategoria.map(([detalleNombre, detalleOpciones]) => (
+            <div key={detalleNombre}>
+              <label htmlFor={detalleNombre}>{detalleNombre}</label>
+              <input
+                id={detalleNombre}
+                type="text"
+                value={formData.especificaciones[detalleNombre] || ""} // Cambiado a especificaciones
+                onChange={(e) => handleDetalleChange(e, detalleNombre)}
+              />
+            </div>
+          ))}
+
+          <br />
+
+          <input
+            type="text"
             name="proposito"
-            placeholder="Propósito (¿Para qué funciona?)"
             value={formData.proposito}
             onChange={handleChange}
-            className="input-field"
-          ></textarea>
-          <br />
-
-          {/* Nuevo campo de Stock */}
-          <input
-            type="number"
-            name="stock"
-            placeholder="Cantidad de Stock"
-            value={formData.stock}
-            onChange={handleChange}
-            required
-            className="input-field"
+            placeholder="Propósito del producto"
+            className="input-text"
           />
           <br />
 
           <input
             type="file"
             name="imagen"
+            accept="image/*"
             onChange={handleChange}
-            className="input-file"
           />
           <br />
 
-          {detallesCategoria.length > 0 && (
-            <div className="foess-categoria-details-container">
-              <h3>Detalles específicos de {formData.categoria}</h3>
-              {detallesCategoria.map(([detalleNombre, tipo]) => (
-                <div key={detalleNombre} className="detail-input-container">
-                  <label>{detalleNombre}:</label>
-                  <input
-                    type={tipo === "number" ? "number" : "text"}
-                    name={`detalle-${detalleNombre}`}
-                    placeholder={detalleNombre}
-                    value={formData.detalles[detalleNombre] || ""}
-                    onChange={(e) => handleDetalleChange(e, detalleNombre)}
-                    className="input-field"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
           <button type="submit" className="submit-button">
-            {isLoading ? "Guardando..." : selectedProduct ? "Actualizar Producto" : "Agregar Producto"}
+            {selectedProductFromState ? "Actualizar Producto" : "Agregar Producto"}
           </button>
-          {isLoading && (
-            <div className="spinner">
-              <div className="spinner-circle"></div>
-            </div>
-          )}
         </form>
       </div>
     </div>

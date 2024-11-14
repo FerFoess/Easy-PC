@@ -212,3 +212,17 @@
     background-color:#d9534f;
   }
   
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; /* o el color que uses */
+    z-index: 1000;
+  }
+  
+  body {
+    margin-top: 60px; /* Espacio para el navbar fijo */
+  }
+  

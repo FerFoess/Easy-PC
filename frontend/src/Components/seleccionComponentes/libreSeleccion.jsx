@@ -32,7 +32,7 @@ const Filtros = ({ categoria, filtrosDisponibles, filtros, manejarFiltroCambio, 
             onChange={(e) => manejarFiltroCambio(filtro, e.target.value)}
           >
             <option value="">Selecciona una opción</option>
-            {opciones.map((opcion) => (
+            {(Array.isArray(opciones) ? opciones : []).map((opcion) => (
               <option key={opcion} value={opcion}>
                 {opcion}
               </option>
@@ -46,6 +46,7 @@ const Filtros = ({ categoria, filtrosDisponibles, filtros, manejarFiltroCambio, 
     <button className="btn-aplicar-filtros" onClick={aplicarFiltros}>Aplicar Filtros</button>
   </div>
 );
+
 
 const ProductoCard = ({ producto, seleccionarProducto, mostrarDetallesProducto }) => (
   <div className="producto" onClick={() => seleccionarProducto(producto)}>
@@ -104,9 +105,13 @@ const LibreSeleccion = () => {
   const cargarFiltros = (categoria) => {
     fetch(`http://localhost:3002/components/filtros/categoria?categoria=${categoria}`)
       .then((response) => response.json())
-      .then((data) => setFiltrosDisponibles(data || {}))
+      .then((data) => {
+        console.log('Filtros disponibles:', data); // Agrega un log para ver la respuesta
+        setFiltrosDisponibles(data || {});
+      })
       .catch((error) => console.error('Error fetching filters:', error));
   };
+  
 
   const cargarProductos = (categoria) => {
     fetch(`/api/productos?categoria=${categoria}`)
