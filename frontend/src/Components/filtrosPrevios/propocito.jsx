@@ -15,47 +15,108 @@ function Propocito() {
     window.history.back(); // Esto llevará al usuario a la página anterior
   };
 
-  return (
-    <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#27293d', color: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-     <Navbar />
+  // Estilos en línea
+  const appStyle = {
+    fontFamily: "Arial, sans-serif",
+    color: "#ffffff",
+    backgroundColor: "#27293d",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  };
 
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', margin: '2rem' }}>
+  const cardContainerStyle = {
+    display: "flex",
+    gap: "2rem",
+    margin: "2rem 0",
+  };
+
+  const cardStyle = {
+    backgroundColor: "#3b3c50",
+    borderRadius: "10px",
+    width: "250px",
+    padding: "1rem",
+    textAlign: "center",
+    cursor: "pointer",
+    transition: "transform 0.3s ease",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+  };
+
+  const cardHoverStyle = {
+    transform: "scale(1.05)",
+  };
+
+  const cardImageStyle = {
+    width: "100%",
+    height: "auto",
+    borderRadius: "10px",
+  };
+
+  const cardTextStyle = {
+    marginTop: "1rem",
+    fontSize: "1.5rem",
+  };
+
+
+  const instructionsContainerStyle = {
+    backgroundColor: "#444755",
+    borderRadius: "10px",
+    padding: "1rem",
+    marginTop: "2rem",
+    width: "80%",
+    textAlign: "center",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  };
+
+
+
+  const backButtonStyle = {
+    padding: "0.8rem 1.5rem",
+    fontSize: "1rem",
+    border: "none",
+    borderRadius: "20px",
+    color: "#ffffff",
+    backgroundColor: "#5c6bc0",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+    marginTop: "2rem",
+  };
+  const instructionsTextStyle = {
+    fontSize: "1.2rem",
+    color: "#fff",
+  };
+
+  return (
+    <div style={appStyle}>
+      <Navbar />
+      <div style={cardContainerStyle}>
         <div
-          className="card"
+          style={cardStyle}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = cardHoverStyle.transform)}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "")}
           onClick={handleRedirect1}
-          style={{
-            backgroundColor: '#5c6bc0',
-            borderRadius: '10px',
-            padding: '1rem',
-            margin: '1rem',
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-            width: '200px',
-            textAlign: 'center'
-          }}
         >
-          <img src="/assets/armar.png" alt="Imagen 1" className="card-image" style={{ width: '100%', borderRadius: '10px' }} />
-          <h2 className="card-text" style={{ color: '#ffffff', margin: '0.5rem 0' }}>Proposito</h2>
+          <img src="/assets/armar.png" alt="Imagen 1" style={cardImageStyle} />
+          <h2 style={cardTextStyle}>Propocito</h2>
         </div>
         <div
-          className="card"
+          style={cardStyle}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = cardHoverStyle.transform)}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "")}
           onClick={handleRedirect2}
-          style={{
-            backgroundColor: '#5c6bc0',
-            borderRadius: '10px',
-            padding: '1rem',
-            margin: '1rem',
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-            width: '200px',
-            textAlign: 'center'
-          }}
         >
-          <img src="/assets/armado.png" alt="Imagen 2" className="card-image" style={{ width: '100%', borderRadius: '10px' }} />
-          <h2 className="card-text" style={{ color: '#ffffff', margin: '0.5rem 0' }}>Libre</h2>
+          <img src="/assets/armado.png" alt="Imagen 2" style={cardImageStyle} />
+          <h2 style={cardTextStyle}>Libre</h2>
         </div>
+      </div>
+      
+      {/* Instructions Box */}
+      <div style={instructionsContainerStyle}>
+        <p style={instructionsTextStyle}>
+          En esta sección, puedes elegir entre dos opciones: 
+          <strong>Propocito</strong> te permite crear un equipo a tu medida, perfecto para tu día a día, mientras que <strong>Libre</strong> te permite seleccionar diferentes componentes sin ninguna restricción para así dejar volar tu creatividad.
+        </p>
       </div>
 
       <button
@@ -69,7 +130,7 @@ function Propocito() {
           borderRadius: '20px',
           cursor: 'pointer',
           transition: 'background-color 0.3s ease',
-          marginBottom: '1rem'
+          marginBottom: '1rem',
         }}
       >
         Regresar

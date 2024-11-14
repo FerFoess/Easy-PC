@@ -1,6 +1,7 @@
 // Navbar.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaHome, FaDesktop, FaBoxOpen, FaInfoCircle, FaUser, FaSignOutAlt } from "react-icons/fa";  // Importamos los iconos correspondientes
 import "./css/styles.css";
 
 const Navbar = () => {
@@ -45,12 +46,25 @@ const Navbar = () => {
 
   return (
     <nav style={navbarStyle}>
-      <button style={navButtonStyle} backgroundColor = "transparent" onClick={() => navigate("/inicio")}>
+      <button style={navButtonStyle} onClick={() => navigate("/inicio")}>
         <div className="logo">
           <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
         </div>
-      </button> 
+      </button>
       <div style={navButtonsStyle}>
+        <button
+          style={navButtonStyle}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor =
+              navButtonHoverStyle.backgroundColor)
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "transparent")
+          }
+          onClick={() => navigate("/inicio")}
+        >
+          <FaHome size={24} /> Inicio
+        </button>
         <button
           style={navButtonStyle}
           onMouseEnter={(e) =>
@@ -62,7 +76,7 @@ const Navbar = () => {
           }
           onClick={() => navigate("/Tipoequipo")}
         >
-          Arma tu pc
+          <FaDesktop size={24} /> Arma tu PC
         </button>
         <button
           style={navButtonStyle}
@@ -75,20 +89,7 @@ const Navbar = () => {
           }
           onClick={() => navigate("/catalogo-componentes")}
         >
-          Catálogo de componentes
-        </button>
-        <button
-          style={navButtonStyle}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              navButtonHoverStyle.backgroundColor)
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "transparent")
-          }
-          onClick={() => navigate("/carritoCompra")}
-        >
-          Carrito de compra
+          <FaBoxOpen size={24} /> Catálogo de Componentes
         </button>
         <button
           style={navButtonStyle}
@@ -101,7 +102,7 @@ const Navbar = () => {
           }
           onClick={() => navigate("/sobre-nosotros")}
         >
-          Más sobre nosotros
+          <FaInfoCircle size={24} /> Más sobre Nosotros
         </button>
         <button
           style={navButtonStyle}
@@ -114,7 +115,20 @@ const Navbar = () => {
           }
           onClick={() => navigate("/mi-cuenta")}
         >
-          Mi cuenta
+          <FaUser size={24} /> Mi Cuenta
+        </button>
+        <button
+          style={navButtonStyle}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor =
+              navButtonHoverStyle.backgroundColor)
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "transparent")
+          }
+          onClick={() => navigate("/carritoCompra")}
+        >
+          <FaShoppingCart size={24} />
         </button>
         <button
           style={navButtonStyle}
@@ -125,7 +139,7 @@ const Navbar = () => {
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "red")}
           onClick={() => navigate("/login")}
         >
-          Cerrar Sesión
+          <FaSignOutAlt size={24} /> Cerrar Sesión
         </button>
       </div>
     </nav>

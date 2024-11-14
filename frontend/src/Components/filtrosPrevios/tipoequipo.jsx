@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Asegúrate de tener react-router-dom instalado
 import Navbar from '../inicio/Navbar.js';
+
 function TipoEquipo() {
   const navigate = useNavigate();
 
@@ -113,11 +114,25 @@ function TipoEquipo() {
     transform: "scale(1.05)",
   };
 
+  const instructionsContainerStyle = {
+    backgroundColor: "#444755",
+    borderRadius: "10px",
+    padding: "1rem",
+    marginTop: "2rem",
+    width: "80%",
+    textAlign: "center",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  };
+
+  const instructionsTextStyle = {
+    fontSize: "1.2rem",
+    color: "#fff",
+  };
+
   return (
     <div style={appStyle}>
- <Navbar />
+      <Navbar />
       <div style={cardContainerStyle}>
-           
         <div
           style={cardStyle}
           onMouseEnter={(e) => (e.currentTarget.style.transform = cardHoverStyle.transform)}
@@ -137,6 +152,14 @@ function TipoEquipo() {
           <h2 style={cardTextStyle}>Elegir uno listo</h2>
         </div>
       </div>
+
+      {/* Recuadro de indicaciones */}
+      <div style={instructionsContainerStyle}>
+        <p style={instructionsTextStyle}>
+          Aquí puedes elegir entre crear un equipo desde cero o elegir uno listo para comprar. Si prefieres personalizarlo, selecciona "Crear equipo". Si deseas elegir uno ya armado, selecciona "Elegir uno listo".
+        </p>
+      </div>
+
       <button
         style={backButtonStyle}
         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = backButtonHoverStyle.backgroundColor)}

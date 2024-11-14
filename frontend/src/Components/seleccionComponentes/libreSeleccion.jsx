@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/libreSeleccion.css';
-import axios from "axios"; 
-import { jwtDecode } from 'jwt-decode'; // Importamos jwtDecode
+import axios from "axios";
+import { jwtDecode } from 'jwt-decode';
 import Navbar from '../inicio/Navbar.js';
 
-const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCategoria, finalizarSeleccion }) => (
+const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCategoria }) => (
   <div className="categorias">
     {categorias.map((categoria) => (
       <button
@@ -16,7 +16,6 @@ const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCateg
         {categoria}
       </button>
     ))}
-    <button className="btn-finalizar" onClick={finalizarSeleccion}>Finalizar Selección</button>
   </div>
 );
 
@@ -49,55 +48,47 @@ const Filtros = ({ categoria, filtrosDisponibles, filtros, manejarFiltroCambio, 
 
 
 const ProductoCard = ({ producto, seleccionarProducto, mostrarDetallesProducto }) => (
-  <div className="producto" onClick={() => seleccionarProducto(producto)}>
+  <div className="producto" onClick={() => mostrarDetallesProducto(producto)}>
     <h4>{producto.nombre}</h4>
     <p>{producto.descripcion}</p>
     <p>Precio: ${producto.precio}</p>
-    <button
-      className="btn-detalle"
-      onClick={(e) => {
-        e.stopPropagation();
-        mostrarDetallesProducto(producto);
-      }}
-    >
-      Agregar al carrito
-    </button>
   </div>
 );
 
-
 const LibreSeleccion = () => {
   const navigate = useNavigate();
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
-  const [filtros, setFiltros] = useState({});
-  const [productos, setProductos] = useState([]);
-  const [filtrosDisponibles, setFiltrosDisponibles] = useState({});
-  const [seleccionPorCategoria, setSeleccionPorCategoria] = useState({});
-  const [mostrarDetalles, setMostrarDetalles] = useState(null);
-  const [error, setError] = useState('');
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token'); // Obtenemos el token
-    if (token) {
-      const decoded = jwtDecode(token); // Decodificamos el token
-      setUserId(decoded.userId); // Suponiendo que el userId está en el token
-    } else {
-      // Si no hay token, redirigir al login o hacer alguna acción
-      window.location.href = 'http://localhost:3000';
-    }
-  }, []);
-
   const categorias = [
     'Procesador', 'Tarjeta Madre', 'Tarjeta de Video', 'Memoria RAM',
     'Almacenamiento Principal', 'Disipador', 'Gabinete', 'Fuente de Poder',
     'Ventiladores', 'Tarjetas y Módulos de Red', 'Windows'
   ];
 
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(categorias[0]); // Inicia en la primera categoría
+  const [filtros, setFiltros] = useState({});
+  const [productos, setProductos] = useState([]);
+  const [filtrosDisponibles, setFiltrosDisponibles] = useState({});
+  const [userId, setUserId] = useState(null);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupMensaje, setPopupMensaje] = useState('');
+  const [mostrarDetalles, setMostrarDetalles] = useState(null);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUserId(decoded.userId);
+    } else {
+      window.location.href = 'http://localhost:3000';
+    }
+
+    seleccionarCategoria(categorias[0]); // Carga la primera categoría al montar el componente
+  }, []);
+
   const seleccionarCategoria = (categoria) => {
     setCategoriaSeleccionada(categoria);
     setFiltros({});
-    setProductos(seleccionPorCategoria[categoria] || []);
+    setProductos([]);
     cargarFiltros(categoria);
     cargarProductos(categoria);
   };
@@ -116,7 +107,7 @@ const LibreSeleccion = () => {
   const cargarProductos = (categoria) => {
     fetch(`/api/productos?categoria=${categoria}`)
       .then((response) => response.json())
-      .then((data) => setProductos([...data, ...(seleccionPorCategoria[categoria] || [])]))
+      .then((data) => setProductos(data || []))
       .catch((error) => console.error('Error fetching products:', error));
   };
 
@@ -136,56 +127,48 @@ const LibreSeleccion = () => {
     fetch(`http://localhost:3002/components/buscar/filtros?${queryParams}`)
       .then((response) => response.json())
       .then((data) => {
-        const seleccionados = seleccionPorCategoria[categoriaSeleccionada] || [];
-        setProductos([...data, ...seleccionados]);
+        setProductos(data || []);
       })
       .catch((error) => console.error('Error fetching filtered products:', error));
   };
 
-  const seleccionarProducto = (producto) => {
-    agregarAlCarrito(producto); // Llamada para agregar el producto al carrito
-  };
-  
-
   const agregarAlCarrito = async (producto) => {
-alert(producto._id)
-    const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
-      componentId: producto._id,
-    })
-    .then((response) => {
-      if (!response.ok) {
+    try {
+      const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
+        componentId: producto._id,
+      });
+      if (response.status === 200) {
+        setPopupVisible(false);
+        setTimeout(() => {
+          setPopupMensaje('Producto agregado al carrito');
+          setPopupVisible(true);
+        }, 300);
+      } else {
         throw new Error('Error al agregar el producto al carrito');
       }
-    })
-    .catch((error) => console.error('Error al agregar producto al carrito:', error));
+    } catch (error) {
+      console.error('Error al agregar producto al carrito:', error);
+    }
   };
-  
 
   const mostrarDetallesProducto = (producto) => {
     setMostrarDetalles(producto);
   };
 
-  const cerrarDetalles = () => {
-    setMostrarDetalles(null);
-  };
 
-  const finalizarSeleccion = () => {
-    if (Object.keys(seleccionPorCategoria).length === 0) {
-      setError("No has seleccionado ningún componente.");
-      return;
-    }
-    navigate('/resumenCompra', { state: { selecciones: seleccionPorCategoria } });
+
+  const cerrarPopups = () => {
+    setMostrarDetalles(null);
+    setPopupVisible(false);
   };
 
   return (
     <div className="libreSeleccion">
-       <Navbar />
-
+      <Navbar />
       <CategoriaSelector
         categorias={categorias}
         categoriaSeleccionada={categoriaSeleccionada}
         seleccionarCategoria={seleccionarCategoria}
-        finalizarSeleccion={finalizarSeleccion}
       />
 
       {categoriaSeleccionada && (
@@ -197,40 +180,64 @@ alert(producto._id)
           aplicarFiltros={aplicarFiltros}
         />
       )}
+         <div>
+  {categoriaSeleccionada && (
+    <h3 style={{ color: 'white' }}>Productos en la categoria {categoriaSeleccionada}</h3>
+  )}
+</div>
 
       <div className="productos">
-        <h3>Productos en {categoriaSeleccionada}</h3>
         {productos.length > 0 ? (
           productos.map((producto) => (
             <ProductoCard
               key={producto.id}
               producto={producto}
-              isSelected={!!seleccionPorCategoria[categoriaSeleccionada]?.find(p => p.id === producto.id)}
-              seleccionarProducto={seleccionarProducto}
+              seleccionarProducto={agregarAlCarrito}
               mostrarDetallesProducto={mostrarDetallesProducto}
             />
           ))
         ) : (
-          <p>Por favor selecciona una categoría y aplica los filtros correspondientes.</p>
+          <p className="centro-texto"></p>
         )}
       </div>
 
       {mostrarDetalles && (
-  <div className="popup">
-    <div className="popup-content">
-      <h4>{mostrarDetalles.nombre}</h4>
-      <p>{mostrarDetalles.descripcion}</p>
-      <p>Precio: ${mostrarDetalles.precio}</p>
-      <button className="btn-seleccionar" onClick={() => seleccionarProducto(mostrarDetalles)}>
-        Agregar al carrito
-      </button>
-      <button className="btn-cerrar" onClick={cerrarDetalles}>Cerrar</button>
-    </div>
-  </div>
-)}
+        <div className="popup">
+          <div className="popup-content">
+            <h4>{mostrarDetalles.nombre}</h4>
+            <p>{mostrarDetalles.descripcion}</p>
+            <p>Precio: ${mostrarDetalles.precio}</p>
+            <div className="especificaciones">
+              <h5>Especificaciones:</h5>
+              <ul>
+                {Object.entries(mostrarDetalles.especificaciones).map(([key, value]) => (
+                  <li key={key}>
+                    <strong>{key}:</strong> {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button className="btn-agregar-carrito" onClick={() => agregarAlCarrito(mostrarDetalles)}>
+              Agregar al carrito
+            </button>
+            <button className="btn-cerrar" onClick={cerrarPopups}>Cerrar</button>
+          </div>
+        </div>
+      )}
+
+      {popupVisible && (
+        <div className="popup-overlay" onClick={cerrarPopups}>
+          <div className="popup-message">
+            <p>{popupMensaje}</p>
+            <button onClick={cerrarPopups}>Cerrar</button>
+          </div>
+        </div>
+      )}
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      
     </div>
+    
   );
 };
 

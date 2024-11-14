@@ -30,33 +30,34 @@ exports.crearCorteVenta = async (req, res) => {
     const { fecha, total } = req.body;
 
     // Validar que la fecha tenga el formato YYYY-MM-DD
-    const fechaRegex = /^\d{4}-\d{2}-\d{2}$/; // Expresión regular para YYYY-MM-DD
+    const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!fechaRegex.test(fecha)) {
       return res.status(400).json({ error: 'Formato de fecha inválido. Debe ser YYYY-MM-DD.' });
     }
 
-    // Buscar un corte existente en la misma fecha
-    const corteExistente = await CorteVentas.findOne({ fecha });
+    // Buscar si ya existe un corte con la misma fecha
+    const corteExistente = await CorteVentas.findOne({ fecha: new Date(fecha).toISOString().split('T')[0] });
 
     if (corteExistente) {
-      // Si ya existe un corte, actualízalo
-      corteExistente.total = total; // Actualizar el total con el nuevo valor
-      const corteActualizado = await corteExistente.save();
-      return res.status(200).json(corteActualizado);
-    } else {
-      // Si no existe, crea un nuevo corte
-      const nuevoCorte = new CorteVentas({
-        fecha, // Guardar la fecha como una cadena
-        total
-      });
-      const corteGuardado = await nuevoCorte.save();
-      return res.status(201).json(corteGuardado);
+      // Si ya existe un corte, retornar error
+      return res.status(409).json({ error: 'El corte ya se ha realizado para esta fecha.' });
     }
+
+    // Si no existe, proceder a crear un nuevo corte
+    const nuevoCorte = new CorteVentas({
+      fecha: new Date(fecha).toISOString().split('T')[0], // Asegurarnos de que la fecha se guarde en formato correcto
+      total
+    });
+
+    const corteGuardado = await nuevoCorte.save();
+    return res.status(201).json(corteGuardado);
+
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: `Error al crear o actualizar el corte de ventas: ${error.message}` });
+    console.error('Error en crearCorteVenta:', error);
+    res.status(500).json({ error: `Error al crear el corte de ventas: ${error.message}` });
   }
 };
+
 
   
 

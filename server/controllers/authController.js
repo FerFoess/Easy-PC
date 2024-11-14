@@ -13,9 +13,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
-
-
 // Endpoint para enviar la confirmación de compra
 const sendPurchaseConfirmation = async (req, res) => {
     const { email, amount } = req.body;

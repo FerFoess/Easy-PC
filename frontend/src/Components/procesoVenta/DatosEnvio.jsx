@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import './css/datosEnvio.css'; // Asegúrate de tener estilos adecuados en este archivo
-
+import './css/datosEnvio.css'; 
+import Navbar from '../inicio/Navbar.js';
 const DatosEnvio = () => {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -54,7 +54,10 @@ const DatosEnvio = () => {
   };
 
   return (
+    <div>
+       <Navbar />
     <div className="datos-envio">
+      
       <h2>Datos de Envío</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -136,6 +139,7 @@ const DatosEnvio = () => {
         </div>
         <button type="submit" className="btn-enviar">Enviar</button>
       </form>
+    </div>
     </div>
   );
 };

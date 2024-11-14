@@ -143,6 +143,7 @@ html, body {
   transition: background-color 0.3s ease;
 }
 
+
 .foess-product-form-container button:hover {
   background-color: #218838; /* Verde oscuro */
 }
