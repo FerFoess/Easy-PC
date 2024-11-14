@@ -9,7 +9,10 @@ const categoriaSchema = new mongoose.Schema({
     type: Object, // Detalles como objeto plano
     required: true
   },
-  imagen: { type: String } // Nueva propiedad para guardar la ruta de la imagen
+  tipo: { type: String, required: true },  // Asegúrate de agregar esto
+  proposito: { type: String, required: true },  // Asegúrate de agregar esto
+  imagen: { type: String }, // Nueva propiedad para guardar la ruta de la imagen
+  stock: { type: Number, required: true } // Se agregó el atributo stock
 });
 
 module.exports = mongoose.model('Categoria', categoriaSchema);

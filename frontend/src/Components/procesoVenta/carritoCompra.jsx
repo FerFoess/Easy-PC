@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./css/ShoppingCart.css";
 import { jwtDecode } from "jwt-decode";
 
+
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -204,6 +205,8 @@ const ShoppingCart = () => {
   }
 
   return (
+
+
     <div className="shopping-cart">
       <h1>Tu Carrito de compra</h1>
       <table className="cart-table">

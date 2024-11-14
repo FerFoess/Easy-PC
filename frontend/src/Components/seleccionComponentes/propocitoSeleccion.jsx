@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/libreSeleccion.css';
-
+import Navbar from '../inicio/Navbar.js';
 const LibreSeleccion = () => {
   const navigate = useNavigate();
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
@@ -144,11 +144,7 @@ const LibreSeleccion = () => {
 
   return (
     <div className="libreSeleccion">
-      <nav className="navbar">
-        <div className="logo">
-          <h1 className="logo-text">Easy-PC</h1>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="propositos">
         {propositos.map((proposito) => (

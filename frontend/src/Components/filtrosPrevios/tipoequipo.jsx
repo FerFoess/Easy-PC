@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Asegúrate de tener react-router-dom instalado
-
+import Navbar from '../inicio/Navbar.js';
 function TipoEquipo() {
   const navigate = useNavigate();
 
@@ -115,47 +115,9 @@ function TipoEquipo() {
 
   return (
     <div style={appStyle}>
-      <nav style={navbarStyle}>
-        <div className="logo">
-          <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
-        </div>
-        <div style={navButtonsStyle}>
-        <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-            onClick={() => navigate('/inicio')}
-          >
-            Inicio
-          </button>
-          <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-            onClick={() => navigate('/Tipoequipo')}
-          >
-            Arma tu pc
-          </button>
-          <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-            onClick={() => navigate('/catalogo-componentes')}
-          >
-            Catálogo de componentes
-          </button>
-          <button
-                        style={navButtonStyle}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'red')}
-                        onClick={() => navigate('/login')}
-                    >
-                        Cerrar Sesión
-                    </button>
-        </div>
-      </nav>
-
+ <Navbar />
       <div style={cardContainerStyle}>
+           
         <div
           style={cardStyle}
           onMouseEnter={(e) => (e.currentTarget.style.transform = cardHoverStyle.transform)}

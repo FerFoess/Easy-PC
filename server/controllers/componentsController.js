@@ -1,5 +1,5 @@
 const Components = require('../models/components'); // Importar el modelo
-
+const Prearmado = require ('../models/prearmadoSchema');
 // Obtener todos los productos
 const obtenerProductos = async (req, res) => {
     try {
@@ -11,24 +11,46 @@ const obtenerProductos = async (req, res) => {
 };
 
 // Obtener productos en el carrito
+const mongoose = require('mongoose');
+
+
+
+// Obtener productos en el carrito
 const obtenerProductosCarrito = async (req, res) => {
     const { cartItems } = req.body;
-    console.log(cartItems)
+    console.log(cartItems);
     try {
         if (!Array.isArray(cartItems) || cartItems.length === 0) {
-            
             return res.status(400).json({ message: 'cartItems debe ser un array con al menos un elemento' });
         }
 
         const productosConDetalles = await Promise.all(cartItems.map(async (item) => {
-            const producto = await Components.findById(item.componentId);
+            let producto = null;
+
+            try {
+                // Crear ObjectId para buscar en Components
+                const componentId = new mongoose.Types.ObjectId(item.componentId);
+
+                // Realizar ambas búsquedas en paralelo
+                const [productoComponent, productoPrearmado] = await Promise.all([
+                    Components.findById(componentId),
+                    Prearmado.findById({ _id: item.componentId })
+                ]);
+
+                // Verificar cuál de las dos búsquedas tiene resultado
+                producto = productoComponent || productoPrearmado;
+            } catch (error) {
+                console.log("Error en la búsqueda de productos:", error);
+            }
+
+            // Mapear los datos de `producto` a la estructura esperada si se encuentra
             return producto ? {
-                id: producto._id,
-                nombre: producto.nombre,
-                imagen: producto.imagen,
-                precio: producto.precio,
-                stock: producto.stock,
-                categoria: producto.categoria,
+                id: producto._id || producto.id,
+                nombre: producto.nombre || producto.nombre,
+                imagen: producto.imagen || 'default-image-url', // asignar imagen si es necesario
+                precio: producto.price || producto.precio,
+                stock: producto.stock || 'N/A', // valor predeterminado si no hay stock
+                categoria: producto.categoria || 'Prearmado'
             } : null;
         }));
 
@@ -43,6 +65,8 @@ const obtenerProductosCarrito = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener productos del carrito' });
     }
 };
+
+
 
 // Crear un nuevo producto
 const crearProducto = async (req, res) => {

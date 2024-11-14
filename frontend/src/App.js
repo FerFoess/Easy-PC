@@ -12,7 +12,9 @@ import Prearmados from './Components/seleccionComponentes/prearmados';
 import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
 import CarritoCompra from './Components/procesoVenta/carritoCompra';
-import Almacen from './Components/almacenamiento/almacenamiento'
+import Almacen from './Components/almacenamiento/almacenamiento';
+import Corte from './Components/corte/index'
+import ProductForm from './Components/almacenamiento/ProductoForm';
 
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
           <Route path="tipoequipo" element={<Tipoequipo />} />
           <Route path="propocito" element={<Propocito />} />
           <Route path="estadisticas" element={<Estadisticas />} />
+          <Route path="corte" element={<Corte />} />
           <Route path="propocitoSeleccion" element={<PropocitoSeleccion/>} />
           <Route path="checkoutForm" element={<CheckoutForm/>} />
           <Route path="crearCuenta" element={<CrearCuenta/>} />
@@ -32,7 +35,8 @@ function App() {
           <Route path="libreSeleccion" element={<LibreSeleccion/>} />
           <Route path="datosEnvio" element={<DatosEnvio/>} />
           <Route path="carritoCompra" element={<CarritoCompra/>} />
-          <Route path="almace" element={<Almacen/>} />
+          <Route path="almacen" element={<Almacen/>} />
+          <Route path="productForm" element={<ProductForm/>} />
         </Routes>
       </Router>
     </div>

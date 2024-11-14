@@ -16,9 +16,9 @@ var auth = require('./routes/auth');
 const paymentRoutes = require('./routes/paymentRoutes');
 const corteRoutes = require('./routes/corteVentasRoutes');
 const componentsRoutes = require('./routes/componentsRoutes');
-const prearmadoRoutes = require('./routes/prearmadoRoutes');
 const almacenamientoRoutes = require('./routes/almacenamientoRoutes');
 const cartRoutes = require ('./routes/cartRoutes');
+const prearmadoRoutes = require ('./routes/prearmadoRoutes')
 
 var app = express();
 

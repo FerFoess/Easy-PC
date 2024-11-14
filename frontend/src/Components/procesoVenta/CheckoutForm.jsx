@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Navbar from '../inicio/Navbar.js';
 import {
   CardElement,
   useStripe,
@@ -16,6 +17,7 @@ const stripePromise = loadStripe(
 );
 
 const CheckoutForm = () => {
+
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -227,34 +229,7 @@ const PaymentScreen = () => {
           flexDirection: "column",
         }}
       >
-        <nav style={navbarStyle}>
-          <div className="logo">
-            <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
-          </div>
-          <div style={navButtonsStyle}>
-            <button style={navButtonStyle} onClick={() => navigate("/inicio")}>
-              Inicio
-            </button>
-            <button
-              style={navButtonStyle}
-              onClick={() => navigate("/catalogo-componentes")}
-            >
-              Catálogo de componentes
-            </button>
-            <button
-              style={navButtonStyle}
-              onClick={() => navigate("/sobre-nosotros")}
-            >
-              Más sobre nosotros
-            </button>
-            <button
-              style={navButtonStyle}
-              onClick={() => navigate("/mi-cuenta")}
-            >
-              Mi cuenta
-            </button>
-          </div>
-        </nav>
+       <Navbar />
 
         <CheckoutForm />
       </div>

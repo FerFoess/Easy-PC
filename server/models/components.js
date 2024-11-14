@@ -16,3 +16,4 @@ const componentsSchema = new mongoose.Schema({
 
 // Especifica el nombre de la colección como 'components'
 module.exports = mongoose.model('components', componentsSchema);
+ 

@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.get('/', obtenerCortesVentas);
+router.get('/obtenerCortesVentas', obtenerCortesVentas);
 router.get('/:idCorte', obtenerCortePorId);
 router.post('/crearCorte', crearCorteVenta);
 router.put('/:idCorte', actualizarCorteVenta);
