@@ -1,3 +1,14 @@
+
+/* Contenedor principal */
+.prearmados {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  background-color:#27293d;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .filters-horizontal {
   display: flex;
   flex-direction: row; /* Cambia la disposición a horizontal */
@@ -6,7 +17,7 @@
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 20px;
-}
+}  
 
 .filter-group {
   display: flex;

@@ -148,7 +148,7 @@ const Prearmados = () => {
   const cerrarPopups = () => {
     setSelectedPC(null);
     setPopupVisible(false);
-  };
+  }; 
 
   // Función para verificar si un prearmado está en el carrito
   const isInCart = (pcId) => {
@@ -156,7 +156,7 @@ const Prearmados = () => {
   };
 
   return (
-    <div className="app">
+    <div className="prearmados" >
       <Navbar />
       <div className="gray-boxD">
         <div className="filters-horizontal">
@@ -299,10 +299,6 @@ const Prearmados = () => {
           </div>
         )}
       </div>
-
-      <button className="back-button" onClick={() => window.history.back()}>
-        Regresar
-      </button>
     </div>
   );
 };
