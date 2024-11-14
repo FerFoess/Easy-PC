@@ -13,10 +13,7 @@ import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
 import CarritoCompra from './Components/procesoVenta/carritoCompra';
 import Almacen from './Components/almacenamiento/almacenamiento';
-<<<<<<< HEAD
 import Corte from './Components/corte/index'
-=======
->>>>>>> 8fa7128ec415cec0f60f5b3f16c85b183b5dced5
 import ProductForm from './Components/almacenamiento/ProductoForm';
 
 
