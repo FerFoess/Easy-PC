@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./css/ShoppingCart.css";
 import { jwtDecode } from "jwt-decode";
-import Navbar from '../inicio/Navbar.js'; // Asegúrate de que este sea el Navbar correcto
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -198,101 +197,109 @@ const ShoppingCart = () => {
   }
 
   return (
-    <div>
-      {/* Navbar fuera de la sección de carrito */}
-      <Navbar />
-      
-      <div className="shopping-cart">
-        <h1>Tu Carrito de compra</h1>
-        <table className="cart-table">
-          <thead>
+    <div className="shopping-cart">
+      <h1>Tu Carrito de compra</h1>
+      <table className="cart-table">
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Categoria</th>
+            <th>Producto</th>
+            <th>Precio unitario</th>
+            <th>Cantidad</th>
+            <th>Stock</th>
+            <th>Subtotal</th>
+            <th>Remover</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cartItems.length === 0 ? (
             <tr>
-              <th>Imagen</th>
-              <th>Categoria</th>
-              <th>Producto</th>
-              <th>Precio unitario</th>
-              <th>Cantidad</th>
-              <th>Stock</th>
-              <th>Subtotal</th>
-              <th>Remover</th>
+              <td colSpan="7" style={{ textAlign: "center" }}>
+                Aún no tienes productos en tu carrito de compras. Agrega
+                productos para empezar a verlos aquí.
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {cartItems.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ textAlign: "center" }}>
-                  Aún no tienes productos en tu carrito de compras. Agrega
-                  productos para empezar a verlos aquí.
-                </td>
-              </tr>
-            ) : (
-              cartItems.map((item) => {
-                const imageSrc = item.imagen || defaultImage;
-                return (
-                  <tr key={item.id}>
-                    <td>
-                      <img
-                        src={imageSrc}
-                        alt={item.nombre}
-                        className="product-image"
-                      />
-                    </td>
-                    <td className="product-categoria">{item.categoria}</td>
-                    <td className="product-info">{item.nombre}</td>
-                    <td>${item.precio.toFixed(2)}</td>
-                    <td>
-                      <input
-                        type="number"
-                        value={item.cantidad}
-                        min="1"
-                        max={item.stock}
-                        onChange={(e) =>
-                          handleQuantityChange(
-                            item.id,
-                            parseInt(e.target.value, 10)
-                          )
+          ) : (
+            cartItems.map((item) => {
+              const imageSrc = item.imagen || defaultImage;
+
+              return (
+                <tr key={item.id}>
+                  <td>
+                    <img
+                      src={imageSrc}
+                      alt={item.nombre}
+                      className="product-image"
+                    />
+                  </td>
+                  <td className="product-categoria">{item.categoria}</td>
+                  <td className="product-info">{item.nombre}</td>
+                  <td>${item.precio.toFixed(2)}</td>
+                  <td>
+                    <div className="quantity-controls">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, item.cantidad - 1)
                         }
-                      />
-                    </td>
-                    <td>{item.stock}</td>
-                    <td>${(item.precio * item.cantidad).toFixed(2)}</td>
-                    <td>
-                      <button onClick={() => handleRemoveItem(item.id)}>
-                        Remover
+                        disabled={item.cantidad <= 1}
+                      >
+                        -
                       </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+                      <input
+                        type="text"
+                        value={item.cantidad}
+                        readOnly
+                        className="quantity-input"
+                      />
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, item.cantidad + 1)
+                        }
+                        disabled={item.cantidad >= item.stock}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </td>
+                  <td>{item.stock}</td>
+                  <td>${(item.precio * item.cantidad).toFixed(2)}</td>
+                  <td>
+                    <button onClick={() => handleRemoveItem(item.id)}>
+                      Remover
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+      </table>
 
-        {cartItems.length > 0 && (
-          <button onClick={handleClearCart} className="clear-cart-button">
-            Limpiar carrito
-          </button>
-        )}
+      {cartItems.length > 0 && (
+        <button onClick={handleClearCart} className="clear-cart-button">
+          Limpiar carrito
+        </button>
+      )}
 
-        <div className="cart-totals">
-          <div>
-            <span>Subtotal:</span>
-            <span>${calculateSubtotal()}</span>
-          </div>
-          <div>
-            <span>Total:</span>
-            <span>${calculateSubtotal()}</span>
-          </div>
+      <div className="cart-totals">
+        <div>
+          <span>Subtotal:</span>
+          <span>${calculateSubtotal()}</span>
         </div>
-
-        <div className="buttons-container">
-          <button className="go-back-button" onClick={handleGoBack}>
-            Regresar
-          </button>
-          <button className="checkout-button" onClick={handleCheckout}>
-            Comprar
-          </button>
+        <div>
+          <span>Total:</span>
+          <span>${calculateSubtotal()}</span>
         </div>
+      </div>
+
+      <div className="buttons-container">
+        <button className="go-back-button" onClick={handleGoBack}>
+          Regresar
+        </button>
+        <button className="checkout-button" onClick={handleCheckout}>
+          Comprar
+        </button>
       </div>
     </div>
   );
