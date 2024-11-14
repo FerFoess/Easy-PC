@@ -71,17 +71,17 @@ const Inicio = () => {
                         style={navButtonStyle}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                        onClick={() => navigate('/proveedores')}
+                        onClick={() => navigate('/estadisticas')}
                     >
-                        Proveedores
+                        Estadisticas
                     </button>
                     <button
                         style={navButtonStyle}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                        onClick={() => navigate('/sobre-nosotros')}
+                        onClick={() => navigate('/corte')}
                     >
-                        Más sobre nosotros
+                        Cortes
                     </button>
                     <button
                         style={navButtonStyle}

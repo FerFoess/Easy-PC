@@ -13,6 +13,7 @@ import LibreSeleccion from './Components/seleccionComponentes/libreSeleccion';
 import DatosEnvio from './Components/procesoVenta/DatosEnvio';
 import CarritoCompra from './Components/procesoVenta/carritoCompra';
 import Almacen from './Components/almacenamiento/almacenamiento';
+import Corte from './Components/corte/index'
 import ProductForm from './Components/almacenamiento/ProductoForm';
 
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="tipoequipo" element={<Tipoequipo />} />
           <Route path="propocito" element={<Propocito />} />
           <Route path="estadisticas" element={<Estadisticas />} />
+          <Route path="corte" element={<Corte />} />
           <Route path="propocitoSeleccion" element={<PropocitoSeleccion/>} />
           <Route path="checkoutForm" element={<CheckoutForm/>} />
           <Route path="crearCuenta" element={<CrearCuenta/>} />
