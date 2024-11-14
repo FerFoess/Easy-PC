@@ -1,9 +1,9 @@
-const Categoria = require('../models/categoriasSchema');
+const Components = require('../models/components'); // Asegúrate de importar el modelo correcto
 
 // Controlador para obtener todas las categorías
 exports.obtenerCategorias = async (req, res) => {
   try {
-    const categorias = await Categoria.find();
+    const categorias = await Components.find();
     res.status(200).json(categorias);
   } catch (error) {
     console.error(error);
@@ -14,7 +14,7 @@ exports.obtenerCategorias = async (req, res) => {
 // Controlador para obtener una categoría por su ID
 exports.obtenerCategoriaPorId = async (req, res) => {
   try {
-    const categoria = await Categoria.findById(req.params.id);
+    const categoria = await Components.findById(req.params.id);
     if (!categoria) {
       return res.status(404).json({ error: 'Categoría no encontrada' });
     }
@@ -25,55 +25,60 @@ exports.obtenerCategoriaPorId = async (req, res) => {
   }
 };
 
-// Controlador para crear una nueva categoría
+
 exports.crearCategoria = async (req, res) => {
+  console.log('Archivo recibido:', req.file); // Verifica si el archivo está llegando
+  console.log('Datos del cuerpo:', req.body); // Verifica los datos del cuerpo
+
+  const { nombre, categoria, precio, especificaciones, descripcion, stock, propositos, name } = req.body;
+
+  // Validación básica de los campos obligatorios
+  if (!nombre || !categoria || !precio || !especificaciones || !stock || !name) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  // Asegúrate de que especificaciones se está recibiendo correctamente
+  let especificacionesObj;
   try {
-    const { nombre, descripcion, especificaciones, categoria, precio, tipo, proposito, stock } = req.body;
+    especificacionesObj = JSON.parse(especificaciones); // Convertir especificaciones de string a objeto
+  } catch (error) {
+    return res.status(400).json({ error: 'Las especificaciones no son un JSON válido' });
+  }
 
-    // Validación de campos obligatorios
-    if (!nombre || !categoria || !precio || !especificaciones || !tipo || !proposito || stock === undefined) {
-      return res.status(400).json({ error: 'Nombre, categoría, precio, especificaciones, tipo, propósito y stock son obligatorios' });
-    }
-
-    // Validar que las especificaciones sean un Map de arreglos de String
-    if (typeof especificaciones !== 'object' || Array.isArray(especificaciones)) {
-      return res.status(400).json({ error: 'especificaciones debe ser un objeto Map de arreglos de String' });
-    }
-
-    for (let [key, value] of Object.entries(especificaciones)) {
-      if (!Array.isArray(value) || !value.every(v => typeof v === 'string')) {
-        return res.status(400).json({ error: 'Cada especificación debe ser un arreglo de strings' });
-      }
-    }
-
-    const nuevaCategoria = new Categoria({
+  // Crear la nueva categoría
+  try {
+    const nuevaCategoria = new Components({
       nombre,
-      descripcion,
       categoria,
       precio,
-      especificaciones: new Map(Object.entries(especificaciones)), // Convertir a Map
-      tipo,
-      proposito,
-      stock, // Incluye el campo de stock
+      especificaciones: especificacionesObj, // Ahora es un objeto
+      descripcion,
+      stock,
+      propositos,
+      name,
+      imagen: req.file ? req.file.path : undefined, // Si se sube una imagen, agregar la ruta
     });
 
+    // Guardar la nueva categoría en la base de datos
     const categoriaGuardada = await nuevaCategoria.save();
-    res.status(201).json(categoriaGuardada);
+    return res.status(201).json(categoriaGuardada);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: 'Error al crear la categoría' });
+    console.error('Error al crear la categoría:', error);
+    return res.status(500).json({ error: 'Error al crear la categoría' });
   }
 };
 
-// Controlador para actualizar una categoría existente
+
+
+
 // Controlador para actualizar una categoría existente
 exports.actualizarCategoria = async (req, res) => {
   try {
-    const { nombre, descripcion, especificaciones, categoria, precio, tipo, proposito, stock } = req.body;
+    const { nombre, descripcion, categoria, precio, especificaciones, name, propositos, stock } = req.body;
 
     // Validaciones
     if (especificaciones && typeof especificaciones !== 'object') {
-      return res.status(400).json({ error: 'especificaciones debe ser un objeto Map de arreglos de String' });
+      return res.status(400).json({ error: 'Las especificaciones deben ser un objeto Map de arreglos de String' });
     }
 
     if (especificaciones) {
@@ -85,7 +90,7 @@ exports.actualizarCategoria = async (req, res) => {
     }
 
     // Actualizar la categoría
-    const categoriaActualizada = await Categoria.findByIdAndUpdate(
+    const categoriaActualizada = await Components.findByIdAndUpdate(
       req.params.id,
       {
         nombre,
@@ -93,10 +98,10 @@ exports.actualizarCategoria = async (req, res) => {
         especificaciones: especificaciones ? new Map(Object.entries(especificaciones)) : undefined,
         categoria,
         precio,
-        tipo,
-        proposito,
+        name,
+        propositos,
         stock,
-        imagen: req.file ? req.file.path : undefined, // Actualizar imagen si es proporcionada
+        imagen: req.file ? req.file.path : undefined, // Actualizar imagen si se proporciona
       },
       { new: true } // Devuelve el objeto actualizado
     );
@@ -108,21 +113,20 @@ exports.actualizarCategoria = async (req, res) => {
     res.status(200).json(categoriaActualizada);
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: 'Error al actualizar la categoría' });
+    res.status(400).json({ error: 'Error al actualizar la categoría', details: error.message });
   }
 };
-
 
 // Controlador para eliminar una categoría por su ID
 exports.eliminarCategoria = async (req, res) => {
   try {
-    const categoriaEliminada = await Categoria.findByIdAndDelete(req.params.id);
+    const categoriaEliminada = await Components.findByIdAndDelete(req.params.id);
     if (!categoriaEliminada) {
       return res.status(404).json({ error: 'Categoría no encontrada' });
     }
     res.status(200).json({ message: 'Categoría eliminada' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la categoría' });
+    res.status(500).json({ error: 'Error al eliminar la categoría', details: error.message });
   }
 };

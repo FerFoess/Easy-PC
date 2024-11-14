@@ -15,4 +15,5 @@ const categoriaSchema = new mongoose.Schema({
   stock: { type: Number, required: true } // Se agregó el atributo stock
 });
 
+
 module.exports = mongoose.model('Categoria', categoriaSchema);

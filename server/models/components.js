@@ -11,9 +11,9 @@ const componentsSchema = new mongoose.Schema({
     of: [String], 
   },
   name: { type: String, required: true },
-  propositos: [{ type: String }], 
+  propositos: [{ type: String }],
+  imagen: { type: String }, // Nuevo campo para almacenar la ruta de la imagen
 });
 
 // Especifica el nombre de la colección como 'components'
 module.exports = mongoose.model('components', componentsSchema);
- 
