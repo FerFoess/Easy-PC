@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/libreSeleccion.css';
+import axios from "axios"; 
 import { jwtDecode } from 'jwt-decode'; // Importamos jwtDecode
+import Navbar from '../inicio/Navbar.js';
 
 const CategoriaSelector = ({ categorias, categoriaSeleccionada, seleccionarCategoria, finalizarSeleccion }) => (
   <div className="categorias">
@@ -45,22 +47,23 @@ const Filtros = ({ categoria, filtrosDisponibles, filtros, manejarFiltroCambio, 
   </div>
 );
 
-const ProductoCard = ({ producto, isSelected, seleccionarProducto, mostrarDetallesProducto }) => (
-  <div
-    className={`producto ${isSelected ? 'seleccionado' : ''}`}
-    onClick={() => seleccionarProducto(producto)}
-  >
+const ProductoCard = ({ producto, seleccionarProducto, mostrarDetallesProducto }) => (
+  <div className="producto" onClick={() => seleccionarProducto(producto)}>
     <h4>{producto.nombre}</h4>
     <p>{producto.descripcion}</p>
     <p>Precio: ${producto.precio}</p>
     <button
       className="btn-detalle"
-      onClick={(e) => { e.stopPropagation(); mostrarDetallesProducto(producto); }}
+      onClick={(e) => {
+        e.stopPropagation();
+        mostrarDetallesProducto(producto);
+      }}
     >
-      {isSelected ? '✔ Seleccionado' : 'Seleccionar'}
+      Agregar al carrito
     </button>
   </div>
 );
+
 
 const LibreSeleccion = () => {
   const navigate = useNavigate();
@@ -135,31 +138,14 @@ const LibreSeleccion = () => {
   };
 
   const seleccionarProducto = (producto) => {
-    setSeleccionPorCategoria((prev) => {
-      const seleccionActual = prev[categoriaSeleccionada] || [];
-      const yaSeleccionado = seleccionActual.some(p => p.id === producto.id);
-      if (!yaSeleccionado) {
-        agregarAlCarrito(producto); // Llamada para agregar el producto al carrito
-      }
-      return {
-        ...prev,
-        [categoriaSeleccionada]: yaSeleccionado
-          ? seleccionActual.filter(p => p.id !== producto.id)
-          : [...seleccionActual, producto],
-      };
-    });
+    agregarAlCarrito(producto); // Llamada para agregar el producto al carrito
   };
+  
 
-  // Función para agregar el producto al carrito
-  const agregarAlCarrito = (producto) => {
-    fetch(`http://localhost:3002/cart/cart/${userId}/addComponentToCart`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        componentId: producto.id,
-        quantity: 1, // Aquí ajustamos la cantidad a 1
-        price: producto.precio, // Agregamos el precio del producto
-      }),
+  const agregarAlCarrito = async (producto) => {
+alert(producto._id)
+    const response = await axios.post(`http://localhost:3002/cart/${userId}/addComponentToCart`, {
+      componentId: producto._id,
     })
     .then((response) => {
       if (!response.ok) {
@@ -168,6 +154,7 @@ const LibreSeleccion = () => {
     })
     .catch((error) => console.error('Error al agregar producto al carrito:', error));
   };
+  
 
   const mostrarDetallesProducto = (producto) => {
     setMostrarDetalles(producto);
@@ -187,9 +174,7 @@ const LibreSeleccion = () => {
 
   return (
     <div className="libreSeleccion">
-      <nav className="navbar">
-        <div className="logo-text">Easy-PC</div>
-      </nav>
+       <Navbar />
 
       <CategoriaSelector
         categorias={categorias}
@@ -226,18 +211,19 @@ const LibreSeleccion = () => {
       </div>
 
       {mostrarDetalles && (
-        <div className="popup">
-          <div className="popup-content">
-            <h4>{mostrarDetalles.nombre}</h4>
-            <p>{mostrarDetalles.descripcion}</p>
-            <p>Precio: ${mostrarDetalles.precio}</p>
-            <button className="btn-seleccionar" onClick={() => seleccionarProducto(mostrarDetalles)}>
-              {seleccionPorCategoria[categoriaSeleccionada]?.some(p => p.id === mostrarDetalles.id) ? 'Quitar Selección' : 'Seleccionar'}
-            </button>
-            <button className="btn-cerrar" onClick={cerrarDetalles}>Cerrar</button>
-          </div>
-        </div>
-      )}
+  <div className="popup">
+    <div className="popup-content">
+      <h4>{mostrarDetalles.nombre}</h4>
+      <p>{mostrarDetalles.descripcion}</p>
+      <p>Precio: ${mostrarDetalles.precio}</p>
+      <button className="btn-seleccionar" onClick={() => seleccionarProducto(mostrarDetalles)}>
+        Agregar al carrito
+      </button>
+      <button className="btn-cerrar" onClick={cerrarDetalles}>Cerrar</button>
+    </div>
+  </div>
+)}
+
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );

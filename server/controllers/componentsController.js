@@ -27,23 +27,26 @@ const obtenerProductosCarrito = async (req, res) => {
         const productosConDetalles = await Promise.all(cartItems.map(async (item) => {
             let producto = null;
 
-            // Intentar encontrar el producto en 'Components' usando ObjectId
             try {
+                // Crear ObjectId para buscar en Components
                 const componentId = new mongoose.Types.ObjectId(item.componentId);
-                producto = await Components.findById(componentId);
-            } catch (error) {
-                console.log("Error de conversión ObjectId en Components:", error);
-            }
 
-            // Si no se encuentra en 'Components', buscar en 'Prearmado' con `id` como string
-            if (!producto && Prearmado) {  // Asegura que `Prearmado` esté definido
-                producto = await Prearmado.findOne({ id: item.componentId });
+                // Realizar ambas búsquedas en paralelo
+                const [productoComponent, productoPrearmado] = await Promise.all([
+                    Components.findById(componentId),
+                    Prearmado.findById({ _id: item.componentId })
+                ]);
+
+                // Verificar cuál de las dos búsquedas tiene resultado
+                producto = productoComponent || productoPrearmado;
+            } catch (error) {
+                console.log("Error en la búsqueda de productos:", error);
             }
 
             // Mapear los datos de `producto` a la estructura esperada si se encuentra
             return producto ? {
                 id: producto._id || producto.id,
-                nombre: producto.name || producto.nombre,
+                nombre: producto.nombre || producto.nombre,
                 imagen: producto.imagen || 'default-image-url', // asignar imagen si es necesario
                 precio: producto.price || producto.precio,
                 stock: producto.stock || 'N/A', // valor predeterminado si no hay stock

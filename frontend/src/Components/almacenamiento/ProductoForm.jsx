@@ -7,12 +7,12 @@ import { useLocation } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL
 
-const location = useLocation();
-const { state } = location;
-const selectedProduct = state?.product;
 
 const ProductForm = ({ selectedProduct, onProductSaved }) => {
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const { state } = location;
 
   // Estilos en línea
   const containerStyle = {
