@@ -2,11 +2,11 @@
 const mongoose = require("mongoose");
 
 const PrearmadoSchema = new mongoose.Schema({
-  name: {
+  nombre: {
     type: String,
     required: true
   },
-  processor: {
+  procesador: {
     type: String,
     required: true
   },
@@ -14,15 +14,15 @@ const PrearmadoSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  storage: {
+  almacenamiento: {
     type: String,
     required: true
   },
-  graphics: {
+  graficos: {
     type: String,
     required: true
   },
-  price: {
+  precio: {
     type: Number,
     required: true
   },

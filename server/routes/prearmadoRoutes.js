@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
     const prearmados = await Prearmado.find();
     res.json(prearmados);
   } catch (error) {
-    console.error(error);
+    console.error("Error al obtener equipos pre-armados:", error);
     res.status(500).json({ error: "Error al obtener los equipos pre-armados" });
   }
 });
@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
     res.status(201).json(nuevoPrearmado);
   } catch (error) {
     console.error("Error al crear equipo pre-armado:", error);
-    res.status(500).send("Error del servidor");
+    res.status(500).json({ error: "Error al crear el equipo pre-armado" });
   }
 });
 
@@ -35,7 +35,7 @@ router.get("/:id", async (req, res) => {
     res.json(prearmado);
   } catch (error) {
     console.error("Error al obtener equipo pre-armado:", error);
-    res.status(500).send("Error del servidor");
+    res.status(500).json({ error: "Error al obtener el equipo pre-armado" });
   }
 });
 

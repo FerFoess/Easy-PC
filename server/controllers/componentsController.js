@@ -13,35 +13,44 @@ const obtenerProductos = async (req, res) => {
   }
 };
 
-// Obtener productos en el carrito
 const obtenerProductosCarrito = async (req, res) => {
   const { cartItems } = req.body;
-  console.log(cartItems);
+  console.log('Cart Items:', cartItems);
+
   try {
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({ message: 'cartItems debe ser un array con al menos un elemento' });
     }
 
     const productosConDetalles = await Promise.all(cartItems.map(async (item) => {
-      let producto = null;
       try {
+        console.log('Buscando producto con componentId:', item.componentId);
+
+        // Convertir el ID si es necesario
         const componentId = new mongoose.Types.ObjectId(item.componentId);
-        const [productoComponent, productoPrearmado] = await Promise.all([
-          Components.findById(componentId),
-          Prearmado.findById({ _id: item.componentId })
-        ]);
-        producto = productoComponent || productoPrearmado;
+
+        // Realizar la búsqueda en ambas colecciones
+        const productoComponent = await Components.findById(componentId);
+        const productoPrearmado = await Prearmado.findById(componentId);
+
+        console.log('Resultado en Components:', productoComponent);
+        console.log('Resultado en Prearmado:', productoPrearmado);
+
+        const producto = productoComponent || productoPrearmado;
+
+        return producto ? {
+          id: producto._id,
+          nombre: producto.nombre,
+          imagen: producto.imagen || 'default-image-url',
+          precio: producto.price || producto.precio,
+          stock: producto.stock || 'N/A',
+          categoria: producto.categoria || 'Prearmado'
+        } : null;
+
       } catch (error) {
         console.log("Error en la búsqueda de productos:", error);
+        return null;
       }
-      return producto ? {
-        id: producto._id || producto.id,
-        nombre: producto.nombre || producto.nombre,
-        imagen: producto.imagen || 'default-image-url',
-        precio: producto.price || producto.precio,
-        stock: producto.stock || 'N/A',
-        categoria: producto.categoria || 'Prearmado'
-      } : null;
     }));
 
     const productosFiltrados = productosConDetalles.filter(Boolean);
@@ -50,11 +59,13 @@ const obtenerProductosCarrito = async (req, res) => {
     }
 
     res.json(productosFiltrados);
+
   } catch (error) {
     console.error('Error al obtener productos del carrito:', error);
     res.status(500).json({ message: 'Error al obtener productos del carrito' });
   }
 };
+
 
 // Crear un nuevo producto
 const crearProducto = async (req, res) => {
