@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./css/ShoppingCart.css";
 import { jwtDecode } from "jwt-decode";
-
+import Navbar from '../inicio/Navbar.js';
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -9,6 +9,7 @@ const ShoppingCart = () => {
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState(null);
   const [cartId, setCartId] = useState(null);
+  
   const handleGoBack = () => {
     window.history.back();
   };
@@ -52,7 +53,6 @@ const ShoppingCart = () => {
       fetchCartData();
     }
   }, [userId]);
-  
 
   const obtenerDetallesComponentes = async (cartItems) => {
     try {
@@ -67,7 +67,6 @@ const ShoppingCart = () => {
       const productosConDetalles = await response.json();
 
       if (response.ok) {
-        // Asigna directamente la cantidad como 1 para cada producto
         return productosConDetalles.map((producto) => ({
           ...producto,
           cantidad: 1, // Aquí la cantidad se asigna como 1 sin comprobar nada
@@ -96,7 +95,6 @@ const ShoppingCart = () => {
         throw new Error("Error al eliminar el producto");
       }
 
-      // Obtener los datos actualizados del carrito después de la eliminación
       const updatedCartResponse = await fetch(
         `http://localhost:3002/cart/${userId}`
       );
@@ -106,7 +104,7 @@ const ShoppingCart = () => {
         const productosConDetalles = await obtenerDetallesComponentes(
           updatedCartData.cartItems
         );
-        setCartItems(productosConDetalles); // Actualiza los productos en el carrito
+        setCartItems(productosConDetalles);
       } else {
         throw new Error(
           updatedCartData.message || "Error al obtener el carrito actualizado"
@@ -117,7 +115,6 @@ const ShoppingCart = () => {
     }
   };
 
-  // Limpiar el carrito
   const handleClearCart = async () => {
     try {
       const response = await fetch(
@@ -137,7 +134,6 @@ const ShoppingCart = () => {
     }
   };
 
-  // Calcular el subtotal
   const calculateSubtotal = () => {
     return cartItems
       .reduce((acc, item) => acc + item.precio * item.cantidad, 0)
@@ -148,7 +144,6 @@ const ShoppingCart = () => {
   const handleQuantityChange = (componentId, newQuantity) => {
     if (newQuantity < 1) return; // No permitir cantidades menores a 1
 
-    // Actualiza la cantidad localmente
     setCartItems(
       cartItems.map((item) =>
         item.id === componentId ? { ...item, cantidad: newQuantity } : item
@@ -172,7 +167,6 @@ const ShoppingCart = () => {
         throw new Error("Error al actualizar el total");
       }
 
-      // Guardar total y datos del carrito en localStorage
       localStorage.setItem("totalCompra", subtotal);
       localStorage.setItem(
         "cartItems",
@@ -181,19 +175,18 @@ const ShoppingCart = () => {
             idProducto: item.id,
             nombre: item.nombre,
             cantidad: item.cantidad,
-            categoria: item.categoria, // Verifica si tienes esta propiedad en los datos
+            categoria: item.categoria,
             costo: item.precio,
           }))
         )
       );
-      // Redirigir a la siguiente pantalla
+
       window.location.href = "http://localhost:3000/datosenvio";
     } catch (error) {
       console.error("Error al hacer el checkout:", error);
     }
   };
 
-  // Imagen por defecto
   const defaultImage = "https://via.placeholder.com/150";
 
   if (loading) {
@@ -205,8 +198,8 @@ const ShoppingCart = () => {
   }
 
   return (
-
-
+    <div>
+       <Navbar />
     <div className="shopping-cart">
       <h1>Tu Carrito de compra</h1>
       <table className="cart-table">
@@ -247,18 +240,30 @@ const ShoppingCart = () => {
                   <td className="product-info">{item.nombre}</td>
                   <td>${item.precio.toFixed(2)}</td>
                   <td>
-                    <input
-                      type="number"
-                      value={item.cantidad}
-                      min="1"
-                      max={item.stock}
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          item.id,
-                          parseInt(e.target.value, 10)
-                        )
-                      }
-                    />
+                    <div className="quantity-controls">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, item.cantidad - 1)
+                        }
+                        disabled={item.cantidad <= 1}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        value={item.cantidad}
+                        readOnly
+                        className="quantity-input"
+                      />
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.id, item.cantidad + 1)
+                        }
+                        disabled={item.cantidad >= item.stock}
+                      >
+                        +
+                      </button>
+                    </div>
                   </td>
                   <td>{item.stock}</td>
                   <td>${(item.precio * item.cantidad).toFixed(2)}</td>
@@ -299,6 +304,7 @@ const ShoppingCart = () => {
           Comprar
         </button>
       </div>
+    </div>
     </div>
   );
 };
