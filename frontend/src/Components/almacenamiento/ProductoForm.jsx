@@ -10,74 +10,41 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
   const { state } = location;
   const selectedProductFromState = state?.product;
 
-  // Estilos en línea
-  const containerStyle = {
-    paddingTop: '120px', // espacio para el navbar fijo
-  };
-
-  const navbarStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.5rem 2rem',
-    backgroundColor: '#1e1f2b',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-    zIndex: 1000, // asegura que el navbar esté siempre encima
-  };
-
-  const logoImageStyle = {
-    width: '90px',
-    height: '90px',
-    borderRadius: '50%',
-  };
-
-  const navButtonsStyle = {
-    display: 'flex',
-    gap: '1rem',
-  };
-
-  const navButtonStyle = {
-    color: '#ffffff',
-    backgroundColor: 'transparent',
-    border: '2px solid #5c6bc0',
-    padding: '0.6rem 1.2rem',
-    borderRadius: '20px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-  };
-
-  const navButtonHoverStyle = {
-    backgroundColor: '#5c6bc0',
-    transform: 'scale(1.05)',
-  };
-
   const [formData, setFormData] = useState({
     nombre: "",
     categoria: "",
     precio: "",
     descripcion: "",
-    proposito: "", // Nuevo campo proposito
+    proposito: "",
     imagen: null,
-    especificaciones: {}, // Cambiado de 'detalles' a 'especificaciones'
+    especificaciones: {},
     tipo: "",
-    stock: "", // Nuevo campo stock
+    stock: "",
   });
-  
+
   const [categorias, setCategorias] = useState([]);
   const [detallesCategoria, setDetallesCategoria] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Obtener las categorías al cargar el componente
   useEffect(() => {
-    fetch(`${API_URL}/catego`)
+    fetch(`http://localhost:3002/catego`) // Corregido a /categorias
       .then((respuesta) => respuesta.json())
-      .then((datos) => setCategorias(datos))
-      .catch((error) => console.error("Error al obtener categorías:", error));
+      .then((datos) => {
+        // Asegúrate de que 'datos' sea un array antes de actualizar el estado
+        if (Array.isArray(datos)) {
+          setCategorias(datos);
+        } else {
+          console.error("Los datos recibidos no son un array");
+          setCategorias([]);  // Establecer un array vacío si los datos no son válidos
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener categorías:", error);
+        setCategorias([]);  // Establecer un array vacío en caso de error
+      });
   }, []);
+  
 
   useEffect(() => {
     if (selectedProductFromState) {
@@ -88,7 +55,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
         descripcion: selectedProductFromState.descripcion,
         proposito: selectedProductFromState.proposito || "",
         imagen: selectedProductFromState.imagen,
-        especificaciones: selectedProductFromState.especificaciones || {}, // Cambio aquí
+        especificaciones: selectedProductFromState.especificaciones || {},
         tipo: selectedProductFromState.tipo || "",
         stock: selectedProductFromState.stock || "",
       });
@@ -97,7 +64,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
         (c) => c.categoria === selectedProductFromState.categoria
       );
       setDetallesCategoria(
-        categoria?.especificaciones ? Object.entries(categoria.especificaciones) : [] // Cambiado de detalles a especificaciones
+        categoria?.especificaciones ? Object.entries(categoria.especificaciones) : []
       );
     }
   }, [selectedProductFromState, categorias]);
@@ -167,6 +134,13 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     e.preventDefault();
     setIsLoading(true);
   
+    // Validación de los campos obligatorios
+    if (!formData.nombre || !formData.categoria || !formData.precio || !formData.tipo || !formData.proposito || !formData.stock || Object.keys(formData.especificaciones).length === 0) {
+      alert("Por favor, completa todos los campos obligatorios.");
+      setIsLoading(false);
+      return;
+    }
+  
     const requestData = new FormData();
     requestData.append('nombre', formData.nombre);
     requestData.append('categoria', formData.categoria);
@@ -175,18 +149,22 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     requestData.append('proposito', formData.proposito);
     requestData.append('tipo', formData.tipo);
     requestData.append('stock', formData.stock);
-    requestData.append('especificaciones', JSON.stringify(formData.especificaciones));
-  
-    // Si hay una imagen nueva, agregarla a la solicitud
+    
+    // Verifica si 'especificaciones' está vacío y lo maneja
+    requestData.append('especificaciones', Object.keys(formData.especificaciones).length > 0 ? JSON.stringify(formData.especificaciones) : '{}');
+    
     if (formData.imagen && formData.imagen instanceof File) {
-      requestData.append('imagen', formData.imagen); // Enviar la imagen como archivo
+      requestData.append('imagen', formData.imagen);
     }
+    
+  
+    console.log([...requestData]);  // Verifica que el contenido sea el esperado.
+  
+    const url = selectedProductFromState
+      ? `${API_URL}/catego/${selectedProductFromState._id}` // PATCH para actualizar
+      : `${API_URL}/catego/`; // POST para crear un nuevo producto
   
     try {
-      const url = selectedProductFromState
-        ? `${API_URL}/catego/${selectedProductFromState._id}` // PATCH para actualizar
-        : `${API_URL}/catego`; // POST para crear un nuevo producto
-  
       const response = await fetch(url, {
         method: selectedProductFromState ? "PATCH" : "POST", // PATCH para actualizar
         body: requestData,
@@ -208,10 +186,12 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
         });
         if (onProductSaved) onProductSaved(resultado);
       } else {
-        throw new Error("Error al guardar el producto");
+        const errorData = await response.json();
+        console.error("Error en la respuesta:", errorData);  // Mostrar el error
+        throw new Error(errorData.error || "Error al guardar el producto");
       }
     } catch (error) {
-      console.error("Error al guardar el producto:", error);
+      console.error("Error al guardar el producto:", error);  // Mostrar error completo
       alert("Hubo un error al guardar el producto. Inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
@@ -220,35 +200,73 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
   
   
   
-  
 
   return (
-    <div style={containerStyle}>
+    <div style={{ paddingTop: '120px' }}>
       {/* Navbar */}
-      <nav style={navbarStyle}>
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '0.5rem 2rem',
+        backgroundColor: '#1e1f2b',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+        zIndex: 1000
+      }}>
         <div className="logo">
-          <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
+          <img src="/assets/logo.png" alt="Logo" style={{ width: '90px', height: '90px', borderRadius: '50%' }} />
         </div>
-        <div style={navButtonsStyle}>
+        <div style={{ display: 'flex', gap: '1rem' }}>
           <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
+            style={{
+              color: '#ffffff',
+              backgroundColor: 'transparent',
+              border: '2px solid #5c6bc0',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '20px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease, transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             onClick={() => navigate('/estadisticas')}
           >
             Estadisticas
           </button>
           <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
+            style={{
+              color: '#ffffff',
+              backgroundColor: 'transparent',
+              border: '2px solid #5c6bc0',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '20px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease, transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             onClick={() => navigate('/almacen')}
           >
             Almacen
           </button>
           <button
-            style={navButtonStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
+            style={{
+              color: '#ffffff',
+              backgroundColor: 'transparent',
+              border: '2px solid #5c6bc0',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '20px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease, transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             onClick={() => navigate('/login')}
           >
@@ -278,7 +296,6 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             ))}
           </select>
           <br />
-
           <select
             name="tipo"
             value={formData.tipo}
@@ -337,13 +354,13 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
           />
           <br />
 
-          {detallesCategoria.map(([detalleNombre, detalleOpciones]) => (
+          {detallesCategoria.map(([detalleNombre]) => (
             <div key={detalleNombre}>
               <label htmlFor={detalleNombre}>{detalleNombre}</label>
               <input
                 id={detalleNombre}
                 type="text"
-                value={formData.especificaciones[detalleNombre] || ""} // Cambiado a especificaciones
+                value={formData.especificaciones[detalleNombre] || ""}
                 onChange={(e) => handleDetalleChange(e, detalleNombre)}
               />
             </div>
