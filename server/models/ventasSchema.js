@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ventaSchema = new mongoose.Schema({
-  idVenta: { type: String, required: false },
+  idVenta: { type: String }, // No required, se puede asignar automáticamente
   idUsuario: { type: String, required: false },
   total: { type: Number, required: false },
   fecha: { type: Date, default: Date.now },

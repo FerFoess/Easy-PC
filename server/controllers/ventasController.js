@@ -53,20 +53,20 @@ exports.eliminarVenta = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar la venta' });
   }
 };
-
-
-// Controlador para crear una nueva venta
 exports.crearVenta = async (req, res) => {
   try {
-    const { idVenta, idUsuario, total, productos, fecha } = req.body;
+    const { idUsuario, total, productos, fecha } = req.body;
 
+    // Crear una nueva venta, MongoDB generará automáticamente el _id
     const nuevaVenta = new Venta({
-      idVenta,
       idUsuario,
       total,
-      productos, // Esto será un array de objetos (idProducto, nombre, cantidad, categoría, costo)
-      fecha: fecha || Date.now(), // Usa la fecha actual si no se proporciona una
+      productos,
+      fecha: fecha || Date.now(),
     });
+
+    // Asignar el _id generado como idVenta
+    nuevaVenta.idVenta = nuevaVenta._id;
 
     const ventaGuardada = await nuevaVenta.save();
     res.status(201).json({ message: 'Venta guardada exitosamente', venta: ventaGuardada });
@@ -75,4 +75,6 @@ exports.crearVenta = async (req, res) => {
     res.status(400).json({ error: 'Error al crear la venta' });
   }
 };
+
+
 

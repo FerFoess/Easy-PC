@@ -64,7 +64,7 @@ const registerUser = async (req, res) => {
       from: 'easypc.companymx@gmail.com', // Dirección de correo electrónico desde la cual se envía el mensaje
       to: email, // Dirección de correo electrónico del destinatario
       subject: 'Registro Exitoso',
-      text: `¡Hola ${firstName}! Tu nombre de usuario es: ${username}.`,
+      text: `¡Hola ${firstName}! Tu nombre de usuario es: " ${username} " .`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

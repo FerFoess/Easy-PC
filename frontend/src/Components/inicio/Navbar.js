@@ -137,7 +137,7 @@ const Navbar = () => {
               navButtonHoverStyle.backgroundColor)
           }
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "red")}
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/")}
         >
           <FaSignOutAlt size={24} /> Cerrar Sesión
         </button>
