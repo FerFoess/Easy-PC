@@ -4,6 +4,13 @@ import "./estilos.css";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
+const getImageUrl = (imagePath) => {
+  if (imagePath) {
+    return `http://localhost:3002/S${imagePath.replace(/\\/g, '/')}`; // Reemplazar barras invertidas
+  }
+  return '/default-image.jpg'; // Imagen por defecto
+};
+
 const ProductForm = ({ selectedProduct, onProductSaved }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -144,6 +151,9 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
       if (response.ok) {
         console.log("Categoría guardada correctamente", result);
         onProductSaved && onProductSaved(result);
+
+        // Limpiar el formulario después de guardar el producto
+        resetForm();
       } else {
         console.error("Error al guardar la categoría", result);
       }
@@ -154,8 +164,96 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     }
   };
 
+  // Función para resetear los campos del formulario
+  const resetForm = () => {
+    setFormData({
+      nombre: "",
+      categoria: "",
+      precio: "",
+      descripcion: "",
+      proposito: "",
+      imagen: null,
+      especificaciones: {},
+      name: "",
+      stock: "",
+    });
+  };
+
   return (
     <div style={{ paddingTop: "120px" }}>
+      {/* Navbar */}
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '0.5rem 2rem',
+        backgroundColor: '#1e1f2b',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+        zIndex: 1000
+      }}>
+        <div className="logo">
+          <img src="/assets/logo.png" alt="Logo" style={{ width: '90px', height: '90px', borderRadius: '50%' }} />
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button
+            style={{
+              color: '#ffffff',
+              backgroundColor: 'transparent',
+              border: '2px solid #5c6bc0',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '20px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease, transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            onClick={() => navigate('/estadisticas')}
+          >
+            Estadísticas
+          </button>
+          <button
+            style={{
+              color: '#ffffff',
+              backgroundColor: 'transparent',
+              border: '2px solid #5c6bc0',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '20px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease, transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            onClick={() => navigate('/almacen')}
+          >
+            Almacén
+          </button>
+          <button
+            style={{
+              color: '#ffffff',
+              backgroundColor: 'transparent',
+              border: '2px solid #5c6bc0',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '20px',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease, transform 0.2s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            onClick={() => navigate('/login')}
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </nav>
+
+      {/* Product Form */}
       <div className="foess-product-form-container">
         <form onSubmit={handleSubmit} className="product-form">
           <h2 style={{ color: "black", fontSize: "24px" }}>
@@ -188,9 +286,10 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
           >
             <option value="">Selecciona un tipo</option>
             <option value="VideoJuegos">VideoJuegos</option>
-            <option value="Trabajo">Trabajo</option>
-            <option value="Ocio">Ocio</option>
-            <option value="Estudio">Estudio</option>
+            <option value="Consolas">Consolas</option>
+            <option value="Accesorios">Accesorios</option>
+            <option value="Accesorios">Ocio</option>
+            <option value="Accesorios">Escuela</option>
           </select>
 
           {/* Nombre */}
@@ -199,9 +298,19 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             name="nombre"
             value={formData.nombre}
             onChange={handleChange}
-            placeholder="Nombre del producto"
+            placeholder="Nombre"
+            className="input-field"
             required
-            className="input-text"
+          />
+
+          {/* Descripción */}
+          <textarea
+            name="descripcion"
+            value={formData.descripcion}
+            onChange={handleChange}
+            placeholder="Descripción"
+            className="input-field"
+            required
           />
 
           {/* Precio */}
@@ -211,28 +320,8 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             value={formData.precio}
             onChange={handleChange}
             placeholder="Precio"
+            className="input-field"
             required
-            className="input-text"
-          />
-
-          {/* Descripción */}
-          <textarea
-            name="descripcion"
-            value={formData.descripcion}
-            onChange={handleChange}
-            placeholder="Descripción"
-            className="input-textarea"
-          />
-
-          {/* Propósito */}
-          <input
-            type="text"
-            name="proposito"
-            value={formData.proposito}
-            onChange={handleChange}
-            placeholder="Propósito del producto"
-            required
-            className="input-text"
           />
 
           {/* Stock */}
@@ -242,36 +331,45 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             value={formData.stock}
             onChange={handleChange}
             placeholder="Stock"
+            className="input-field"
             required
-            className="input-text"
           />
 
           {/* Imagen */}
           <input
             type="file"
             name="imagen"
+            accept="image/*"
             onChange={handleChange}
             className="input-file"
           />
 
-          {/* Especificaciones dinámicas */}
-          {detallesCategoria.length > 0 &&
-            detallesCategoria.map(([nombre, tipo]) => (
-              <div key={nombre}>
-                <label>{nombre}</label>
-                <input
-                  type="text"
-                  name={nombre}
-                  value={formData.especificaciones[nombre] || ""}
-                  onChange={(e) => handleDetalleChange(e, nombre)}
-                  className="input-text"
-                  required
-                />
-              </div>
-            ))}
+          {/* Especificaciones */}
+          {detallesCategoria.map(([nombre, tipo], index) => (
+            <div key={index}>
+              <label>{nombre}</label>
+              <input
+                type="text"
+                name={nombre}
+                value={formData.especificaciones[nombre] || ""}
+                onChange={(e) => handleDetalleChange(e, nombre)}
+                className="input-field"
+              />
+            </div>
+          ))}
 
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? "Guardando..." : selectedProductFromState ? "Actualizar Producto" : "Agregar Producto"}
+
+          {/* Propósito */}
+          <textarea
+            name="proposito"
+            value={formData.proposito}
+            onChange={handleChange}
+            placeholder="Propósito"
+            className="input-field"
+          />
+
+          <button type="submit" className="submit-button">
+            {isLoading ? "Guardando..." : "Guardar"}
           </button>
         </form>
       </div>
