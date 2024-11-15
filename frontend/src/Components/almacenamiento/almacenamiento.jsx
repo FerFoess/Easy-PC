@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./estilos.css";
 
 const ProductList = () => {
@@ -52,6 +52,7 @@ const ProductList = () => {
     transform: 'scale(1.05)',
   };
 
+  // Obtener productos desde el servidor
   useEffect(() => {
     fetch("http://localhost:3002/catego")
       .then((respuesta) => respuesta.json())
@@ -62,6 +63,7 @@ const ProductList = () => {
       .catch((error) => console.error("Error al obtener productos:", error));
   }, []);
 
+  // Manejo de eliminación de producto
   const handleDelete = async (id) => {
     if (window.confirm("¿Estás seguro de que quieres eliminar esta categoría?")) {
       try {
@@ -74,7 +76,6 @@ const ProductList = () => {
 
           // Filtrar el producto eliminado de la lista
           setProductos((prevProductos) => prevProductos.filter((producto) => producto._id !== id));
-
         } else {
           alert("Hubo un error al eliminar la categoría");
         }
@@ -83,6 +84,15 @@ const ProductList = () => {
         alert("Hubo un error al eliminar la categoría");
       }
     }
+  };
+
+  // Función para obtener la URL de la imagen
+  const getImageUrl = (imagePath) => {
+    if (imagePath) {
+      // Reemplazar las barras invertidas por barras normales y generar la URL
+      return `http://localhost:3002/${imagePath.replace(/\\/g, '/')}`;
+    }
+    return '/assets/default-image.png'; // Imagen predeterminada si no hay imagen
   };
 
   return (
@@ -100,7 +110,7 @@ const ProductList = () => {
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
               onClick={() => navigate('/estadisticas')}
             >
-              Estadisticas
+              Estadísticas
             </button>
             <button
               style={navButtonStyle}
@@ -130,28 +140,31 @@ const ProductList = () => {
           {productos.map((producto) => (
             <div key={producto._id} className="foess-product-product-card">
               <div className="foess-product-product-card-image">
-                {producto.imagen && typeof producto.imagen === "string" && producto.imagen.trim() !== "" ? (
-                  <img src={producto.imagen} alt={producto.nombre} />
-                ) : (
-                  <p>Imagen no disponible</p>
-                )}
+                <img 
+                  src={getImageUrl(producto.imagen)} 
+                  alt={producto.nombre} 
+                  style={{ width: '100%', height: 'auto', objectFit: 'cover' }} 
+                />
               </div>
               <div className="foess-product-product-card-content">
                 <h3>{producto.nombre}</h3>
                 <p>{producto.descripcion}</p>
                 <p>Precio: ${producto.precio}</p>
                 <p>Categoría: {producto.categoria}</p>
-                <p>Tipo: {producto.tipo}</p>
-                <p>Propósito: {producto.proposito}</p>
+                <p>Tipo: {producto.name}</p>
+                <p>Propósito: {producto.propositos}</p>
                 <p>Stock: {producto.stock}</p> {/* Mostrar el stock del producto */}
               </div>
               <div className="foess-product-product-card-actions">
-              <button
-  className="foess-product-product-button"
-  onClick={() => navigate('/productform', { state: { product: producto } })}
->
-  Editar
-</button>
+                {/* Botón de editar */}
+                <button
+                  className="foess-product-product-button"
+                  onClick={() => navigate('/productform', { state: { product: producto } })}
+                >
+                  Editar
+                </button>
+
+                {/* Botón de eliminar */}
                 <br />
                 <br />
                 <button
