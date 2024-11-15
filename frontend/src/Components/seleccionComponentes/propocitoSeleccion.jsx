@@ -136,6 +136,18 @@ const PropocitoSeleccion = () => {
     setPopupVisible(false);
   };
 
+  
+const getImageUrl = (imagePath) => {
+  if (imagePath) {
+    return `http://localhost:3002/${imagePath.replace(/\\/g, '/')}`; // Convierte las barras invertidas en barras normales
+  }
+  return defaultImage; // Si no hay imagen, usa la predeterminada
+};
+
+const defaultImage = "https://mx.yeyiangaming.com/media/catalog/product/cache/63abef889f4ceaaa568fc4cf6e7149cb/y/c/ycm-apdra-01_dragoon_001c.jpg";
+
+
+
   return (
     <div className="propocitoeleccion">
       <Navbar />
@@ -199,6 +211,12 @@ const PropocitoSeleccion = () => {
               className="producto"
               onClick={() => mostrarDetallesProducto(producto)}
             >
+                <img
+  src={getImageUrl(producto.imagen)}
+  alt={producto.nombre}
+  className="imagen-producto"
+  onError={(e) => e.target.src = defaultImage} // Si la imagen no se carga, usa la predeterminada
+/>
               <h4>{producto.nombre}</h4>
               <p>{producto.descripcion}</p>
               <p>Precio: ${producto.precio}</p>

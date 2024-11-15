@@ -11,17 +11,17 @@ const Prearmados = () => {
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
-    processor: "",
+    procesador: "",
     ram: "",
-    storage: "",
-    graphics: "",
-    priceRange: "",
+    almacenamiento: "",
+    graficos: "",
+    precio: "",
   });
   const [filterOptions, setFilterOptions] = useState({
-    processor: [],
+    procesador: [],
     ram: [],
-    storage: [],
-    graphics: [],
+    almacenamiento: [],
+    graficos: [],
   });
   const [prearmados, setPrearmados] = useState([]);
   const [filteredPrearmados, setFilteredPrearmados] = useState([]);
@@ -54,16 +54,16 @@ const Prearmados = () => {
       const data = await response.json();
       setPrearmados(data);
 
-      const processors = [...new Set(data.map((item) => item.processor))];
+      const processors = [...new Set(data.map((item) => item.procesador))];
       const rams = [...new Set(data.map((item) => item.ram))];
-      const storages = [...new Set(data.map((item) => item.storage))];
-      const graphicsCards = [...new Set(data.map((item) => item.graphics))];
+      const storages = [...new Set(data.map((item) => item.almacenamiento))];
+      const graphicsCards = [...new Set(data.map((item) => item.graficos))];
 
       setFilterOptions({
-        processor: processors,
+        procesador: processors,
         ram: rams,
-        storage: storages,
-        graphics: graphicsCards,
+        almacenamiento: storages,
+        graficos: graphicsCards,
       });
 
       setFilteredPrearmados(data);
@@ -77,7 +77,6 @@ const Prearmados = () => {
     try {
       const response = await axios.get(`http://localhost:3002/cart/${userId}`);
       if (response.status === 200) {
-        // Asegurarse de que cartItems sea siempre un array
         setCartItems(Array.isArray(response.data) ? response.data : []);
       }
     } catch (error) {
@@ -85,7 +84,6 @@ const Prearmados = () => {
       setCartItems([]); // Asegurarse de que sea un array vacío en caso de error
     }
   };
-  
 
   const handleFilterChange = (filterName, value) => {
     setFilters((prevFilters) => ({
@@ -97,16 +95,14 @@ const Prearmados = () => {
   useEffect(() => {
     const filtered = prearmados.filter((item) => {
       return (
-        (!filters.processor || item.processor === filters.processor) &&
+        (!filters.procesador || item.procesador === filters.procesador) &&
         (!filters.ram || item.ram === filters.ram) &&
-        (!filters.storage || item.storage === filters.storage) &&
-        (!filters.graphics || item.graphics === filters.graphics) &&
-        (!filters.priceRange ||
-          (filters.priceRange === "0-500" && item.price <= 500) ||
-          (filters.priceRange === "500-1000" &&
-            item.price > 500 &&
-            item.price <= 1000) ||
-          (filters.priceRange === "1000+" && item.price > 1000))
+        (!filters.almacenamiento || item.almacenamiento === filters.almacenamiento) &&
+        (!filters.graficos || item.graficos === filters.graficos) &&
+        (!filters.precio ||
+          (filters.precio === "0-500" && item.precio <= 500) ||
+          (filters.precio === "500-1000" && item.precio > 500 && item.precio <= 1000) ||
+          (filters.precio === "1000+" && item.precio > 1000))
       );
     });
     setFilteredPrearmados(filtered);
@@ -118,7 +114,6 @@ const Prearmados = () => {
 
   const handleAcceptPC = async () => {
     try {
-      // Si no hay usuario, redirigir al login
       if (!userId) {
         window.location.href = "http://localhost:3000";
         return;
@@ -148,26 +143,25 @@ const Prearmados = () => {
   const cerrarPopups = () => {
     setSelectedPC(null);
     setPopupVisible(false);
-  }; 
+  };
 
-  // Función para verificar si un prearmado está en el carrito
   const isInCart = (pcId) => {
     return cartItems.some((item) => item._id === pcId);
   };
 
   return (
-    <div className="prearmados" >
+    <div className="prearmados">
       <Navbar />
       <div className="gray-boxD">
         <div className="filters-horizontal">
           <div className="filter-group">
             <label>Procesador:</label>
             <select
-              value={filters.processor}
-              onChange={(e) => handleFilterChange("processor", e.target.value)}
+              value={filters.procesador}
+              onChange={(e) => handleFilterChange("procesador", e.target.value)}
             >
               <option value="">Todos</option>
-              {filterOptions.processor.map((processor) => (
+              {filterOptions.procesador.map((processor) => (
                 <option key={processor} value={processor}>
                   {processor}
                 </option>
@@ -193,11 +187,11 @@ const Prearmados = () => {
           <div className="filter-group">
             <label>Almacenamiento:</label>
             <select
-              value={filters.storage}
-              onChange={(e) => handleFilterChange("storage", e.target.value)}
+              value={filters.almacenamiento}
+              onChange={(e) => handleFilterChange("almacenamiento", e.target.value)}
             >
               <option value="">Todos</option>
-              {filterOptions.storage.map((storage) => (
+              {filterOptions.almacenamiento.map((storage) => (
                 <option key={storage} value={storage}>
                   {storage}
                 </option>
@@ -208,11 +202,11 @@ const Prearmados = () => {
           <div className="filter-group">
             <label>Tarjeta Gráfica:</label>
             <select
-              value={filters.graphics}
-              onChange={(e) => handleFilterChange("graphics", e.target.value)}
+              value={filters.graficos}
+              onChange={(e) => handleFilterChange("graficos", e.target.value)}
             >
               <option value="">Todas</option>
-              {filterOptions.graphics.map((graphics) => (
+              {filterOptions.graficos.map((graphics) => (
                 <option key={graphics} value={graphics}>
                   {graphics}
                 </option>
@@ -223,8 +217,8 @@ const Prearmados = () => {
           <div className="filter-group">
             <label>Rango de Precios:</label>
             <select
-              value={filters.priceRange}
-              onChange={(e) => handleFilterChange("priceRange", e.target.value)}
+              value={filters.precio}
+              onChange={(e) => handleFilterChange("precio", e.target.value)}
             >
               <option value="">Todos</option>
               <option value="0-500">$0 - $500</option>
@@ -236,41 +230,37 @@ const Prearmados = () => {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-<div className="prearmados-cards">
-  {filteredPrearmados.map((system) => (
-    <div key={system._id} className="system-card" style={{ position: "relative" }}>
-      {/* Mostrar ícono de carrito si ya está en el carrito */}
-      {isInCart(system._id) && (
-        <div
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "10px",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            borderRadius: "50%",
-            padding: "5px",
-            color: "white",
-          }}
-        >
-          <FaShoppingCart />
+        <div className="prearmados-cards">
+          {filteredPrearmados.map((system) => (
+            <div key={system._id} className="system-card" style={{ position: "relative" }}>
+              {isInCart(system._id) && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    borderRadius: "50%",
+                    padding: "5px",
+                    color: "white",
+                  }}
+                >
+                  <FaShoppingCart />
+                </div>
+              )}
+              <h3>{system.nombre}</h3>
+              <p>Procesador: {system.procesador}</p>
+              <p>RAM: {system.ram}</p>
+              <p>Almacenamiento: {system.almacenamiento}</p>
+              <p>Tarjeta Gráfica: {system.graficos}</p>
+              <p>Precio: ${system.precio}</p>
+              <button onClick={() => handleSelectPC(system)}>
+                {isInCart(system._id) ? "Ya está en el carrito" : "Seleccionar PC"}
+              </button>
+            </div>
+          ))}
+          {filteredPrearmados.length === 0 && <p>No se encontraron equipos con los filtros seleccionados.</p>}
         </div>
-      )}
-      <h3>{system.nombre}</h3>
-      <p>Procesador: {system.procesador}</p>
-      <p>RAM: {system.ram}</p>
-      <p>Almacenamiento: {system.almacenamiento}</p>
-      <p>Tarjeta Gráfica: {system.graficos}</p>
-      <p>Precio: ${system.precio}</p>
-      <button onClick={() => handleSelectPC(system)}>
-        {isInCart(system._id) ? "Ya está en el carrito" : "Seleccionar PC"}
-      </button>
-    </div>
-  ))}
-  {filteredPrearmados.length === 0 && (
-    <p>No se encontraron equipos con los filtros seleccionados.</p>
-  )}
-</div>
-
 
         {selectedPC && (
           <div className="popup">

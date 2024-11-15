@@ -187,7 +187,15 @@ const ShoppingCart = () => {
     }
   };
 
-  const defaultImage = "https://via.placeholder.com/150";
+  const defaultImage = "https://mx.yeyiangaming.com/media/catalog/product/cache/63abef889f4ceaaa568fc4cf6e7149cb/y/c/ycm-apdra-01_dragoon_001c.jpg";
+
+  // Función para obtener la URL completa de la imagen
+  const getImageUrl = (imagePath) => {
+    if (imagePath) {
+      return `http://localhost:3002/${imagePath.replace(/\\/g, '/')}`; // Convierte las barras invertidas en barras normales
+    }
+    return defaultImage; // Si no hay imagen, usa la predeterminada
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -199,111 +207,111 @@ const ShoppingCart = () => {
 
   return (
     <div>
- <Navbar />
-    <div className="shopping-cart">
-      <h1>Tu Carrito de compra</h1>
-      <table className="cart-table">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Categoria</th>
-            <th>Producto</th>
-            <th>Precio unitario</th>
-            <th>Cantidad</th>
-            <th>Stock</th>
-            <th>Subtotal</th>
-            <th>Remover</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cartItems.length === 0 ? (
+      <Navbar />
+      <div className="shopping-cart">
+        <h1>Tu Carrito de compra</h1>
+        <table className="cart-table">
+          <thead>
             <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
-                Aún no tienes productos en tu carrito de compras. Agrega
-                productos para empezar a verlos aquí.
-              </td>
+              <th>Imagen</th>
+              <th>Categoria</th>
+              <th>Producto</th>
+              <th>Precio unitario</th>
+              <th>Cantidad</th>
+              <th>Stock</th>
+              <th>Subtotal</th>
+              <th>Remover</th>
             </tr>
-          ) : (
-            cartItems.map((item) => {
-              const imageSrc = item.imagen || defaultImage;
+          </thead>
+          <tbody>
+            {cartItems.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={{ textAlign: "center" }}>
+                  Aún no tienes productos en tu carrito de compras. Agrega
+                  productos para empezar a verlos aquí.
+                </td>
+              </tr>
+            ) : (
+              cartItems.map((item) => {
+                const imageSrc = getImageUrl(item.imagen); // Obtener la URL correcta para la imagen
 
-              return (
-                <tr key={item.id}>
-                  <td>
-                    <img
-                      src={imageSrc}
-                      alt={item.nombre}
-                      className="product-image"
-                    />
-                  </td>
-                  <td className="product-categoria">{item.categoria}</td>
-                  <td className="product-info">{item.nombre}</td>
-                  <td>${item.precio.toFixed(2)}</td>
-                  <td>
-                    <div className="quantity-controls">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(item.id, item.cantidad - 1)
-                        }
-                        disabled={item.cantidad <= 1}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        value={item.cantidad}
-                        readOnly
-                        className="quantity-input"
+                return (
+                  <tr key={item.id}>
+                    <td>
+                      <img
+                        src={imageSrc}
+                        alt={item.nombre}
+                        className="product-image"
                       />
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(item.id, item.cantidad + 1)
-                        }
-                        disabled={item.cantidad >= item.stock}
-                      >
-                        +
+                    </td>
+                    <td className="product-categoria">{item.categoria}</td>
+                    <td className="product-info">{item.nombre}</td>
+                    <td>${item.precio.toFixed(2)}</td>
+                    <td>
+                      <div className="quantity-controls">
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.cantidad - 1)
+                          }
+                          disabled={item.cantidad <= 1}
+                        >
+                          -
+                        </button>
+                        <input
+                          type="text"
+                          value={item.cantidad}
+                          readOnly
+                          className="quantity-input"
+                        />
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.cantidad + 1)
+                          }
+                          disabled={item.cantidad >= item.stock}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td>{item.stock}</td>
+                    <td>${(item.precio * item.cantidad).toFixed(2)}</td>
+                    <td>
+                      <button onClick={() => handleRemoveItem(item.id)}>
+                        Remover
                       </button>
-                    </div>
-                  </td>
-                  <td>{item.stock}</td>
-                  <td>${(item.precio * item.cantidad).toFixed(2)}</td>
-                  <td>
-                    <button onClick={() => handleRemoveItem(item.id)}>
-                      Remover
-                    </button>
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
 
-      {cartItems.length > 0 && (
-        <button onClick={handleClearCart} className="clear-cart-button">
-          Limpiar carrito
-        </button>
-      )}
+        {cartItems.length > 0 && (
+          <button onClick={handleClearCart} className="clear-cart-button">
+            Limpiar carrito
+          </button>
+        )}
 
-      <div className="cart-totals">
-        <div>
-          <span>Subtotal:</span>
-          <span>${calculateSubtotal()}</span>
+        <div className="cart-totals">
+          <div>
+            <span>Subtotal:</span>
+            <span>${calculateSubtotal()}</span>
+          </div>
+          <div>
+            <span>Total:</span>
+            <span>${calculateSubtotal()}</span>
+          </div>
         </div>
-        <div>
-          <span>Total:</span>
-          <span>${calculateSubtotal()}</span>
-        </div>
-      </div>
 
-      <div className="buttons-container">
-        <button className="go-back-button" onClick={handleGoBack}>
-          Regresar
-        </button>
-        <button className="checkout-button" onClick={handleCheckout}>
-          Comprar
-        </button>
-      </div>
+        <div className="buttons-container">
+          <button className="go-back-button" onClick={handleGoBack}>
+            Regresar
+          </button>
+          <button className="checkout-button" onClick={handleCheckout}>
+            Comprar
+          </button>
+        </div>
       </div>
     </div>
   );
