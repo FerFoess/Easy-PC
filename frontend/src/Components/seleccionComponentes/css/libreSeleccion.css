@@ -297,3 +297,16 @@
   font-size: 16px; /* Optional: Adjust font size */
   color: #555; /* Optional: Adjust color if needed */
 }
+
+.producto-imagen {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.imagen-producto {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover; /* Hace que la imagen se ajuste bien dentro de su contenedor */
+  border-radius: 8px; /* Bordes redondeados opcionales */
+}

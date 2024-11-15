@@ -226,20 +226,33 @@ const obtenerProductoPorId = async (req, res) => {
 };
 
 // Reducir el stock de los productos según las cantidades solicitadas
+// Reducir el stock de los productos según las cantidades solicitadas
 const reducirStock = async (req, res) => {
   const { productos } = req.body;
   try {
     const productosActualizados = await Promise.all(productos.map(async (producto) => {
       const { idProducto, cantidad } = producto;
-      const componente = await Components.findById(idProducto);
+
+      // Buscar el producto primero en Components
+      let componente = await Components.findById(idProducto);
+
+      // Si no se encuentra en Components, buscar en Prearmado
       if (!componente) {
-        throw new Error(`Producto con id ${idProducto} no encontrado`);
+        componente = await Prearmado.findById(idProducto);
       }
+
+      if (!componente) {
+        throw new Error(`Producto con id ${idProducto} no encontrado en Components ni en Prearmado`);
+      }
+
       if (componente.stock < cantidad) {
         throw new Error(`No hay suficiente stock para el producto ${componente.nombre}`);
       }
+
+      // Reducir el stock y guardar los cambios
       componente.stock -= cantidad;
       await componente.save();
+
       return componente;
     }));
 
