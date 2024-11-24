@@ -47,6 +47,11 @@ const CheckoutForm = () => {
     }
 
     const timerInterval = setInterval(() => {
+      if (success) {
+        clearInterval(timerInterval);
+        return;
+      }
+
       if (timeLeft > 0) {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
@@ -54,65 +59,56 @@ const CheckoutForm = () => {
             handleCancel();
             return 0;
           }
-          localStorage.setItem('timeLeft', prevTime - 1);
+          localStorage.setItem("timeLeft", prevTime - 1);
           return prevTime - 1;
         });
-        
-        localStorage.setItem("timeLeft", timeLeft - 1);
       } else {
-        // Si el tiempo se acaba, cancelar la reserva
         handleCancel();
       }
     }, 1000);
 
     return () => clearInterval(timerInterval);
-
-  }, [timeLeft]);
+  }, [timeLeft, success]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsProcessing(true);
-
+  
     const cardElement = elements.getElement(CardElement);
-
+  
     try {
+      // Stripe requiere que el monto esté en centavos y sea un número entero
+      const amountInCents = Math.round(amount * 100);
+  
       const { data: { clientSecret } } = await axios.post(
         "http://localhost:3002/payments/create-payment-intent",
-        { amount: amount * 100 }
+        { amount: amountInCents }
       );
-
+  
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
           billing_details: { name: `${formData.nombre} ${formData.apellido}` },
         },
       });
-
+  
       if (paymentResult.error) {
         setError(paymentResult.error.message);
       } else if (paymentResult.paymentIntent.status === "succeeded") {
         setSuccess(true);
         setError(null);
-
-         // Actualizar el stock de los productos
-         await axios.post("http://localhost:3002/components/reducir-stock", {
-          productos: cartItems.map((item) => ({
-            idProducto: item.idProducto,
-            cantidad: item.cantidad,
-          })),
-        });
-
-         // Verificar el stock de cada producto para generar alertas
-         await Promise.all(
+        setTimeLeft(0);
+        setAmount(0);
+  
+        await Promise.all(
           cartItems.map((item) =>
             axios.post(`http://localhost:3002/catego/${item.idProducto}/verificarStock`)
           )
         );
-
-         // Crear la venta en la base de datos
-         await axios.post("http://localhost:3002/ventas/ventas", {
+  
+        await axios.post("http://localhost:3002/ventas/ventas", {
           idUsuario: formData.userId,
-          total: amount / 100,
+          total: amount, // Aquí usamos el monto original (MXN) para registrar la venta
           productos: cartItems.map((item) => ({
             idProducto: item.idProducto,
             nombre: item.nombre,
@@ -122,21 +118,19 @@ const CheckoutForm = () => {
           })),
           fecha: new Date(),
         });
-
+  
         const email = localStorage.getItem("email");
-
+  
         await axios.post(
           "http://localhost:3002/auth/send-payment-confirmation",
           {
-            email: email, 
-            amount,
+            email: email,
+            amount, // Monto original (en MXN) para el correo
           }
         );
-
-        // Eliminar el carrito después de actualizar el stock y registrar la venta
+  
         await axios.delete(`http://localhost:3002/cart/cart/${formData.userId}/clearCart`);
-
-        // Limpiar localStorage
+  
         localStorage.removeItem("totalCompra");
         localStorage.removeItem("cartItems");
         localStorage.removeItem("email");
@@ -148,20 +142,19 @@ const CheckoutForm = () => {
     }
     setIsProcessing(false);
   };
+  
 
-  // Cancelar la compra y restaurar el stock
   const handleCancel = async () => {
     try {
-      // Obtener los datos del carrito desde el localStorage
       const cartItems = JSON.parse(localStorage.getItem("cartItems"));
       const cartId = localStorage.getItem("cartId");
 
       if (!cartItems || !cartId) {
         alert("No hay datos de carrito para cancelar.");
+        window.location.href = "http://localhost:3000/carritoCompra";
         return;
       }
 
-      // Enviar la petición para cancelar la reserva
       const response = await axios.post("http://localhost:3002/catego/cancelar-compra", {
         cartId,
         items: cartItems.map(item => ({
@@ -185,7 +178,6 @@ const CheckoutForm = () => {
     }
   };
 
-  // Formatear el tiempo restante en minutos y segundos
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
@@ -195,8 +187,12 @@ const CheckoutForm = () => {
   return (
     <div className="checkout-form-container">
       <h2>Pago con tarjeta</h2>
-      <p>Tiempo restante: {formatTime(timeLeft)}</p> {/* Muestra el cronómetro */}
-      <p>Total a pagar: ${amount}</p> {/* Muestra el monto */}
+      {!success && (
+        <>
+          <p>Tiempo restante: {formatTime(timeLeft)}</p>
+          <p>Total a pagar: ${amount}</p>
+        </>
+      )}
       {error && <div style={{ color: "red" }}>{error}</div>}
       {success ? (
         <div>

@@ -13,8 +13,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-
+    setError("");  // Reseteamos el error antes de hacer la solicitud
+  
     try {
       const response = await fetch("http://localhost:3002/auth/login", {
         method: "POST",
@@ -23,11 +23,13 @@ const Login = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-
-      const data = await response.json();
-
+  
+      // Verificar si la respuesta fue exitosa
       if (response.ok) {
-        localStorage.setItem("token", data.token);
+        const data = await response.json();
+        localStorage.setItem("token", data.token);  // Guardamos el token
+  
+        // Decodificar el token y redirigir
         const decoded = jwtDecode(data.token);
         if (decoded.role === "user") {
           window.location.href = "http://localhost:3000/inicio";
@@ -35,12 +37,16 @@ const Login = () => {
           window.location.href = "http://localhost:3000/almacen";
         }
       } else {
-        setError(data.message || "Error al iniciar sesión");
+        const errorData = await response.json();
+        setError(errorData.message || "Error al iniciar sesión");
       }
     } catch (error) {
-      setError("Error al conectar con el servidor");
+      setError("Error en la conexión con el servidor");
     }
   };
+  
+  
+  
 
   return (
     <div className="login-container">

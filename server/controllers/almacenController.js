@@ -1,15 +1,12 @@
-const AlmacenService = require('../services/almacenService');
-const Mediador = require('../services/Mediador'); // Asegúrate de que esta clase exista
-const mediador = new Mediador(); // Crear instancia del Mediador
-const almacenService = new AlmacenService(mediador);
+const mediador = require('../services/index'); // Cargar el mediador global
 
 // Controlador para obtener todos los productos
 exports.obtenerProductos = async (req, res) => {
   try {
-    const productos = await almacenService.obtenerProductos();
+    const productos = await mediador.notificar('almacenService', 'obtenerProductos');
     res.status(200).json(productos);
   } catch (error) {
-    console.error(error);
+    console.error('Error al obtener los productos:', error);
     res.status(500).json({ error: 'Error al obtener los productos' });
   }
 };
@@ -17,13 +14,13 @@ exports.obtenerProductos = async (req, res) => {
 // Controlador para obtener un producto por ID
 exports.obtenerProductoPorId = async (req, res) => {
   try {
-    const producto = await almacenService.obtenerProductoPorId(req.params.id);
+    const producto = await mediador.notificar('almacenService', 'obtenerProductoPorId', { id: req.params.id });
     if (!producto) {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
     res.status(200).json(producto);
   } catch (error) {
-    console.error(error);
+    console.error('Error al obtener el producto:', error);
     res.status(500).json({ error: 'Error al obtener el producto' });
   }
 };
@@ -31,10 +28,10 @@ exports.obtenerProductoPorId = async (req, res) => {
 // Controlador para crear un producto
 exports.crearProducto = async (req, res) => {
   try {
-    const productoCreado = await almacenService.crearProducto(req.body);
+    const productoCreado = await mediador.notificar('almacenService', 'crearProducto', req.body);
     res.status(201).json(productoCreado);
   } catch (error) {
-    console.error(error);
+    console.error('Error al crear el producto:', error);
     res.status(500).json({ error: 'Error al crear el producto' });
   }
 };
@@ -42,10 +39,13 @@ exports.crearProducto = async (req, res) => {
 // Controlador para actualizar un producto
 exports.actualizarProducto = async (req, res) => {
   try {
-    const productoActualizado = await almacenService.actualizarProducto(req.params.id, req.body);
+    const productoActualizado = await mediador.notificar('almacenService', 'actualizarProducto', {
+      id: req.params.id,
+      data: req.body,
+    });
     res.status(200).json(productoActualizado);
   } catch (error) {
-    console.error(error);
+    console.error('Error al actualizar el producto:', error);
     res.status(500).json({ error: 'Error al actualizar el producto' });
   }
 };
@@ -53,10 +53,10 @@ exports.actualizarProducto = async (req, res) => {
 // Controlador para eliminar un producto
 exports.eliminarProducto = async (req, res) => {
   try {
-    const productoEliminado = await almacenService.eliminarProducto(req.params.id);
+    await mediador.notificar('almacenService', 'eliminarProducto', { id: req.params.id });
     res.status(200).json({ message: 'Producto eliminado' });
   } catch (error) {
-    console.error(error);
+    console.error('Error al eliminar el producto:', error);
     res.status(500).json({ error: 'Error al eliminar el producto' });
   }
 };
@@ -64,20 +64,19 @@ exports.eliminarProducto = async (req, res) => {
 // Controlador para verificar stock y enviar alertas
 exports.verificarStockYAlertar = async (req, res) => {
   try {
-    const producto = await almacenService.verificarStockYAlertar(req.params.id);
+    await mediador.notificar('almacenService', 'verificarStock', { id: req.params.id });
     res.status(200).json({ message: 'Verificación de stock realizada' });
   } catch (error) {
-    console.error(error);
+    console.error('Error al verificar el stock:', error);
     res.status(500).json({ error: 'Error al verificar el stock' });
   }
 };
 
 // Controlador para reservar stock
 exports.reservarStock = async (req, res) => {
-
   try {
-    const { items } = req.body; // Recibimos los productos y sus cantidades
-    const resultado = await almacenService.reservarStock(items);
+    const { items } = req.body;
+    const resultado = await mediador.notificar('almacenService', 'reservarStock', { items });
     if (resultado.error) {
       return res.status(400).json({ error: resultado.error });
     }
@@ -95,9 +94,7 @@ exports.reservarStock = async (req, res) => {
 exports.cancelarCompra = async (req, res) => {
   try {
     const { items } = req.body;
-    await almacenService.restaurarStock(items); 
-
-    // Responder con éxito
+    await mediador.notificar('almacenService', 'restaurarStock', { items });
     res.status(200).json({ message: 'Reserva cancelada' });
   } catch (error) {
     console.error('Error al cancelar la compra:', error);
@@ -105,24 +102,20 @@ exports.cancelarCompra = async (req, res) => {
   }
 };
 
-// Controlador para realizar la compra y reducir el stock
-exports.realizarCompra = async (req, res) => {
+// Controlador para reducir el stock
+exports.reducirStocks = async (req, res) => {
   try {
-    const { items } = req.body; // Recibimos los productos y sus cantidades
-    
-    // Actualizamos el stock de los productos
-    const resultado = await almacenService.reservarStock(items);
-    
+    const { productos } = req.body;
+    const resultado = await mediador.notificar('almacenService', 'reducirStock', { productos });
     if (resultado.error) {
       return res.status(400).json({ error: resultado.error });
     }
-    
     res.status(200).json({
-      message: 'Compra realizada y stock actualizado correctamente',
-      detalles: resultado,
+      message: 'Stock actualizado correctamente',
+      productosActualizados: resultado,
     });
   } catch (error) {
-    console.error('Error al realizar la compra:', error);
-    res.status(500).json({ error: 'Error al realizar la compra' });
+    console.error('Error al reducir el stock:', error);
+    res.status(500).json({ error: 'Error al reducir el stock' });
   }
 };

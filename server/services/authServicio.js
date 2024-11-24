@@ -1,0 +1,121 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const User = require('../models/usersSchema');
+
+class AuthService {
+  // Configuración de Nodemailer para el envío de correos
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'easypc.companymx@gmail.com',
+        pass: 'ceao hocb dxri cnsr',
+      },
+    });
+  }
+
+  // Función para registrar un nuevo usuario
+  async registerUser(firstName, lastName, email, phone, age, password) {
+    if (!firstName || !lastName || !password || !email) {
+      throw new Error('Faltan campos requeridos.');
+    }
+
+    try {
+      const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`;
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = new User({
+        firstName,
+        lastName,
+        phone,
+        age,
+        username,
+        password: hashedPassword,
+        email,
+      });
+
+      await newUser.save();
+
+      // Enviar correo electrónico al usuario
+      const mailOptions = {
+        from: 'easypc.companymx@gmail.com',
+        to: email,
+        subject: 'Registro Exitoso',
+        text: `¡Hola ${firstName}! Tu nombre de usuario es: " ${username} " .`,
+      };
+
+      this.transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error al enviar el correo:', error);
+        } else {
+          console.log('Correo enviado:', info.response);
+        }
+      });
+
+      return { message: 'Usuario registrado exitosamente.', username };
+    } catch (error) {
+      console.error('Error al registrar el usuario:', error);
+      throw new Error('Hubo un problema al registrar el usuario.');
+    }
+  }
+
+  async loginUser(username, password) {
+    console.log("Intentando iniciar sesión con:", { username, password }); // Log inicial
+    try {
+      const user = await User.findOne({ username });
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+  
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new Error("Contraseña incorrecta");
+      }
+  
+      const token = jwt.sign(
+        {
+          userId: user._id,
+          role: user.role,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone
+        },
+        'bkkcc6',
+        { expiresIn: '1h' }
+      );
+  
+      const result = { message: 'Inicio de sesión exitoso', token };
+      console.log("Resultado del servicio:", result); // Log de resultado del servicio
+      return result;
+  
+    } catch (error) {
+      console.error('Error en el servicio de login:', error.message);
+      throw new Error('Error al iniciar sesión: ' + error.message);
+    }
+  }
+  
+  
+
+  // Función para enviar la confirmación de compra por correo
+  async sendPurchaseConfirmation(email, amount) {
+    const mailOptions = {
+      from: 'easypc.companymx@gmail.com',
+      to: email,
+      subject: 'Confirmación de Compra',
+      text: `¡Gracias por tu compra! El monto total es: $${(amount / 1).toFixed(2)} MXN. Tus datos de envío han sido recibidos.`,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log('Correo enviado a:', email);
+      return { message: 'Correo enviado exitosamente' };
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      throw new Error('Error al enviar el correo');
+    }
+  }
+}
+
+module.exports = AuthService;

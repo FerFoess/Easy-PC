@@ -2,10 +2,6 @@ const Components = require('../models/components');
 const Alerta = require('../models/alerta');
 const Prearmado = require('../models/prearmadoSchema');
 class AlmacenService {
-  constructor(mediador) {
-    this.mediador = mediador; 
-  }
-
   // Obtener todos los productos
   async obtenerProductos() {
     try {
@@ -209,20 +205,16 @@ async restaurarStock(items) {
 }
 
 
-async obtenerAlertas() {
-  try {
-    return await Alerta.find().sort({ fecha: -1 }); // Ordenadas por fecha
-  } catch (error) {
-    throw new Error(`Error al obtener las alertas: ${error.message}`);
-  }
-}
 
-// Obtener alertas por tipo
-async obtenerAlertasPorTipo(tipo) {
-  try {
-    return await Alerta.find({ tipo }).sort({ fecha: -1 });
-  } catch (error) {
-    throw new Error(`Error al obtener alertas de tipo ${tipo}: ${error.message}`);
+
+
+async recibirNotificacion(evento, datos) {
+  if (evento === "pagoExitoso") {
+    // Reducir el stock después de un pago exitoso
+    await this.reservarStock(datos.productos);
+  } else if (evento === "compraCancelada") {
+    // Restaurar el stock después de una cancelación
+    await this.restaurarStock(datos.items);
   }
 }
 

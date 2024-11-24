@@ -164,7 +164,7 @@ const ShoppingCart = () => {
           })),
         }),
       });
-      
+       
   
       // 2. Verificar respuesta del backend
       if (!response.ok) {
