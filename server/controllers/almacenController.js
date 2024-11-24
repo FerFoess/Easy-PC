@@ -105,3 +105,24 @@ exports.cancelarCompra = async (req, res) => {
   }
 };
 
+// Controlador para realizar la compra y reducir el stock
+exports.realizarCompra = async (req, res) => {
+  try {
+    const { items } = req.body; // Recibimos los productos y sus cantidades
+    
+    // Actualizamos el stock de los productos
+    const resultado = await almacenService.reservarStock(items);
+    
+    if (resultado.error) {
+      return res.status(400).json({ error: resultado.error });
+    }
+    
+    res.status(200).json({
+      message: 'Compra realizada y stock actualizado correctamente',
+      detalles: resultado,
+    });
+  } catch (error) {
+    console.error('Error al realizar la compra:', error);
+    res.status(500).json({ error: 'Error al realizar la compra' });
+  }
+};

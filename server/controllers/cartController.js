@@ -19,7 +19,6 @@ const getCart = async (req, res) => {
   }
 };
 
-
 // Crear un carrito nuevo
 const createCart = async (req, res) => {
   const userId = req.params.userId;

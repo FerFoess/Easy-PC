@@ -3,7 +3,7 @@ const Alerta = require('../models/alerta');
 const Prearmado = require('../models/prearmadoSchema');
 class AlmacenService {
   constructor(mediador) {
-    this.mediador = mediador; // Para notificar eventos si es necesario
+    this.mediador = mediador; 
   }
 
   // Obtener todos los productos
@@ -35,7 +35,7 @@ class AlmacenService {
     }
   }
 
-  // Actualizar producto
+ 
   async actualizarProducto(id, datos) {
     try {
       return await Components.findByIdAndUpdate(id, datos, { new: true });
@@ -44,7 +44,7 @@ class AlmacenService {
     }
   }
 
-  // Eliminar un producto
+  
   async eliminarProducto(id) {
     try {
       return await Components.findByIdAndDelete(id);
@@ -53,19 +53,24 @@ class AlmacenService {
     }
   }
 
-  // Verificar stock y enviar alertas
-  async verificarStockYAlertar(id) {
-    try {
-      const productoComponent = await Components.findById(id);
-      const productoPrearmado = await Prearmado.findById(id);
-      const producto = productoComponent || productoPrearmado;
-      
-      if (!producto) {
-        throw new Error('Producto no encontrado');
-      }
+  
+async verificarStockYAlertar(id) {
+  try {
+    const productoComponent = await Components.findById(id);
+    const productoPrearmado = await Prearmado.findById(id);
+    const producto = productoComponent || productoPrearmado;
 
-      // Si el stock es 5 o menos, crear alerta de advertencia
-      if (producto.stock <= 5) {
+    if (!producto) {
+      throw new Error('Producto no encontrado');
+    }
+
+    if (producto.stock <= 5 && producto.stock > 0) {
+      const alertaExistente = await Alerta.findOne({
+        producto: producto.nombre,
+        tipo: 'advertencia',
+      });
+
+      if (!alertaExistente) {
         const alerta = new Alerta({
           producto: producto.nombre,
           stock: producto.stock,
@@ -73,11 +78,17 @@ class AlmacenService {
           tipo: 'advertencia',
         });
 
-        await alerta.save(); // Guardar alerta en la base de datos
+        await alerta.save(); 
       }
+    }
 
-      // Si el stock llega a 0, crear alerta urgente
-      if (producto.stock === 0) {
+    if (producto.stock === 0) {
+      const alertaExistente = await Alerta.findOne({
+        producto: producto.nombre,
+        tipo: 'urgente',
+      });
+
+      if (!alertaExistente) {
         const alerta = new Alerta({
           producto: producto.nombre,
           stock: producto.stock,
@@ -85,14 +96,48 @@ class AlmacenService {
           tipo: 'urgente',
         });
 
-        await alerta.save(); // Guardar alerta en la base de datos
+        await alerta.save(); 
+      }
+    }
+
+    return producto;
+  } catch (error) {
+    throw new Error(`Error al verificar el stock: ${error.message}`);
+  }
+}
+
+
+  
+async obtenerStock(id = null) {
+  try {
+    if (id) {
+      
+      const productoComponent = await Components.findById(id);
+      const productoPrearmado = await Prearmado.findById(id);
+      const producto = productoComponent || productoPrearmado;
+
+      if (!producto) {
+        return { error: `Producto con ID ${id} no encontrado` };
       }
 
-      return producto;
-    } catch (error) {
-      throw new Error('Error al verificar el stock');
+      return { id: producto._id, nombre: producto.nombre, stock: producto.stock };
+    } else {
+      // Si no se proporciona un ID, obtener el stock de todos los productos
+      const productosComponentes = await Components.find();
+      const productosPrearmados = await Prearmado.find();
+
+      const todosLosProductos = [...productosComponentes, ...productosPrearmados];
+
+      return todosLosProductos.map((producto) => ({
+        id: producto._id,
+        nombre: producto.nombre,
+        stock: producto.stock,
+      }));
     }
+  } catch (error) {
+    throw new Error(`Error al obtener el stock: ${error.message}`);
   }
+}
 
   // Reservar stock
   async reservarStock(items) {
@@ -163,7 +208,26 @@ async restaurarStock(items) {
   }
 }
 
+
+async obtenerAlertas() {
+  try {
+    return await Alerta.find().sort({ fecha: -1 }); // Ordenadas por fecha
+  } catch (error) {
+    throw new Error(`Error al obtener las alertas: ${error.message}`);
+  }
 }
+
+// Obtener alertas por tipo
+async obtenerAlertasPorTipo(tipo) {
+  try {
+    return await Alerta.find({ tipo }).sort({ fecha: -1 });
+  } catch (error) {
+    throw new Error(`Error al obtener alertas de tipo ${tipo}: ${error.message}`);
+  }
+}
+
+}
+
 
 
 

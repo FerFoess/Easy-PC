@@ -19,6 +19,9 @@ const componentsRoutes = require('./routes/componentsRoutes');
 const almacenamientoRoutes = require('./routes/almacenamientoRoutes');
 const cartRoutes = require ('./routes/cartRoutes');
 const prearmadoRoutes = require ('./routes/prearmadoRoutes')
+const alertaRoutes = require('./routes/alertaRouters');
+
+
 
 var app = express();
 
@@ -60,6 +63,8 @@ app.use('/components', componentsRoutes);
 app.use('/payments', paymentRoutes);
 app.use('/prearmado', prearmadoRoutes);
 app.use('/cart', cartRoutes);
+app.use('/alertas', alertaRoutes);
+
 
 // Manejo de errores 404
 app.use(function(req, res, next) {
