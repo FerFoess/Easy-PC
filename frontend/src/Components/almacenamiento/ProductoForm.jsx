@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./estilos.css";
+import Navbar from '../navBarAdmins/navbar';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const getImageUrl = (imagePath) => {
-  if (imagePath) {
-    return `http://localhost:3002/S${imagePath.replace(/\\/g, '/')}`; // Reemplazar barras invertidas
-  }
-  return '/default-image.jpg'; // Imagen por defecto
-};
 
 const ProductForm = ({ selectedProduct, onProductSaved }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const selectedProductFromState = state?.product;
@@ -181,78 +175,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
 
   return (
     <div style={{ paddingTop: "120px" }}>
-      {/* Navbar */}
-      <nav style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0.5rem 2rem',
-        backgroundColor: '#1e1f2b',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-        zIndex: 1000
-      }}>
-        <div className="logo">
-          <img src="/assets/logo.png" alt="Logo" style={{ width: '90px', height: '90px', borderRadius: '50%' }} />
-        </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button
-            style={{
-              color: '#ffffff',
-              backgroundColor: 'transparent',
-              border: '2px solid #5c6bc0',
-              padding: '0.6rem 1.2rem',
-              borderRadius: '20px',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease, transform 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/estadisticas')}
-          >
-            Estadísticas
-          </button>
-          <button
-            style={{
-              color: '#ffffff',
-              backgroundColor: 'transparent',
-              border: '2px solid #5c6bc0',
-              padding: '0.6rem 1.2rem',
-              borderRadius: '20px',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease, transform 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/almacen')}
-          >
-            Almacén
-          </button>
-          <button
-            style={{
-              color: '#ffffff',
-              backgroundColor: 'transparent',
-              border: '2px solid #5c6bc0',
-              padding: '0.6rem 1.2rem',
-              borderRadius: '20px',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease, transform 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5c6bc0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-            onClick={() => navigate('/login')}
-          >
-            Cerrar sesión
-          </button>
-        </div>
-      </nav>
-
+      <Navbar />
       {/* Product Form */}
       <div className="foess-product-form-container">
         <form onSubmit={handleSubmit} className="product-form">

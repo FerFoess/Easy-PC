@@ -1,64 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./estilos.css";
+import Navbar from '../navBarAdmins/navbar';
 
 const ProductList = () => {
   const [productos, setProductos] = useState([]);
+  const [filtroCategoria, setFiltroCategoria] = useState("");
+  const [filtroProposito, setFiltroProposito] = useState("");
+  const [categorias, setCategorias] = useState([]);
+  const [propositos, setPropositos] = useState([]);
   const navigate = useNavigate();
-
-  // Estilos en línea para el Navbar
-  const containerStyle = {
-    paddingTop: '120px', // espacio para el navbar fijo
-  };
-
-  const navbarStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.5rem 2rem',
-    backgroundColor: '#1e1f2b',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-    zIndex: 1000, // asegura que el navbar esté siempre encima
-  };
-
-  const logoImageStyle = {
-    width: '90px',
-    height: '90px',
-    borderRadius: '50%',
-  };
-
-  const navButtonsStyle = {
-    display: 'flex',
-    gap: '1rem',
-  };
-
-  const navButtonStyle = {
-    color: '#ffffff',
-    backgroundColor: 'transparent',
-    border: '2px solid #5c6bc0',
-    padding: '0.6rem 1.2rem',
-    borderRadius: '20px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-  };
-
-  const navButtonHoverStyle = {
-    backgroundColor: '#5c6bc0',
-    transform: 'scale(1.05)',
-  };
 
   // Obtener productos desde el servidor
   useEffect(() => {
     fetch("http://localhost:3002/catego")
       .then((respuesta) => respuesta.json())
       .then((datos) => {
-        console.log("Productos recibidos:", datos); // Verifica los datos recibidos
         setProductos(datos);
+
+        // Obtener listas únicas de categorías y propósitos
+        const categoriasUnicas = [...new Set(datos.map((producto) => producto.categoria))];
+        const propositosUnicos = [...new Set(datos.map((producto) => producto.propositos))];
+
+        setCategorias(categoriasUnicas);
+        setPropositos(propositosUnicos);
       })
       .catch((error) => console.error("Error al obtener productos:", error));
   }, []);
@@ -95,49 +60,67 @@ const ProductList = () => {
     return '/assets/default-image.png'; // Imagen predeterminada si no hay imagen
   };
 
+  // Filtrar productos en función de la categoría y el propósito seleccionados
+  const productosFiltrados = productos.filter((producto) => {
+    const coincideCategoria = filtroCategoria
+      ? producto.categoria === filtroCategoria
+      : true;
+  
+    const coincideProposito = filtroProposito
+      ? producto.propositos.some((proposito) =>
+          proposito.toLowerCase().includes(filtroProposito.toLowerCase())
+        )
+      : true;
+  
+    return coincideCategoria && coincideProposito;
+  });
+  
+  
+
+
   return (
     <div>
-      {/* Navbar */}
-      <div style={containerStyle}>
-        <nav style={navbarStyle}>
-          <div className="logo">
-            <img src="/assets/logo.png" alt="Logo" style={logoImageStyle} />
-          </div>
-          <div style={navButtonsStyle}>
-            <button
-              style={navButtonStyle}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-              onClick={() => navigate('/estadisticas')}
-            >
-              Estadísticas
-            </button>
-            <button
-              style={navButtonStyle}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-              onClick={() => navigate('/productform')}
-            >
-              Agregar Productos
-            </button>
-            <button
-              style={navButtonStyle}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = navButtonHoverStyle.backgroundColor)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-              onClick={() => navigate('/login')}
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        </nav>
-      </div>
-
-      {/* Lista de productos */}
+      <Navbar />
       <div className="foess-product-product-list-container">
         <h2 style={{ color: "white" }}>Lista de Productos</h2>
 
+        {/* Filtros */}
+        <div className="foess-product-filters">
+          <label style={{ color: "white", marginRight: "10px" }}>
+            Filtrar por categoría:
+            <select
+              value={filtroCategoria}
+              onChange={(e) => setFiltroCategoria(e.target.value)}
+            >
+              <option value="">Todas</option>
+              {categorias.map((categoria, index) => (
+                <option key={index} value={categoria}>
+                  {categoria}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label style={{ color: "white", marginLeft: "20px" }}>
+  Filtrar por propósito:
+  <select
+    value={filtroProposito}
+    onChange={(e) => setFiltroProposito(e.target.value)}
+  >
+    <option value="">Todos</option>
+    {propositos.map((proposito, index) => (
+      <option key={index} value={proposito}>
+        {proposito}
+      </option>
+    ))}
+  </select>
+</label>
+
+        </div>
+
+        {/* Lista de productos */}
         <div className="foess-product-product-card-container">
-          {productos.map((producto) => (
+          {productosFiltrados.map((producto) => (
             <div key={producto._id} className="foess-product-product-card">
               <div className="foess-product-product-card-image">
                 <img 
@@ -156,15 +139,12 @@ const ProductList = () => {
                 <p>Stock: {producto.stock}</p> {/* Mostrar el stock del producto */}
               </div>
               <div className="foess-product-product-card-actions">
-                {/* Botón de editar */}
                 <button
                   className="foess-product-product-button"
                   onClick={() => navigate('/productform', { state: { product: producto } })}
                 >
                   Editar
                 </button>
-
-                {/* Botón de eliminar */}
                 <br />
                 <br />
                 <button
