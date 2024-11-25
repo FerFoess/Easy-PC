@@ -16,6 +16,7 @@ const ShoppingCart = () => {
 
   // Obtener el userId desde el JWT token almacenado en localStorage
   useEffect(() => {
+    localStorage.setItem("timeLeft", 300);
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
@@ -26,13 +27,12 @@ const ShoppingCart = () => {
   }, []);
 
   useEffect(() => {
+
     if (userId) {
       const fetchCartData = async () => {
         try {
           const response = await fetch(`http://localhost:3002/cart/${userId}`);
           const data = await response.json();
-  
-          console.log("Respuesta del backend:", data);  // Ver los detalles completos
   
           if (response.ok) {
             setCartId(data._id);
@@ -153,21 +153,27 @@ const ShoppingCart = () => {
 
   const handleCheckout = async () => {
     try {
-      const subtotal = calculateSubtotal();
-      const response = await fetch(
-        `http://localhost:3002/cart/cart/${userId}/updateTotal`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ total: subtotal }),
-        }
-      );
-
+      const response = await fetch(`http://localhost:3002/catego/reservar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          items: cartItems.map((item) => ({
+            idProducto: item.id,
+            cantidad: item.cantidad,
+          })),
+        }),
+      });
+      
+  
+      // 2. Verificar respuesta del backend
       if (!response.ok) {
-        throw new Error("Error al actualizar el total");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al reservar el stock");
       }
-
-      localStorage.setItem("totalCompra", subtotal);
+  
+      // 3. Redirigir a la pantalla de Datos de Envío
+      localStorage.setItem("totalCompra", calculateSubtotal());
       localStorage.setItem(
         "cartItems",
         JSON.stringify(
@@ -180,13 +186,15 @@ const ShoppingCart = () => {
           }))
         )
       );
-
+   
+      
       window.location.href = "http://localhost:3000/datosenvio";
     } catch (error) {
-      console.error("Error al hacer el checkout:", error);
+      console.error("Error al realizar el checkout:", error);
+      alert("No se pudo completar la compra. Intenta nuevamente.");
     }
   };
-
+  
   const defaultImage = "https://mx.yeyiangaming.com/media/catalog/product/cache/63abef889f4ceaaa568fc4cf6e7149cb/y/c/ycm-apdra-01_dragoon_001c.jpg";
 
   // Función para obtener la URL completa de la imagen

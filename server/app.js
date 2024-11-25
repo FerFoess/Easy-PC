@@ -10,7 +10,7 @@ var cors = require('cors');
 
 
 var indexRouter = require('./routes/index');
-var categoriasRouter = require('./routes/categoriasRoutes');
+var almacenRouter = require('./routes/almacenRoutes');
 var ventasRouter = require('./routes/ventasRoutes');
 var auth = require('./routes/auth');
 const paymentRoutes = require('./routes/paymentRoutes');
@@ -52,14 +52,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rutas
 app.use('/', indexRouter);
-app.use('/catego', categoriasRouter);
+app.use('/catego', almacenRouter);
 app.use('/auth', auth);
 app.use('/ventas', ventasRouter);
 app.use('/cortes', corteRoutes);
 app.use('/components', componentsRoutes);
 app.use('/payments', paymentRoutes);
 app.use('/prearmado', prearmadoRoutes);
-app.use('/almacen', almacenamientoRoutes);
 app.use('/cart', cartRoutes);
 
 // Manejo de errores 404

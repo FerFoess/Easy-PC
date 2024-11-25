@@ -25,13 +25,13 @@ const PrearmadoSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  stock: {
-    type: String,
+  stock: { // Cambiado a Number
+    type: Number,
     required: true
   },
-  imagen: {  // Nueva propiedad imagen
-    type: String, // Puede ser un string con la URL o el path relativo a la imagen
-    default: 'https://via.placeholder.com/150' // Imagen por defecto si no se proporciona
+  imagen: {
+    type: String,
+    default: 'https://via.placeholder.com/150'
   }
 });
 
