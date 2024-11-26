@@ -22,6 +22,7 @@ router.post('/:id/verificarStock', almacenController.verificarStockYAlertar);
 // Nueva ruta para reservar stock
 router.post('/reservar', almacenController.reservarStock);
 
+router.post('/reducir-stock', almacenController.reducirStocks);
 
 // routes/categoriasRoutes.js
 router.post('/cancelar-compra', almacenController.cancelarCompra);

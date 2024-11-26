@@ -15,7 +15,6 @@ const obtenerProductos = async (req, res) => {
 
 const obtenerProductosCarrito = async (req, res) => {
   const { cartItems } = req.body;
-  console.log('Cart Items:', cartItems);
 
   try {
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -24,8 +23,6 @@ const obtenerProductosCarrito = async (req, res) => {
 
     const productosConDetalles = await Promise.all(cartItems.map(async (item) => {
       try {
-        console.log('Buscando producto con componentId:', item.componentId);
-
         // Convertir el ID si es necesario
         const componentId = new mongoose.Types.ObjectId(item.componentId);
 
@@ -33,8 +30,6 @@ const obtenerProductosCarrito = async (req, res) => {
         const productoComponent = await Components.findById(componentId);
         const productoPrearmado = await Prearmado.findById(componentId);
 
-        console.log('Resultado en Components:', productoComponent);
-        console.log('Resultado en Prearmado:', productoPrearmado);
 
         const producto = productoComponent || productoPrearmado;
 
