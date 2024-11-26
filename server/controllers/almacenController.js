@@ -64,7 +64,7 @@ exports.eliminarProducto = async (req, res) => {
 // Controlador para verificar stock y enviar alertas
 exports.verificarStockYAlertar = async (req, res) => {
   try {
-    await mediador.notificar('almacenService', 'verificarStockYAlertar', { id: req.params.id });
+    await mediador.notificar('almacenService', 'verificarStock', { id: req.params.id });
     res.status(200).json({ message: 'Verificación de stock realizada' });
   } catch (error) {
     console.error('Error al verificar el stock:', error);

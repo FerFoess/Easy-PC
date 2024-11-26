@@ -52,7 +52,7 @@ exports.sendPurchaseConfirmation = async (req, res) => {
     const { email, amount } = req.body;
 
     // Usar el mediador para manejar el envío de confirmación
-    const result = await mediador.notificar('authService', 'sendPurchaseConfirmation', {
+    const result = await mediador.notificar('authService', 'enviarConfirmacionCompra', {
       email,
       amount,
     });
