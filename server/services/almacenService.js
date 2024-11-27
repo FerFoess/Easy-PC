@@ -50,58 +50,67 @@ class AlmacenService {
   }
 
   
-async verificarStockYAlertar(id) {
-  try {
-    const productoComponent = await Components.findById(id);
-    const productoPrearmado = await Prearmado.findById(id);
-    const producto = productoComponent || productoPrearmado;
-
-    if (!producto) {
-      throw new Error('Producto no encontrado');
-    }
-
-    if (producto.stock <= 5 && producto.stock > 0) {
-      const alertaExistente = await Alerta.findOne({
-        producto: producto.nombre,
-        tipo: 'advertencia',
-      });
-
-      if (!alertaExistente) {
-        const alerta = new Alerta({
+  async verificarStockYAlertar(id) {
+    try {
+      // Buscar el producto en ambas colecciones
+      const productoComponent = await Components.findById(id);
+      const productoPrearmado = await Prearmado.findById(id);
+      const producto = productoComponent || productoPrearmado;
+  
+      if (!producto) {
+        throw new Error('Producto no encontrado');
+      }
+  
+      // Verificar el stock
+      if (producto.stock <= 5 && producto.stock > 0) {
+        const alertaExistente = await Alerta.findOne({
           producto: producto.nombre,
-          stock: producto.stock,
-          mensaje: 'Advertencia: Stock bajo',
           tipo: 'advertencia',
         });
-
-        await alerta.save(); 
+  
+        // Crear alerta si no existe
+        if (!alertaExistente) {
+          const alerta = new Alerta({
+            producto: producto.nombre,
+            stock: producto.stock,
+            mensaje: 'Advertencia: Stock bajo',
+            tipo: 'advertencia',
+          });
+          // Guardar cambios
+          await alerta.save();
+          
+        }
       }
-    }
-
-    if (producto.stock === 0) {
-      const alertaExistente = await Alerta.findOne({
-        producto: producto.nombre,
-        tipo: 'urgente',
-      });
-
-      if (!alertaExistente) {
-        const alerta = new Alerta({
+  
+      if (producto.stock === 0) {
+        const alertaExistente = await Alerta.findOne({
           producto: producto.nombre,
-          stock: producto.stock,
-          mensaje: '¡Alerta Urgente! Producto sin stock',
           tipo: 'urgente',
         });
-
-        await alerta.save(); 
+  
+        // Crear alerta si no existe
+        if (!alertaExistente) {
+          const alerta = new Alerta({
+            producto: producto.nombre,
+            stock: producto.stock,
+            mensaje: '¡Alerta Urgente! Producto sin stock',
+            tipo: 'urgente',
+          });
+          await alerta.save();
+        }
+         // Actualizar el estado del producto
+         producto.estado = 'Agotado';
+         await producto.save();
       }
+  
+      // Retornar el producto actualizado
+      return producto;
+    } catch (error) {
+      console.error(`Error al verificar el stock del producto con ID ${id}:`, error);
+      throw new Error(`Error al verificar el stock: ${error.message}`);
     }
-
-    return producto;
-  } catch (error) {
-    throw new Error(`Error al verificar el stock: ${error.message}`);
   }
-}
-
+  
 
   
 async obtenerStock(id = null) {
