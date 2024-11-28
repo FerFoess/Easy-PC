@@ -1,97 +1,190 @@
+/* Estilos generales */
 .surtir-componentes-container {
-    padding: 20px;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    color: #333;
-    background-color:#1e1f2b ;
-  }
-  
-  .titulo {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 10px;
-    color: #0073e6;
-  }
-  
-  .descripcion {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-  }
-  
-  .componentes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
-  
-  .componente-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  
-  .componente-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .componente-imagen {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-  }
-  
-  .componente-info {
-    padding: 15px;
-  }
-  
-  .componente-info h2 {
-    font-size: 1.5rem;
-    margin: 0 0 10px;
-    color: #333;
-  }
-  
-  .componente-info p {
-    margin: 5px 0;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
-  .componente-acciones {
-    padding: 15px;
-    border-top: 1px solid #ddd;
-  }
-  
-  .componente-acciones label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  .componente-acciones input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .btn-surtir {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background: #0073e6;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .btn-surtir:hover {
-    background: #005bb5;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  padding: 10px;
+  background-color:#1e1f2b ;
+}
+
+.titulo {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color:#ccc;
+}
+
+.botones-superiores {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.botones-superiores button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.botones-superiores button:hover {
+  background-color: #0056b3;
+}
+
+.filtros {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.filtros-ordenes {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.filtros-ordenes label {
+  font-size: 1rem;
+  color:#ccc;
+}
+
+.filtros select {
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+.filtros-ordenes input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+
+
+/* Estilo para las tarjetas de componentes */
+.componente-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  max-width: 300px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.componente-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.componente-imagen {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.componente-info h2 {
+  font-size: 18px;
+  color: #333;
+}
+
+.componente-info p {
+  font-size: 14px;
+  color: #555;
+}
+
+.componente-acciones {
+  margin-top: 20px;
+}
+
+.componente-acciones input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.componente-acciones button {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.componente-acciones button:hover {
+  background-color: #218838;
+}
+
+.ordenes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  gap: 0px;
+  padding: 0px;
+}
+
+/* Estilo para las tarjetas de órdenes */
+.orden-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 100%;
+  max-width: 320px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.orden-card:hover {
+  transform: translateY(-0px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.orden-card h2 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.orden-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0;
+}
+
+.orden-card button {
+  margin-top: 10px;
+  padding: 8px 20px;
+  background-color: #ffc107;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.orden-card button:hover {
+  background-color: #e0a800;
+}
+
+.orden-card button:last-child {
+  background-color: #dc3545;
+  margin-left: 10px;
+}
+
+.orden-card button:last-child:hover {
+  background-color: #c82333;
+}

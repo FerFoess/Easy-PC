@@ -20,6 +20,7 @@ const almacenamientoRoutes = require('./routes/almacenamientoRoutes');
 const cartRoutes = require ('./routes/cartRoutes');
 const prearmadoRoutes = require ('./routes/prearmadoRoutes')
 const alertaRoutes = require('./routes/alertaRouters');
+const ordenesRoutes = require('./routes/ordenesRoutes');
 
 
 
@@ -64,6 +65,8 @@ app.use('/payments', paymentRoutes);
 app.use('/prearmado', prearmadoRoutes);
 app.use('/cart', cartRoutes);
 app.use('/alertas', alertaRoutes);
+app.use('/ordenes', ordenesRoutes);
+
 
 
 // Manejo de errores 404

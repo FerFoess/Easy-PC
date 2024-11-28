@@ -100,7 +100,7 @@ class AlmacenService {
         }
          // Actualizar el estado del producto
          producto.estado = 'Agotado';
-         await producto.save();
+         await producto.save();s
       }
   
       // Retornar el producto actualizado

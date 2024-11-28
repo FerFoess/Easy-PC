@@ -6,9 +6,9 @@ const getCart = async (req, res) => {
   console.log("userId recibido:", userId);
 
   try {
-    // Solicitar el carrito al mediador
-    const cart = await mediador.notificar("cartController", "obtenerCarrito", { usuarioId: userId });
-    
+    // Convertir userId a ObjectId si es necesario (depende de la estructura en la base de datos)
+    const cart = await mediador.notificar("CarritoService", "obtenerCarrito", { usuarioId: userId });
+
     // Verificar que el carrito existe y tiene los datos esperados
     if (!cart || !cart._id) {
       return res.status(404).json({ message: 'Carrito no encontrado' });
@@ -22,7 +22,7 @@ const getCart = async (req, res) => {
   } catch (error) {
     // Capturar y manejar cualquier error
     console.error("Error al obtener el carrito:", error);
-    res.status(500).json({ message: 'Error al obtener el carrito' });
+    res.status(500).json({ message: 'Error al obtener el carrito', error: error.message });
   }
 };
 
@@ -30,11 +30,11 @@ const getCart = async (req, res) => {
 const createCart = async (req, res) => {
   const userId = req.params.userId;
   try {
-    const cart = await mediador.notificar("cartController", "crearCarrito", { usuarioId: userId });
+    const cart = await mediador.notificar("CarritoService", "crearCarrito", { usuarioId: userId });
     res.status(201).json(cart);
   } catch (error) {
     console.error("Error al crear el carrito:", error);
-    res.status(500).json({ message: 'Error al crear el carrito' });
+    res.status(500).json({ message: 'Error al crear el carrito', error: error.message });
   }
 };
 
@@ -43,7 +43,7 @@ const addComponentToCart = async (req, res) => {
   const { userId } = req.params;
   const { componentId } = req.body;
   try {
-    const cart = await mediador.notificar("cartController", "agregarAlCarrito", {
+    const cart = await mediador.notificar("CarritoService", "agregarAlCarrito", {
       usuarioId: userId,
       productoId: componentId,
       cantidad: 1, // Asumiendo cantidad predeterminada de 1
@@ -51,7 +51,7 @@ const addComponentToCart = async (req, res) => {
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error al agregar el producto al carrito:", error);
-    res.status(500).json({ message: 'Error al agregar el producto al carrito' });
+    res.status(500).json({ message: 'Error al agregar el producto al carrito', error: error.message });
   }
 };
 
@@ -60,14 +60,14 @@ const removeComponentFromCart = async (req, res) => {
   const { userId } = req.params;
   const { componentId } = req.body;
   try {
-    const cart = await mediador.notificar("cartController", "eliminarDelCarrito", {
+    const cart = await mediador.notificar("CarritoService", "eliminarDelCarrito", {
       usuarioId: userId,
       productoId: componentId,
     });
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error al eliminar el producto del carrito:", error);
-    res.status(500).json({ message: 'Error al eliminar el producto del carrito' });
+    res.status(500).json({ message: 'Error al eliminar el producto del carrito', error: error.message });
   }
 };
 
@@ -76,7 +76,7 @@ const updateComponentQuantity = async (req, res) => {
   const { userId } = req.params;
   const { componentId, newQuantity } = req.body;
   try {
-    const cart = await mediador.notificar("cartController", "actualizarCantidadComponente", {
+    const cart = await mediador.notificar("CarritoService", "actualizarCantidadComponente", {
       usuarioId: userId,
       componentId,
       newQuantity,
@@ -84,7 +84,7 @@ const updateComponentQuantity = async (req, res) => {
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error al actualizar la cantidad del componente:", error);
-    res.status(500).json({ message: 'Error al actualizar la cantidad del componente' });
+    res.status(500).json({ message: 'Error al actualizar la cantidad del componente', error: error.message });
   }
 };
 
@@ -92,11 +92,11 @@ const updateComponentQuantity = async (req, res) => {
 const clearCart = async (req, res) => {
   const { userId } = req.params;
   try {
-    await mediador.notificar("cartController", "limpiarCarrito", { usuarioId: userId });
+    await mediador.notificar("CarritoService", "limpiarCarrito", { usuarioId: userId });
     res.status(200).json({ message: 'Carrito eliminado exitosamente' });
   } catch (error) {
     console.error("Error al limpiar el carrito:", error);
-    res.status(500).json({ message: 'Error al eliminar el carrito' });
+    res.status(500).json({ message: 'Error al eliminar el carrito', error: error.message });
   }
 };
 
@@ -104,11 +104,11 @@ const clearCart = async (req, res) => {
 const updateTotal = async (req, res) => {
   const { userId } = req.params;
   try {
-    const cart = await mediador.notificar("cartController", "actualizarTotalCarrito", { usuarioId: userId });
+    const cart = await mediador.notificar("CarritoService", "actualizarTotalCarrito", { usuarioId: userId });
     res.status(200).json(cart);
   } catch (error) {
     console.error("Error al actualizar el total:", error);
-    res.status(500).json({ message: 'Error al actualizar el total' });
+    res.status(500).json({ message: 'Error al actualizar el total', error: error.message });
   }
 };
 

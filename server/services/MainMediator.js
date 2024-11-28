@@ -5,12 +5,14 @@ class MainMediator {
     authMediator,
     paymentMediator,
     salesMediator,
+    ordenesMediator,
   }) {
     this.cartMediator = cartMediator;
     this.inventoryMediator = inventoryMediator;
     this.authMediator = authMediator;
     this.paymentMediator = paymentMediator;
     this.salesMediator = salesMediator;
+    this.ordenesMediator = ordenesMediator;
   }
 
   async notificar(emisor, evento, datos) {
@@ -80,12 +82,11 @@ class MainMediator {
           datos.cantidad,
           datos.correoProveedor
         );
-        case 'actualizarEstadoComponente':
-  return this.authMediator.actualizarEstadoComponente(datos.id);
+      case "actualizarEstadoComponente":
+        return this.authMediator.actualizarEstadoComponente(datos.id);
 
-  case 'verificarStock':
-  return this.authMediator.verificarStock(datos.id);
-
+      case "verificarStock":
+        return this.authMediator.verificarStock(datos.id);
 
       // Eventos de Pagos
       case "crearPaymentIntent":
@@ -103,9 +104,18 @@ class MainMediator {
           datos.productos,
           datos.fecha
         );
+      //Ordenes
+      case "crearOrden":
+        return this.ordenesMediator.crearOrden(datos);
+      case "obtenerOrdenes":
+        return this.ordenesMediator.obtenerOrdenes();
+      case "actualizarEstadoOrden":
+        return this.ordenesMediator.actualizarEstadoOrden(datos);
+      case "eliminarOrden":
+        return this.ordenesMediator.eliminarOrden(datos);
 
       default:
-        console.log(`Evento no manejado: ${evento}`);
+        console.log("Evento no manejado: ${evento}");
     }
   }
 }
