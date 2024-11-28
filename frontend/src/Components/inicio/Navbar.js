@@ -1,7 +1,7 @@
 // Navbar.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaHome, FaDesktop, FaBoxOpen, FaInfoCircle, FaUser, FaSignOutAlt } from "react-icons/fa";  // Importamos los iconos correspondientes
+import { FaTag,FaShoppingCart, FaHome, FaDesktop, FaBoxOpen, FaInfoCircle, FaUser, FaSignOutAlt } from "react-icons/fa";  // Importamos los iconos correspondientes
 import "./css/styles.css";
 
 const Navbar = () => {
@@ -113,9 +113,9 @@ const Navbar = () => {
           onMouseLeave={(e) =>
             (e.currentTarget.style.backgroundColor = "transparent")
           }
-          onClick={() => navigate("/mi-cuenta")}
+          onClick={() => navigate("/miCuenta")}
         >
-          <FaUser size={24} /> Mi Cuenta
+          <FaTag size={24} /> Mis Compras
         </button>
         <button
           style={navButtonStyle}
