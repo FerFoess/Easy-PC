@@ -2,6 +2,9 @@ const Venta = require('../models/ventasSchema');
   // Lógica para crear una nueva venta
   const moment = require('moment-timezone');
 class VentasService {
+  constructor(mediador) {
+    this.mediador = mediador; 
+  }
   // Lógica para obtener todas las ventas
   async obtenerVentas() {
     try {

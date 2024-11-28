@@ -3,7 +3,7 @@ const Orden = require("../models/orderSchema");
 
 class OrdenesService {
   constructor(mediador) {
-    this.mediador = mediador; // Para notificar eventos si es necesario
+    this.mediador = mediador; 
   }
 
   async crearOrden({ productoId, nombre, categoria, cantidad, correoProveedor }) {

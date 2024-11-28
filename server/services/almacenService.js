@@ -2,6 +2,9 @@ const Components = require('../models/components');
 const Alerta = require('../models/alerta');
 const Prearmado = require('../models/prearmadoSchema');
 class AlmacenService {
+  constructor(mediador) {
+    this.mediador = mediador; 
+  }
   // Obtener todos los productos
   async obtenerProductos() {
     try {

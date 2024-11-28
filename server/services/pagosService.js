@@ -1,6 +1,9 @@
 const stripe = require('stripe')('sk_test_51QCqe5G2SwsehGOd94jUKqaRqH7LeO6alWoy8pUC2mfgjG3QlfDkBkdmHcFndGeGBtcvQg6zWrRKKbLxnbMAYQRL004HCUSsa0');
 
 class PaymentService {
+  constructor(mediador) {
+    this.mediador = mediador; 
+  }
 
     async createPaymentIntent (amount) {
   try {

@@ -2,7 +2,7 @@ const OrdenesService = require('../ordenesService');
 
 class OrdenesMediator {
   constructor() {
-    this.ordenesService = new OrdenesService(); // Crear una instancia del servicio aquí
+    this.ordenesService = OrdenesService; // Crear una instancia del servicio aquí
   }
 
   // Crear una nueva orden
