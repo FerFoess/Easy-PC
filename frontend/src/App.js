@@ -16,6 +16,8 @@ import Almacen from './Components/almacenamiento/almacenamiento';
 import Corte from './Components/corte/index'
 import ProductForm from './Components/almacenamiento/ProductoForm';
 import MiCuenta from './Components/miCuenta/micuenta'
+import Surtir from './Components/almacenamiento/sustir'
+
 
 
 
@@ -40,7 +42,9 @@ function App() {
           <Route path="almacen" element={<Almacen/>} />
           <Route path="productForm" element={<ProductForm/>} />
           <Route path="miCuenta" element={<MiCuenta/>} />
+          <Route path="surtir" element={<Surtir/>} />
         </Routes>
+        
       </Router>
     </div>
   );
