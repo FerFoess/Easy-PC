@@ -15,6 +15,7 @@ import CarritoCompra from './Components/procesoVenta/carritoCompra';
 import Almacen from './Components/almacenamiento/almacenamiento';
 import Corte from './Components/corte/index'
 import ProductForm from './Components/almacenamiento/ProductoForm';
+import MiCuenta from './Components/miCuenta/micuenta'
 
 
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="carritoCompra" element={<CarritoCompra/>} />
           <Route path="almacen" element={<Almacen/>} />
           <Route path="productForm" element={<ProductForm/>} />
+          <Route path="miCuenta" element={<MiCuenta/>} />
         </Routes>
       </Router>
     </div>
