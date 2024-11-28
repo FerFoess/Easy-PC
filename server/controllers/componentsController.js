@@ -74,18 +74,34 @@ const crearProducto = async (req, res) => {
 };
 
 // Actualizar un producto existente
+// Actualizar un producto parcialmente (usando PATCH)
 const actualizarProducto = async (req, res) => {
   const { id } = req.params;
+
+  // Validar si el ID es un ObjectId válido
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'ID de producto no válido' });
+  }
+
   try {
+    console.log("Recibiendo datos para actualizar parcialmente:", req.body);
+    
+    // Solo actualiza los campos enviados en el cuerpo de la solicitud
     const productoActualizado = await Components.findByIdAndUpdate(id, req.body, { new: true });
+
     if (!productoActualizado) {
+      console.log("Producto no encontrado con el ID:", id);
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
+
+    console.log("Producto actualizado:", productoActualizado);
     res.json(productoActualizado);
   } catch (error) {
+    console.error('Error al actualizar el producto:', error);
     res.status(400).json({ error: 'Error al actualizar el producto' });
   }
 };
+
 
 // Eliminar un producto
 const eliminarProducto = async (req, res) => {

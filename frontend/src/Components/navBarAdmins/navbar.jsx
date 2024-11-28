@@ -7,13 +7,21 @@ const Inicio = () => {
   const navigate = useNavigate();
 
   const [mostrarNotificaciones, setMostrarNotificaciones] = useState(false);
+  const [contadorNotificaciones, setContadorNotificaciones] = useState(0); // Ejemplo con 12 notificaciones
 
   const toggleNotificaciones = () => {
     setMostrarNotificaciones(!mostrarNotificaciones);
+    if (!mostrarNotificaciones) {
+      setContadorNotificaciones(0); // Reinicia el contador al abrir
+    }
+  };
+
+  const handleNuevaNotificacion = (nuevas) => {
+    setContadorNotificaciones((prev) => prev + nuevas);
   };
 
   const containerStyle = {
-    paddingTop: "120px", // espacio para el navbar fijo
+    paddingTop: "120px", // Espacio para el navbar fijo
   };
 
   const navbarStyle = {
@@ -55,6 +63,28 @@ const Inicio = () => {
   const navButtonHoverStyle = {
     backgroundColor: "#5c6bc0",
     transform: "scale(1.05)",
+  };
+
+  const notificationIconStyle = {
+    position: "relative",
+    display: "inline-block",
+  };
+
+  const notificationBadgeStyle = {
+    position: "absolute",
+    top: "-5px",
+    right: "-10px",
+    background: "red", // Fondo rojo para el círculo
+    color: "white",
+    borderRadius: "50%",
+    width: "20px",
+    height: "20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "0.8rem",
+    fontWeight: "bold",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)", // Sombra para resaltar
   };
 
   return (
@@ -142,8 +172,16 @@ const Inicio = () => {
           >
             Cortes
           </button>
-          <button style={navButtonStyle} onClick={toggleNotificaciones}>
-            <FaBell size={24} /> Notificaciones
+          <button
+            style={{ position: "relative", background: "transparent", border: "none" }}
+            onClick={toggleNotificaciones}
+          >
+            <div style={notificationIconStyle}>
+              <FaBell size={24} color="#ffffff" />
+              {contadorNotificaciones > 0 && (
+                <span style={notificationBadgeStyle}>{contadorNotificaciones}</span>
+              )}
+            </div>
           </button>
           <button
             style={navButtonStyle}
@@ -159,12 +197,14 @@ const Inicio = () => {
             Mi cuenta
           </button>
         </div>
-        {/* Renderiza el componente Notificaciones */}
-        <Notificaciones
-          mostrarNotificaciones={mostrarNotificaciones}
-          toggleNotificaciones={toggleNotificaciones}
-        />
       </nav>
+
+      {/* Renderiza el componente Notificaciones */}
+      <Notificaciones
+        mostrarNotificaciones={mostrarNotificaciones}
+        toggleNotificaciones={toggleNotificaciones}
+        onNuevaNotificacion={handleNuevaNotificacion}
+      />
     </div>
   );
 };

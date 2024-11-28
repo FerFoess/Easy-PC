@@ -5,7 +5,6 @@ import Navbar from '../navBarAdmins/navbar';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-
 const ProductForm = ({ selectedProduct, onProductSaved }) => {
   const location = useLocation();
   const { state } = location;
@@ -173,6 +172,9 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
     });
   };
 
+  // Deshabilitar los campos si estamos editando
+  const isEditing = Boolean(selectedProductFromState);
+
   return (
     <div style={{ paddingTop: "120px" }}>
       <Navbar />
@@ -180,7 +182,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
       <div className="foess-product-form-container">
         <form onSubmit={handleSubmit} className="product-form">
           <h2 style={{ color: "black", fontSize: "24px" }}>
-            {selectedProductFromState ? "Editar Producto" : "Agregar Producto"}
+            {isEditing ? "Editar Producto" : "Agregar Producto"}
           </h2>
 
           {/* Categorías */}
@@ -188,6 +190,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             name="categoria"
             value={formData.categoria}
             onChange={handleCategoriaChange}
+            disabled={isEditing} // Deshabilitar en modo edición
             required
             className="input-select"
           >
@@ -204,6 +207,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             name="tipo"
             value={formData.name}
             onChange={handleTipoChange}
+            disabled={isEditing} // Deshabilitar en modo edición
             required
             className="input-select"
           >
@@ -211,8 +215,8 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             <option value="VideoJuegos">VideoJuegos</option>
             <option value="Consolas">Consolas</option>
             <option value="Accesorios">Accesorios</option>
-            <option value="Accesorios">Ocio</option>
-            <option value="Accesorios">Escuela</option>
+            <option value="Ocio">Ocio</option>
+            <option value="Escuela">Escuela</option>
           </select>
 
           {/* Nombre */}
@@ -223,6 +227,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             onChange={handleChange}
             placeholder="Nombre"
             className="input-field"
+            disabled={isEditing} // Deshabilitar en modo edición
             required
           />
 
@@ -233,6 +238,7 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             onChange={handleChange}
             placeholder="Descripción"
             className="input-field"
+            disabled={isEditing} // Deshabilitar en modo edición
             required
           />
 
@@ -264,35 +270,28 @@ const ProductForm = ({ selectedProduct, onProductSaved }) => {
             name="imagen"
             accept="image/*"
             onChange={handleChange}
+            disabled={isEditing} // Deshabilitar en modo edición
             className="input-file"
           />
 
           {/* Especificaciones */}
           {detallesCategoria.map(([nombre, tipo], index) => (
             <div key={index}>
-              <label>{nombre}</label>
+              <label htmlFor={nombre}>{nombre}</label>
               <input
-                type="text"
+                type={tipo === "number" ? "number" : "text"}
                 name={nombre}
                 value={formData.especificaciones[nombre] || ""}
                 onChange={(e) => handleDetalleChange(e, nombre)}
                 className="input-field"
+                disabled={isEditing} // Deshabilitar en modo edición
               />
             </div>
           ))}
 
-
-          {/* Propósito */}
-          <textarea
-            name="proposito"
-            value={formData.proposito}
-            onChange={handleChange}
-            placeholder="Propósito"
-            className="input-field"
-          />
-
-          <button type="submit" className="submit-button">
-            {isLoading ? "Guardando..." : "Guardar"}
+          {/* Botón de envío */}
+          <button type="submit" className="submit-button" disabled={isLoading}>
+            {isEditing ? "Guardar Cambios" : "Agregar Producto"}
           </button>
         </form>
       </div>
