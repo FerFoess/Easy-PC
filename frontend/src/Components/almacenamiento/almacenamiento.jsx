@@ -1,9 +1,7 @@
-// Importa solo los componentes que necesitas
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./estilos.css";
 import Navbar from "../navBarAdmins/navbar"; // Navbar
-import Notificaciones from "../notificaciones/notificaciones"; // Aquí solo lo importas, pero no lo usas
 
 const ProductList = () => {
   const [productos, setProductos] = useState([]);
@@ -11,9 +9,10 @@ const ProductList = () => {
   const [filtroProposito, setFiltroProposito] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [propositos, setPropositos] = useState([]);
-  const [notificaciones, setNotificaciones] = useState([]);
-  const [mostrarNotificaciones, setMostrarNotificaciones] = useState(false);
-  const navigate = useNavigate();
+
+  // Estados para manejar la edición del producto y visibilidad del modal
+  const [productoAEditar, setProductoAEditar] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const STOCK_BAJO = 10; // Umbral para stock bajo
 
@@ -28,42 +27,9 @@ const ProductList = () => {
 
         setCategorias(categoriasUnicas);
         setPropositos(propositosUnicos);
-
-        // Generar notificaciones por stock bajo o agotado
-        generarNotificaciones(datos);
       })
       .catch((error) => console.error("Error al obtener productos:", error));
   }, []);
-
-  // Generar notificaciones dinámicas
-  const generarNotificaciones = (productos) => {
-    const nuevasNotificaciones = productos
-      .filter((producto) => producto.stock <= STOCK_BAJO)
-      .map((producto) => ({
-        id: producto._id,
-        producto: producto.nombre,
-        stock: producto.stock,
-        mensaje:
-          producto.stock === 0
-            ? "El producto está agotado."
-            : "El stock del producto está bajo.",
-        tipo: producto.stock === 0 ? "Urgente" : "Advertencia",
-        fecha: new Date().toISOString(), // Convierte la fecha a un formato ISO 8601
-      }));
-  
-    setNotificaciones(nuevasNotificaciones);
-    if (nuevasNotificaciones.length > 0) {
-      setMostrarNotificaciones(true);
-    }
-  };
-
-  // Función para obtener la URL de la imagen
-  const getImageUrl = (imagePath) => {
-    if (imagePath) {
-      return `http://localhost:3002/${imagePath.replace(/\\/g, "/")}`;
-    }
-    return "/assets/default-image.png"; // Imagen predeterminada si no hay imagen
-  };
 
   // Filtrar productos
   const productosFiltrados = productos.filter((producto) => {
@@ -78,6 +44,59 @@ const ProductList = () => {
     return coincideCategoria && coincideProposito;
   });
 
+  // Función para obtener la URL de la imagen
+  const getImageUrl = (imagePath) => {
+    if (imagePath) {
+      return `http://localhost:3002/${imagePath.replace(/\\/g, "/")}`;
+    }
+    return "/assets/default-image.png"; // Imagen predeterminada si no hay imagen
+  };
+
+  // Función para abrir el modal de edición
+  const abrirModal = (producto) => {
+    setProductoAEditar(producto); // Configura el producto a editar
+    setModalVisible(true); // Muestra el modal
+    console.log("Producto a editar: ", producto); // Verifica que el producto esté correcto
+  };
+
+  // Función para cerrar el modal
+  const cerrarModal = () => {
+    setModalVisible(false); // Oculta el modal
+    setProductoAEditar(null); // Resetea el producto a editar
+  };
+
+  // Función para manejar la actualización del producto
+  const actualizarProducto = async (formData) => {
+    // Aquí actualizamos el precio y stock con los valores del formulario
+    const updatedProductData = {
+      precio: productoAEditar.precio, // Precio actualizado desde el input
+      stock: productoAEditar.stock,   // Stock actualizado desde el input
+    };
+  
+    const response = await fetch(`http://localhost:3002/catego/${formData._id}`, {
+      method: 'PATCH', // Cambiado a PATCH
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProductData),
+    });
+  
+    if (response.ok) {
+      console.log('Producto actualizado');
+      setModalVisible(false); // Cierra el modal tras la actualización
+      // Actualiza el estado de los productos si es necesario
+      const updatedProduct = await response.json();
+      setProductos((prevProductos) =>
+        prevProductos.map((producto) =>
+          producto._id === updatedProduct._id ? updatedProduct : producto
+        )
+      );
+    } else {
+      console.error('Error al actualizar el producto');
+    }
+  };
+  
+
   // Eliminar producto
   const handleDelete = (id) => {
     const productosActualizados = productos.filter((producto) => producto._id !== id);
@@ -87,7 +106,6 @@ const ProductList = () => {
   return (
     <div>
       <Navbar />
-
       <div className="foess-product-product-list-container">
         <h2 style={{ color: "white" }}>Lista de Productos</h2>
 
@@ -147,9 +165,7 @@ const ProductList = () => {
               <div className="foess-product-product-card-actions">
                 <button
                   className="foess-product-product-button"
-                  onClick={() =>
-                    navigate("/productform", { state: { product: producto } })
-                  }
+                  onClick={() => abrirModal(producto)} // Abrir modal con el producto
                 >
                   Editar
                 </button>
@@ -164,6 +180,52 @@ const ProductList = () => {
           ))}
         </div>
       </div>
+
+      {/* Modal de edición */}
+      {modalVisible && productoAEditar && (
+        <div className="modal" style={{ display: modalVisible ? 'block' : 'none' }}>
+          <div className="modal-content">
+            <h2>Editar Producto</h2>
+            <form
+  onSubmit={(e) => {
+    e.preventDefault();
+    actualizarProducto(productoAEditar);
+  }}
+>
+  <label>Nombre:</label>
+  <input
+    type="text"
+    value={productoAEditar.nombre}
+    onChange={(e) =>
+      setProductoAEditar({ ...productoAEditar, nombre: e.target.value })
+    }
+  />
+  
+  <label>Precio:</label>
+  <input
+    type="number"
+    value={productoAEditar.precio}
+    onChange={(e) =>
+      setProductoAEditar({ ...productoAEditar, precio: parseFloat(e.target.value) })
+    }
+  />
+
+  <label>Stock:</label>
+  <input
+    type="number"
+    value={productoAEditar.stock}
+    onChange={(e) =>
+      setProductoAEditar({ ...productoAEditar, stock: parseInt(e.target.value) })
+    }
+  />
+
+  <button type="submit">Actualizar</button>
+  <button type="button" onClick={cerrarModal}>Cancelar</button>
+</form>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };

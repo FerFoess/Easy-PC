@@ -11,6 +11,8 @@ router.post('/getCartItems', componentsController.obtenerProductosCarrito);
 
 router.put('/:id', componentsController.actualizarProducto);
 router.delete('/:id', componentsController.eliminarProducto);
+// Cambiar de PUT a PATCH para actualizar parcialmente
+router.patch('/:id', componentsController.actualizarProducto);
 
 
 // Operaciones de filtrado
