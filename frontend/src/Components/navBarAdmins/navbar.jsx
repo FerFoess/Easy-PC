@@ -112,6 +112,19 @@ const Inicio = () => {
             onMouseLeave={(e) =>
               (e.currentTarget.style.backgroundColor = "transparent")
             }
+            onClick={() => navigate("/surtir")}
+          >
+            Surtir Componentes
+          </button>
+          <button
+            style={navButtonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor =
+                navButtonHoverStyle.backgroundColor)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
             onClick={() => navigate("/estadisticas")}
           >
             Estadísticas

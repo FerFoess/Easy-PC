@@ -13,6 +13,7 @@ const componentsSchema = new mongoose.Schema({
   name: { type: String, required: true },
   propositos: [{ type: String }],
   imagen: { type: String }, // Nuevo campo para almacenar la ruta de la imagen
+  estado: { type: String, default: 'Disponible' },
 });
 
 // Especifica el nombre de la colección como 'components'
