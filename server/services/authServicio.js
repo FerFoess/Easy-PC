@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const User = require("../models/usersSchema");
+const Order = require("../models/orderSchema");
 
 class AuthService {
   // Configuración de Nodemailer para el envío de correos
@@ -120,29 +121,38 @@ class AuthService {
   async surtirComponente(id, nombre, categoria, cantidad, correoProveedor) {
     const mailOptions = {
       from: "easypc.companymx@gmail.com",
-      to: correoProveedor, // Correo del proveedor
+      to: correoProveedor,
       subject: `Solicitud de Surtido: ${nombre}`,
       text: `Detalles de la solicitud de surtido:
+      
+  Producto: ${nombre}
+  Categoría: ${categoria}
+  Cantidad solicitada: ${cantidad}
   
-        Producto: ${nombre}
-        Categoría: ${categoria}
-        Cantidad solicitada: ${cantidad}
-        
-        Por favor, confirme la disponibilidad y el tiempo de entrega para este componente.
+  Por favor, confirme la disponibilidad y el tiempo de entrega para este componente.
   
-        Gracias por su atención.`,
+  Gracias por su atención.`,
     };
-
+  
     try {
+      // Guardar la orden en la base de datos
+      const nuevaOrden = new Order({
+        productoId: id,
+        nombre,
+        categoria,
+        cantidad,
+        correoProveedor,
+      });
+      await nuevaOrden.save();
+  
       // Enviar el correo con la solicitud
       await this.transporter.sendMail(mailOptions);
-
+  
       // Actualizar el estado del componente
       await this.actualizarEstadoComponente(id);
-
+  
       return {
-        message:
-          "Solicitud de surtido enviada y estado actualizado exitosamente",
+        message: "Solicitud enviada, estado actualizado y orden registrada",
       };
     } catch (error) {
       console.error("Error al procesar la solicitud de surtido:", error);
@@ -151,6 +161,7 @@ class AuthService {
       );
     }
   }
+  
 
   // Función para actualizar el estado del componente en la base de datos
   async actualizarEstadoComponente(id) {
