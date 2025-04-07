@@ -5,10 +5,9 @@ const User = require("../models/usersSchema");
 const Order = require("../models/orderSchema");
 
 class AuthService {
-  constructor(mediador) {
-    this.mediador = mediador; 
-  }
-  constructor() {
+  constructor(mediador = null) {
+    this.mediador = mediador;
+
     this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {

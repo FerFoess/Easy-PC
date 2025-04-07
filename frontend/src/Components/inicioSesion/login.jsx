@@ -77,11 +77,12 @@ const Login = () => {
             required
           />
         </div>
-        <h3 style={{ color: "white" }}>o crea una cuenta</h3>
+        
         <div className="button-container">
           <button type="submit">Iniciar Sesión</button>
         </div>
 <br></br>
+<h3 style={{ color: "white" }}>o crea una cuenta</h3>
         <button className="button-create" onClick={handleCrearCuenta}>
           Crear cuenta
         </button>

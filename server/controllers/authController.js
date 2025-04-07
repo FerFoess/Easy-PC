@@ -6,7 +6,9 @@ exports.registerUser = async (req, res) => {
     const { firstName, lastName, email, phone, age, password } = req.body;
 
     // Usar el mediador para manejar el registro
-    const result = await mediador.notificar('authService', 'registerUser', {
+    console.log("🔍 Enviando evento a MainMediator: registrarUsuario");
+
+    const result = await mediador.notificar('authService', 'registerUsuario', {
       firstName,
       lastName,
       email,
@@ -23,24 +25,24 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-
   try {
     const { username, password } = req.body;
-    console.log('Datos recibidos:', { username, password });
+    
+    console.log(`🚀 Enviando evento a MainMediator: loginUser`);
 
-    // Usar el mediador para manejar el inicio de sesión
-    const result = await mediador.notificar('authService', 'iniciarSesion', { username, password });
+    const result = await mediador.notificar("authService", "loginUser", { 
+      username, 
+      password 
+    });
 
-    // Verificar si el resultado es válido
     if (result && result.token) {
-      console.log('Resultado del login:', result);
-      return res.status(200).json(result);  // Devuelve la respuesta adecuada
+      return res.status(200).json(result);
     } else {
-      return res.status(400).json({ message: 'Error en el inicio de sesión' });
+      return res.status(400).json({ message: "Error en el inicio de sesión" });
     }
   } catch (error) {
-    console.error('Error al iniciar sesión:', error);
-    return res.status(500).json({ message: 'Error al iniciar sesión' });
+    console.error("❌ Error al iniciar sesión:", error);
+    return res.status(500).json({ message: "Error al iniciar sesión" });
   }
 };
 

@@ -3,7 +3,40 @@ class AuthMediator {
     this.authService = authService;
   }
 
-  async registrarUsuario(datos) {
+  async notificar( evento, datos) {
+    console.log(`🔍 Evento recibido en AuthMediator: '${evento}'`);
+
+    try {
+      switch (evento) {
+        case 'registrarUsuario':
+          return await this.registerUser(datos);
+        case 'loginUser':
+        case 'iniciarSesion':
+          return this.authService.loginUser(datos);
+        case 'sendPurchaseConfirmation':
+        case 'enviarConfirmacionCompra':
+          return await this.sendPurchaseConfirmation(datos.email, datos.amount);
+        case 'surtirComponente':
+          return await this.surtirComponenteMediator(
+            datos.id,
+            datos.nombre,
+            datos.categoria,
+            datos.cantidad,
+            datos.correoProveedor
+          );
+        case 'verificarStock':
+          return await this.verificarStock(datos.id);
+        default:
+          throw new Error(`Evento no manejado: ${evento}`);
+      }
+    } catch (error) {
+      console.error(`Error en el mediador para el evento ${evento}:`, error);
+      throw error;
+    }
+  }
+
+  // Métodos específicos (pueden mantenerse como están o ser privados)
+  async registerUser(datos) {
     return this.authService.registerUser(
       datos.firstName,
       datos.lastName,
@@ -14,17 +47,17 @@ class AuthMediator {
     );
   }
 
-  async loginUser(username, password) {
-    return this.authService.loginUser(username, password);
-  }
+  async loginUser(datos) {
+    return this.authService.loginUser(datos.username, datos.password);
+}
+
 
   async sendPurchaseConfirmation(email, amount) {
     return this.authService.sendPurchaseConfirmation(email, amount);
   }
-  // Función modificada para manejar la solicitud de surtir un componente
-  async surtirComponenteMediator(id,nombre, categoria, cantidad, correoProveedor) {
+
+  async surtirComponenteMediator(id, nombre, categoria, cantidad, correoProveedor) {
     try {
-      // Llamamos al servicio para enviar el correo con la solicitud de surtido
       return await this.authService.surtirComponente(
         id,
         nombre,

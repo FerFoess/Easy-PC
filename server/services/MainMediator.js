@@ -1,3 +1,10 @@
+const AuthMediator = require("../services/Mediators/AuthMediator");
+const InventoryMediator = require("../services/Mediators/InventoryMediator");
+
+const authMediator = new AuthMediator();
+const inventoryMediator = new InventoryMediator();
+
+
 class MainMediator {
   constructor({
     cartMediator,
@@ -13,7 +20,9 @@ class MainMediator {
     this.paymentMediator = paymentMediator;
     this.salesMediator = salesMediator;
     this.ordenesMediator = ordenesMediator;
+   
   }
+  
 
   async notificar(emisor, evento, datos) {
     switch (evento) {
@@ -66,9 +75,10 @@ class MainMediator {
 
       // Eventos de auth
       case "registrarUsuario":
+      case "registerUsuario":
         return this.authMediator.registerUser(datos);
-      case "iniciarSesion":
-        return this.authMediator.loginUser(datos.username, datos.password);
+      case "loginUser":
+        return this.authMediator.loginUser(datos);
       case "enviarConfirmacionCompra":
         return this.authMediator.sendPurchaseConfirmation(
           datos.email,
