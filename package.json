@@ -1,4 +1,11 @@
 {
+  "name": "easy-pc",
+  "version": "1.0.0",
+  "description": "App para gestión de componentes de computadora",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "@stripe/react-stripe-js": "^2.8.1",
     "@stripe/stripe-js": "^4.9.0",
