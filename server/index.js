@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-
 const app = express();
 const PORT = 3002;
 
@@ -10,7 +9,10 @@ const PORT = 3002;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Rutas
+// Ruta raíz
+app.get('/', (req, res) => {
+  res.send('Servidor Easy-PC en funcionamiento');
+});
 
 // Iniciar servidor
 app.listen(PORT, () => {
