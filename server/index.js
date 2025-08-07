@@ -11,7 +11,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Rutas
-app.use('/api', productosRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
