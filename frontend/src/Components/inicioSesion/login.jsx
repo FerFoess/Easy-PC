@@ -8,7 +8,7 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const handleCrearCuenta = () => {
-    window.location.href = "http://localhost:3000/crearcuenta";
+   window.location.href = `${process.env.REACT_APP_BASE_URL}/crearcuenta`;
   };
 
   const handleSubmit = async (e) => {
